@@ -1,0 +1,142 @@
+    :root{
+      --btn:#1668dc; --btnH:#3c89e8; --btnA:#1554ad;
+      --bg:#0b1220; --card:rgba(255,255,255,.06);
+      --stroke:rgba(255,255,255,.12); --txt:#eaf1ff; --muted:rgba(255,255,255,.85);--toast:rgba(255,255,255,.85);
+    }
+    html.theme-light{
+  --bg:#f5f7ff;
+  --card:rgba(0,0,0,.06);
+  --stroke:rgba(0,0,0,.12);
+  --txt:#0b1220;
+  --muted:rgba(0,0,0,.75);
+  --toast:rgba(255,255,255,.85);
+}
+html.theme-light body{
+  background:
+    radial-gradient(1000px 700px at 15% 15%, rgba(22,104,220,.18), transparent 55%),
+    radial-gradient(900px 700px at 85% 25%, rgba(60,137,232,.12), transparent 55%),
+    linear-gradient(180deg,#ffffff,#f5f7ff 55%,#edf2ff);
+}
+html.theme-light input{
+  background:rgba(255,255,255,.75);
+  color:var(--txt);
+}
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh; display:grid; place-items:center;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      color:var(--txt);
+      background:
+        radial-gradient(1000px 700px at 15% 15%, rgba(22,104,220,.28), transparent 55%),
+        radial-gradient(900px 700px at 85% 25%, rgba(60,137,232,.18), transparent 55%),
+        linear-gradient(180deg,#060914,#0b1220 55%,#050815);
+      padding:20px;
+    }
+    .wrap{width:min(420px,100%);}
+    @media (max-width: 900px){ .wrap{grid-template-columns:1fr} }
+   .card{
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius:14px;
+      background: rgb(142 142 142 / 6%);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, .35);
+      overflow:hidden;padding:18px
+    }
+    .badge{display:inline-flex; gap:8px; align-items:center; padding:10px 12px; border-radius:999px; margin-top:14px;
+      border:1px solid var(--stroke); background:rgba(255,255,255,.05); color:var(--muted); font-weight:600}
+    .dot{width:10px;height:10px;border-radius:50%; background:var(--btn)}
+    .title{font-size:25px; font-weight:700; margin:0 0 10px;text-align: center;}
+    label{display:block; margin:12px 0 8px; color:var(--muted);font-size:14px}
+    input{
+      width:100%; padding:12px 12px; border-radius:8px;
+      border:1px solid var(--stroke); outline:none;transition: all 0.2s;
+      background:rgba(0,0,0,.25); color:var(--txt);
+    }
+    input:focus{border-color: #1668dc;}
+    .row{display:flex; gap:10px; align-items:center; margin-top:14px}
+    .btn{
+      width:100%; border:0; border-radius:8px; padding:12px 14px; cursor:pointer;
+      background:var(--btn); color:white; font-weight:900; letter-spacing:.2px;
+      transition:.15s transform, .15s background;
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;transition: all 0.2s;
+    }
+    .btn.loading{
+  pointer-events:none;
+  opacity:.9;
+}
+
+.btn .spin{
+  width:18px;
+  height:18px;
+  display:none;
+}
+
+.btn.loading .spin{
+  display:inline-block;
+  animation: spin .8s linear infinite;
+}
+
+@keyframes spin{
+  from{ transform:rotate(0deg); }
+  to{ transform:rotate(360deg); }
+}
+    .btn:hover{background:#3c89e8;}
+    .btn:active{background:#1554ad;}
+    .hint{margin-top:12px; font-size:12px; color:var(--muted); line-height:1.5;text-align: center;}
+    .toast{
+      position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+      background:rgba(0,0,0,.75); color:var(--toast);
+      border:1px solid rgba(255,255,255,.12);
+      padding:10px 12px; border-radius:12px; display:none;
+      max-width:min(560px,92vw);
+    }
+    .small{font-size:12px; color:var(--muted)}
+  /* ===== INPUT WITH ICON ===== */
+.inputWrap{
+  position:relative;
+}
+
+.inputWrap input{
+  padding-left:42px;
+  padding-right:42px;
+}
+
+.inputIcon{
+  position:absolute;
+  left:12px;
+  top:50%;
+  transform:translateY(-50%);
+  width:18px;
+  height:18px;
+  opacity:.7;
+  pointer-events:none;
+}
+
+.inputRight{
+  position:absolute;
+  right:12px;
+  top:50%;
+  transform:translateY(-50%);
+  width:20px;
+  height:20px;
+  cursor:pointer;
+  opacity:.7;
+  transition:.2s;
+}
+
+.inputRight:hover{
+  opacity:1;
+}
+.label-required::before {
+    content: "*";
+    display: inline-block;
+    margin-right: 4px;
+    color: #dc4446;
+    font-size: 14px;
+    font-family: SimSun, sans-serif;
+    line-height: 1;
+}

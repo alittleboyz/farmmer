@@ -4818,6 +4818,8 @@ document.addEventListener("click", (e)=>{
 });
   // ===== AUTH BOOT =====
 onAuthStateChanged(auth, async (user)=>{
+  console.log("UID NOW:", user?.uid);
+  console.log("EMAIL:", user?.email);
   if(!user){ location.replace("../login/"); return; }
 
   me.uid = user.uid;

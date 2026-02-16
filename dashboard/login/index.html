@@ -23,7 +23,7 @@
     :root{
       --btn:#1668dc; --btnH:#3c89e8; --btnA:#1554ad;
       --bg:#0b1220; --card:rgba(255,255,255,.06);
-      --stroke:rgba(255,255,255,.12); --txt:#eaf1ff; --muted:rgba(255,255,255,.85);
+      --stroke:rgba(255,255,255,.12); --txt:#eaf1ff; --muted:rgba(255,255,255,.85);--toast:rgba(255,255,255,.85);
     }
     html.theme-light{
   --bg:#f5f7ff;
@@ -31,6 +31,7 @@
   --stroke:rgba(0,0,0,.12);
   --txt:#0b1220;
   --muted:rgba(0,0,0,.75);
+  --toast:rgba(255,255,255,.85);
 }
 html.theme-light body{
   background:
@@ -110,7 +111,7 @@ html.theme-light input{
     .hint{margin-top:12px; font-size:12px; color:var(--muted); line-height:1.5;text-align: center;}
     .toast{
       position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
-      background:rgba(0,0,0,.75); color:var(--txt);
+      background:rgba(0,0,0,.75); color:var(--toast);
       border:1px solid rgba(255,255,255,.12);
       padding:10px 12px; border-radius:12px; display:none;
       max-width:min(560px,92vw);

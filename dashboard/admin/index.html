@@ -1,0 +1,4994 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Farm Admin</title>
+  <link rel="stylesheet" href="../daterange/flatpick.css">
+  <meta property="og:site_name" content="PIG">
+  <meta name="description" content="This site personally build farming link page.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="FARMING PIG">
+  <meta property="og:description" content=""This site personally build farming link page.">
+  <meta property="og:url" content="https://mrprofessorr.github.io/farm/dashboard/admin/">
+  <meta property="og:image" content="https://mrprofessorr.github.io/farm/dashboard/image/pig.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="FARMING PIG">
+  <meta name="twitter:description" content=""This site personally build farming link page.">
+  <meta name="twitter:image" content="https://mrprofessorr.github.io/farm/dashboard/image/pig.png">
+  <style>
+:root{
+  --headerH:64px;
+  --btn:#1668dc; --btnH:#3c89e8; --btnA:#1554ad;
+
+  /* ===== THEME TOKENS ===== */
+  --menuDropdown:#303030;
+  --scroll:rgba(255, 255, 255, 0.25);
+  --bgDropdownhover:rgba(255, 255, 255, .03);
+  --bgDropdown:rgba(255,255,255,.10);
+  --pagebg:#000000;
+  --bg: #070b16;
+  --headerBg: #001529;
+  --colorItems:#1668dc;
+  --panelBg: #1f1f1f;
+  --inputBg:#141414;
+  --cardHeadBg: #1f1f1f;
+  --tableHeadBg: #1d1d1d;
+
+  --stroke: rgba(255,255,255,.12);
+  --stroke2: #303030;
+  --txt: #eaf1ff;
+  --muted: #eaf1ffb3;
+  --iconColor: rgba(255,255,255,.85);
+  --borderColor:#424242;
+  --colorInput:rgba(255,255,255,.85);
+  --borderActive:#1668dc;
+  --btnCard:#ffffff0f;
+  --borderBottom:#ffffff14;
+  --borderTable: #303030;
+  --BtnActive:rgba(255,255,255,.85);
+  --btnheadHover:rgba(255,255,255,.10);
+  --colorHover:rgba(255,255,255,.85);
+  --borderHover:#424242;
+  --colorActive:rgba(255,255,255,.85);
+  --borderactivehead:#424242;
+  --xHover:#ffffff;
+  --xActive:rgba(255,255,255,.65);
+}
+    
+
+/* ===== LIGHT MODE OVERRIDE ===== */
+html.theme-light{
+  --talbeHover:rgba(255, 255, 255, .03);
+  --menuDropdown:#ffffff;
+  --scroll:#27272785;
+  --bgDropdownhover:#e3e3e3;
+  --bgDropdown:#cacaca;
+  --pagebg:#ffffff;
+  --bg: #f6f8ff;
+  --headerBg:#001529;
+  --inputBg:#ffffff;
+  --fieldBg: #f3f5fb;
+  --cardHeadBg: #f7f8fc;
+  --tableHeadBg: #ffffff;
+  --panelBg: #ffffff;
+
+  --stroke: rgba(0,0,0,.12);
+  --stroke2: rgba(0,0,0,.12);
+  --txt: #0b1324;
+  --muted: rgba(11,19,36,.65);
+  --colorInput:#000000e0;
+  --iconColor: rgba(255,255,255,.85);
+  --borderColor:#d9d9d9;
+  --borderActive:#424242;
+  --btnCard:#ffffff;
+  --borderBottom:#000000e0;
+  --borderTable: #000000e0;
+  --btn:#1668dc;
+  --BtnActive:#1668dc;
+  --btnHead:#ffffff;
+  --colorHover:#3c89e8;
+  --borderHover:#3c89e8;
+  --colorActive:#1554ad;
+  --borderactivehead:#1554ad;
+  --xHover:#3c89e8;
+  --xActive:#1554ad;
+}
+*{box-sizing:border-box}
+html.drawerOpen,
+body.drawerOpen{
+  overflow: hidden !important;
+  height: 100% !important;
+}
+    body{
+      margin:0; color:var(--txt);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+      background:var(--pagebg);
+      min-height:100vh;
+    }
+
+    header{
+      height:64px; display:flex; align-items:center; justify-content:space-between;
+      padding:0 16px;
+      position: fixed !important; top:0;left: 0; right: 0;height: var(--headerH);
+      background:var(--headerBg);
+      border-bottom:1px solid var(--stroke);gap:10px; z-index: 9500 !important;
+    }
+/* ===== CLICK FX (UNIVERSAL) ===== */
+[data-clickfx]{
+  position: relative;
+  overflow: visible;
+}
+
+/* ring glow pakai BEFORE (tak conflict dgn #btnBalance::after) */
+[data-clickfx].clicked::before{
+  content:"";
+  position:absolute;
+  inset:1px;                 /* keluar luar border */
+  border-radius: inherit;
+  pointer-events:none;
+  z-index: 999999;
+  opacity: 0;
+  box-shadow: 0 0 2px 5px rgba(59,130,246,.55);
+  animation: clickFx .55s ease-out forwards;
+}
+
+@keyframes clickFx { from {opacity:1} to {opacity:0} }
+    body{ padding-top: var(--headerH); }
+    .right{display:flex; align-items:center; gap:5px;flex:0 0 auto;flex-wrap:nowrap;}
+    .btn-delete{
+      border: 1px solid rgb(196 19 19); 
+      border-radius:6px; padding: 8px 10px; cursor:pointer;
+      background: rgb(0 0 0 / 0%);
+      color:#f52020; font-weight:400;
+      display:inline-flex; align-items:center; gap:8px;
+      user-select:none;
+      font-size: 14px;height: 32px;
+      transition: all 0.2s;
+    }
+    .btn-delete:hover{background: rgb(84 1 1)}
+    .btn-delete:active{background: rgb(42 1 1)}
+    .btn-edit{
+      border: 1px solid rgba(22, 104, 220, .45); 
+      border-radius:6px; padding: 8px 10px; cursor:pointer;
+      background: rgba(22, 104, 220, .18); 
+      color:white; font-weight:400;
+      display:inline-flex; align-items:center; gap:8px;
+      user-select:none;
+      font-size: 14px;height: 32px;
+      transition: all 0.2s;
+    }
+    .btn-edit:hover{background:#1668dc73;}
+    .btn-edit:active{background:#08408e73;}
+    .btn-modal{
+      border:0; border-radius:6px;padding: 0px 15px; cursor:pointer;
+      background:var(--inputBg); color:#008000; border:1px solid var(--borderColor);
+      display:inline-flex; align-items:center; gap:8px;
+      user-select:none;
+      height: 32px;
+      font-size: 14px;
+      transition: all 0.2s;
+      grid-template-columns: 24px 1fr 24px;
+    }
+    .btn-modal:hover{border: 1px solid #3c89e8;}
+    .walletBtn:hover .walletIcon{color:#3c89e8;}
+    .btn-modal:active{border: 1px solid #1554ad;}
+    .walletBtn:active .walletIcon{color:#1554ad;}
+    .walletBtn{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      transition: all 0.2s;
+    }
+    .walletIcon{
+     display:flex;
+     align-items:center;
+     transition: all 0.2s;
+     color:var(--colorInput);
+    }
+    .btn-view{
+      border: 1px solid var(--stroke); border-radius:6px; padding: 8px 10px; cursor:pointer;
+      background:var(--btn); color:white; font-weight:400;
+      display:inline-flex; align-items:center; gap:8px;
+      user-select:none;
+      font-size: 14px;height: 32px;
+      transition: all 0.2s;
+    }
+    .btn-view:hover{background:#3c89e8;}
+    .btn-view:active{background:#1554ad;}
+    .btn-user{
+      border:0; border-radius:6px;padding: 0px 15px; cursor:pointer;
+      background:var(--inputBg); color:var(--colorInput); border:1px solid var(--borderColor);
+      display:inline-flex; align-items:center; gap:8px;
+      user-select:none;
+      height: 32px;
+      font-size: 14px;
+      transition: all 0.2s;
+      grid-template-columns: 24px 1fr 24px;
+    }
+    .btn-user:hover{border: 1px solid #3c89e8;color:#3c89e8;}
+    .btn-user:active{border: 1px solid #1554ad;color:#1554ad;}
+    .btn-logout{
+      border:0; border-radius:6px; padding:0px 15px; cursor:pointer;
+      background:#d11f3a; color:white;
+      display:inline-flex; align-items:center; gap:8px;
+      user-select:none;
+      transition: all 0.2s;
+      font-size: 14px;height: 32px;
+    }
+    .btn-logout:hover{background:#e2445b;}
+    .btn-logout:active{background:#b31930;}
+    .btn{
+      border:0; border-radius:6px; padding: 0px 15px; cursor:pointer;
+      background:var(--btn); color:white; font-weight:400;
+      transition:.15s transform, .15s background;
+      display:inline-flex; align-items:center; gap:8px;
+      user-select:none;
+      font-size: 14px;height: 32px;
+      transition: all 0.2s;
+    }
+    .btn:hover{background:var(--btnH)}
+    .btn:active{background:var(--btnA); transform: translateY(1px)}
+    .btn.ghost{
+      background:var(--btnCard); border:1px solid var(--borderColor); color:var(--colorInput);
+    }
+    .btn.ghost:hover{background:var(--btnheadHover);color:var(--colorHover);border-color:var(--borderHover);}
+    .btn.ghost:active{color:var(--colorActive);border-color:var(--borderactivehead);}
+    .pill {
+     padding: 0px 15px;
+     border: 1px solid #303030;
+     background: #141414;
+     border-radius: 6px;
+     color: var(--muted);
+     font-size: 14px;
+     height: 32px;
+     text-align: center;
+     align-content: center;
+     font-weight:600;
+    }
+    .container{width:min(1200px,100%); margin:16px auto; padding:0 16px 24px}
+    .topRow{
+      display:flex; align-items:flex-start; justify-content:space-between;
+      gap:12px; flex-wrap:wrap;
+      margin:14px 0 12px;
+    }
+    .tabs{display:flex; gap:5px; align-items:center;flex-wrap: wrap;}
+    .tab {
+    border: 1px solid var(--borderColor);
+    background: var(--inputBg);
+    color: var(--colorInput);
+    border-radius: 999px;
+    padding: 0px 15px;
+    cursor: pointer;
+    height: 32px;
+    align-items: center;
+    font-size: 14px;
+    }
+    .tab.active{background:rgba(22,104,220,.18); color:var(--BtnActive); border: 1px solid var(--btn);}
+    .actions{display:flex; gap:5px; align-items:center; flex-wrap:wrap}
+    .hint{color:var(--colorInput); font-size:12px; line-height:1.4}
+    .create-vault{color:#1668dc; font-size:12px; line-height:1.4}
+
+    .grid{display:grid; gap:12px}
+    .card{
+      background:var(--panel);
+      border:1px solid var(--stroke);
+      border-radius:12px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+      overflow:hidden;
+    }
+    .cardHead{
+      padding:14px 14px 10px;
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+      border-bottom:1px solid var(--borderBottom);
+      background: var(--panelBg);
+    }
+    .title{
+      font-weight:700; font-size:16px; margin:0;color:var(--colorInput);
+    }
+    .sub{margin-top:4px; color:#1668dc; font-size:11px;}
+    .vaultBtns{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
+    .cardBody{padding:12px 14px 14px; background:var(--panelBg);}
+
+    /* Excel-like table */
+    table{width:100%; border-collapse:separate; border-spacing:0}
+    th,td{padding:10px 10px; border-bottom:1px solid var(--borderBottom); text-align: center;;}
+    th{
+      position:sticky; top:0;
+      background:var(--tableHeadBg);
+      border-bottom:1px solid var(--borderTable);
+      text-align:left;
+      font-size:12px; letter-spacing:.2px;
+      color:var(--colorInput);
+      z-index:1;
+      font-weight:600;
+      font-size:14px;
+      text-align: center;
+    }
+    tr:hover td{background:var(--bgDropdownhover)}
+    .num{font-variant-numeric: tabular-nums}
+    .tag{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:0px 10px; border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      color:var(--muted);
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .tag.in{border-color:#1668dc; color:var(--colorInput); background:var(--inputBg);}
+    .tag.out{border-color:red; color:var(--colorInput); background:var(--inputBg);}
+    .tag.buy{border-color:#1668dc; color:var(--colorInput); background:var(--inputBg);}
+    .tag.sell{border-color:#1668dc; color:var(--colorInput); background:var(--inputBg);}
+    .profit.good{color:rgb(255 191 0);}
+    .profit.bad{color:rgb(255 0 0);}
+
+    /* Modal */
+    .modalBack{
+      position:fixed; inset:0; background:rgba(0,0,0,.55);
+      display:none; align-items:center; justify-content:center;
+      padding:18px; z-index:100;
+    }
+    .modal{
+      width:min(640px,100%);
+      background:var(--panelBg);
+      border:1px solid var(--borderTable);
+      border-radius:12px;
+      box-shadow: 0 24px 90px rgba(0,0,0,.6);
+      overflow:hidden;
+      transition: all 0.2s;
+    }
+    .modalHead{
+      padding:14px 14px 10px;
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+      border-bottom:1px solid var(--borderTable);
+    }
+    .modalHead .x{
+      border:none;
+      background:transparent;
+      color:var(--colorInput);
+      cursor:pointer;
+      display:grid; place-items:center;
+      transition: all 0.2s;
+    }
+    .x:hover{color:var(--xHover);}
+    .x:active{transform:translateY(1px);color:var(--xActive);}
+    .modalBody{padding:12px 14px 14px}
+    .row{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+    @media (max-width:700px){ .row{grid-template-columns:1fr} }
+    label{display:block; margin:10px 0 6px; color:color:rgba(255,255,255,.85); font-weight:400; font-size:14px}
+    input,select,textarea{
+      width:100%; padding:0px 15px; border-radius:6px;height:32px;
+      border:1px solid var(--borderTable);
+      background:var(--inputBg);
+      color:var(--colorInput);
+      outline:none;
+      transition: all 0.2s;
+    }
+    input:focus,select:focus,textarea:focus{border-color:#1668dc;}
+    input:hover,select:hover,textarea:hover{border-color:#3c89e8;}
+    textarea{min-height:84px; resize:vertical}
+    .modalFoot{
+      display:flex; justify-content:flex-end; gap:10px;
+      padding:12px 14px;
+      border-top:1px solid var(--borderTable);
+      background:rgba(255,255,255,.03);
+    }
+    .danger{background:#d11f3a}
+    .danger:hover{background:#e2445b}
+    .danger:active{background:#b31930}
+/* ===== TOAST WRAP ===== */
+.toast{
+  position: fixed;
+  left: 50%;
+  bottom: 18px;                 /* bottom */
+  top: auto;                    /* buang top */
+  transform: translate(-50%, 14px); /* start sedikit bawah */
+  width: min(220px, 92vw);
+  z-index: 9999999;
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .22s ease, opacity .22s ease;
+}
+
+/* bila show */
+.toast.show{
+  display: block;
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+}
+
+/* ===== TOAST CARD ===== */
+.toastCard{
+  display:grid;                 /* tukar flex -> grid */
+  grid-template-columns: 28px 1fr 28px; /* icon | text | close */
+  align-items:center;
+  column-gap:10px;
+  padding:12px 12px;
+  border-radius:10px;
+  background: rgba(20,20,20,.92);
+  border:1px solid rgba(255,255,255,.10);
+  box-shadow:0 18px 60px rgba(0,0,0,.55);
+  backdrop-filter: blur(10px);
+}
+
+/* kiri icon */
+.toastIcon{
+  width:22px;
+  height:22px;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(255,255,255,.12);
+  justify-self:start;
+}
+.toastIcon svg{ width:16px; height:16px; display:block; }
+
+/* tengah text */
+.toastMsg{
+  justify-self:center;          /* betul-betul center */
+  text-align:center;            /* text center */
+  color: rgba(255,255,255,.90);
+  font-size:14px;
+  font-weight:600;
+  line-height:1.25;
+  max-width: 100%;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+}
+
+/* kanan close */
+.toastClose{
+  width:28px;
+  height:28px;
+  border:none;
+  border-radius:8px;
+  background: transparent;
+  color: rgba(255,255,255,.75);
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  transition: all .2s;
+  justify-self:end;             /*  rapat kanan */
+}
+.toastClose:hover{ background: rgba(255,255,255,.06); color:#fff; }
+.toastClose:active{ transform: translateY(1px); opacity:.85; }
+
+/* success/error variants */
+.toast.success .toastIcon{
+  background: #49aa19;
+  border-color:#49aa19;
+  color: white;
+}
+.toast.error .toastIcon{
+  background: red;
+  border-color: red;
+  color: white;
+}
+
+/* optional: reduce motion */
+@media (prefers-reduced-motion: reduce){
+  .toast{ transition:none; }
+}
+    .hr{height:1px;background:var(--borderTable); margin:12px 0}
+    .kpiRow{display:flex; gap:10px; flex-wrap:wrap;justify-content: center;}
+    .kpi{
+      border:1px solid var(--borderTable);
+      background:rgba(255,255,255,.04);
+      padding:10px 12px; border-radius:10px;
+      min-width: 133px;background: var(--inputBg);
+    }
+    .kpi .k{font-size:12px; color:var(--muted); font-weight:500}
+    .kpi .v{margin-top:6px; font-size:14px}
+    .hide{display:none !important}
+    .amtNeg{ color:red; }
+    .good{ color:#008000;}
+    .bad{ color:red;}
+.tblWrap table tbody tr.row-cashout td:nth-child(2),
+.tblWrap table tbody tr.row-cashout td:nth-child(3),
+.tblWrap table tbody tr.row-cashout td:nth-child(4),
+.tblWrap table tbody tr.row-cashout td:nth-child(2) *,
+.tblWrap table tbody tr.row-cashout td:nth-child(3) *,
+.tblWrap table tbody tr.row-cashout td:nth-child(4) *{
+  color:red !important;
+}
+.row-cashout td:nth-child(2),  /* Transaction */
+.row-cashout td:nth-child(3),  /* Quantity */
+.row-cashout td:nth-child(4){  /* Price Quantity */
+  color:red !important;
+}
+.tblWrap td:nth-child(6){color:var(--colorInput);}
+    /* ===== TABLE WRAP: boleh scroll kiri/kanan + atas/bawah ===== */
+.tblWrap{
+  width:100%;
+  overflow-x:auto;     /* scroll kanan kiri */
+  overflow-y:auto;     /* scroll atas bawah (kalau tinggi) */
+  max-height: 420px;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 14px;
+  border: 1px solid #303030;
+}
+
+/* Paksa table tak wrap, supaya tak turun line */
+.tblWrap table{
+  width:100%;
+  min-width: 980px;          /* penting: kalau screen kecil, dia akan scroll */
+  border-collapse: collapse;
+  table-layout: auto;
+  background:var(--inputBg);
+  font-size:14px;
+  color: #008000;
+}
+
+/* Semua cell jangan wrap */
+.tblWrap th,
+.tblWrap td{
+  white-space: nowrap;       /* ini yang buat text & button tak turun */
+}
+
+/* Kalau kau nak Description masih boleh panjang tanpa wrap, tapi ada ellipsis */
+.tblWrap td:nth-child(2){
+  max-width: 420px;          /* adjust ikut suka */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Actions jangan turun & spacing kemas */
+.tblWrap td:last-child > div{
+  flex-wrap: nowrap !important;
+}
+
+/* ===== Scrollbar style (grey, clean) ===== */
+/* Chrome/Edge/Safari */
+.tblWrap::-webkit-scrollbar{
+  height: 10px;  /* horizontal */
+  width: 10px;   /* vertical */
+}
+.tblWrap::-webkit-scrollbar-track{
+  background: rgba(255,255,255,.06);
+  border-radius: 999px;
+}
+.tblWrap::-webkit-scrollbar-thumb{
+  background: rgba(160,160,160,.45); /* grey */
+  border-radius: 999px;
+  border: 2px solid rgba(0,0,0,.25);
+}
+.tblWrap::-webkit-scrollbar-thumb:hover{
+  background: rgba(190,190,190,.65);
+}
+
+/* Firefox */
+.tblWrap{
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll) rgb(255 255 255 / 0%);
+}
+/* ===== CUSTOM SELECT (Replace browser <select>) ===== */
+select.native-select {
+  position:absolute !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+  width:0 !important;
+  height:0 !important;
+}
+
+/* wrapper auto created by JS */
+.cs {
+  position: relative;
+  width: 100%;
+  user-select: none;
+}
+.cs__btn{
+  width: 100%;
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0px 15px;
+  border-radius: 6px;
+  cursor:pointer;
+  background: var(--inputBg);
+  border: 1px solid var(--borderTable);
+  color:#1668dc;
+  outline:none;
+  transition: all 0.2s;
+  height:32px;
+}
+.cs__btn:hover{border-color:#3c89e8;}.cs__btn:focus{border-color:#1668dc;}
+
+.cs__value{
+  font-weight: 700;
+  letter-spacing:.2px;
+}
+
+.cs__arrow{
+  opacity:.9;
+  font-size: 12px;
+  color: #1668dc;
+  transform: translateY(-1px);
+}
+
+/* dropdown menu */
+.cs__menu{
+  position:absolute;
+  left:0;
+  top: calc(100% + 6px);
+  width:100%;
+  z-index: 99999;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #141414;
+  border: 1px solid #303030;
+  box-shadow: 0 16px 40px rgba(0,0,0,.45);
+  display:none;
+}
+
+.cs.open .cs__menu{ display:block; }
+
+.cs__opt{
+  padding: 3px 15px;
+  cursor:pointer;
+  color:#1668dc;
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap:10px;
+  background:var(--inputBg);
+}
+
+.cs__opt:hover{ background: var(--bgDropdownhover); }
+.cs__opt[aria-selected="true"]{
+  background: var(--bgDropdown);
+}
+/* ✅ CUSTOM SELECT dropdown auto-scroll (lebih 6 item) */
+.cs__menu{
+  max-height: 216px;   /* ~ 6 item (36px x 6). Adjust kalau perlu */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* optional: bagi scroll nampak kemas */
+.cs__menu::-webkit-scrollbar{
+  width: 8px;
+}
+.cs__menu::-webkit-scrollbar-track{
+  background: rgba(255,255,255,.06);
+}
+.cs__menu::-webkit-scrollbar-thumb{
+  background: rgba(160,160,160,.45);
+  border-radius: 999px;
+  border: 2px solid rgba(0,0,0,.25);
+}
+.cs__menu::-webkit-scrollbar-thumb:hover{
+  background: rgba(190,190,190,.65);
+}
+
+/* Firefox */
+.cs__menu{
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.25) rgba(255,255,255,.08);
+}
+.cs__hint{
+  font-size: 12px;
+  opacity:.65;
+}
+/* Buang arrow (spinner) untuk input number - Chrome/Edge/Safari */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button{
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Buang arrow (spinner) untuk Firefox */
+input[type="number"]{
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+/* ===== KPI TABLE (BUY LEFT / SELL RIGHT) ===== */
+.kpiSplit{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:12px;
+  margin:12px 0 10px;
+  font-size:14px;
+}
+@media (max-width: 900px){
+  .kpiSplit{ grid-template-columns: 1fr; } /* phone: kanan turun bawah */
+}
+
+.kpiTableCard{
+  background:var(--inputBg);                 /* match theme kau */
+  border:1px solid var(--borderTable);
+  border-radius:8px 8px 0 0;
+  overflow:hidden;
+}
+
+.kpiTableHead{
+  padding:12px 14px;
+  font-weight: 600;
+  color:var(--colorInput);
+  border-bottom: 1px solid var(--borderBottom);
+  background:var(--tableHeadBg);
+  text-align: center;
+}
+
+.kpiTable{
+  width:100%;
+  border-collapse:collapse;
+}
+
+.kpiTable td{
+  padding:10px 14px;
+  border-bottom: 1px solid #303030;
+}
+
+.kpiTable tr:last-child td{ border-bottom:0; }
+.kpiTable td:first-child{
+  text-align:left;
+  color:var(--colorInput);
+  font-weight:400;
+  border-right: 1px solid var(--borderTable);
+}
+.kpiTable td:last-child{
+  text-align:right;
+  font-variant-numeric: tabular-nums;
+  font-weight:400;
+  color:#008000;
+}
+
+/* guna class .good/.bad kau yang memang dah ada */
+.kpiTable .kpiGood{ color:#008000!important; }
+.kpiTable .kpiBad{ color:red!important; }
+/* ===== USER DROPDOWN ===== */
+.userDrop{ position:relative; }
+.btn-user .caret{ opacity:.8; font-size:12px; transform: translateY(-1px); }
+
+.userMenu{
+  position:absolute;
+  right:0;
+  top: calc(100% + 8px);
+  min-width: 200px;
+  background: var(--panelBg);
+  border: 1px solid var(--menuDropdown);
+  border-radius: 6px;
+  box-shadow: 0 18px 60px rgba(0,0,0,.55);
+  padding: 8px;
+  display:none;
+  z-index: 999999;
+  flex-direction: column;gap: 8px;
+}
+
+.userDrop.open .userMenu{ display:flex; }
+
+.userMenuItem{
+  width:100%;
+  border:1px solid var(--borderTable);
+  background: var(--inputBg);
+  color: var(--colorInput);
+  border-radius: 6px;
+  padding: 0px 15px;
+  cursor:pointer;
+  display:grid;
+  grid-template-columns: 24px 1fr 24px; /* icon kiri, text center, spacer */
+  align-items:center;
+  gap:10px;
+  transition: .15s background, .15s border-color;
+  height:32px;
+  font-size:14px;
+  transition: all 0.2s;white-space: nowrap;
+}
+.userMenuItem:hover{border-color: #3c89e8;color:#3c89e8;}
+.userMenuItem:active{border-color: #1554ad;color:#1554ad;}
+
+.userMenuItem .miIcon{ display:grid; place-items:center; opacity:.95; }
+.userMenuItem .miText{ text-align:center;}
+.rangeBar{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+  margin:10px 0 14px;
+  flex-wrap:wrap;
+}
+
+/* kiri: daterange + dropdown + search */
+.rangeLeft{
+  flex: 1 1 520px;           /* bagi ruang untuk 3 item 1 row (desktop) */
+  min-width: 240px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:nowrap;          /* desktop: jangan turun */
+}
+/* ===== MOBILE ===== */
+@media (max-width: 720px){
+  .rangeLeft{
+    flex-wrap:wrap;          /*  boleh turun baris */
+    align-items:stretch;
+  }
+
+  /* baris 1: daterange + dropdown */
+  .rangeLeft .dateRangeInput{
+    flex: 1 1 100px;
+    min-width: 0;
+  }
+
+  /* dropdown custom select wrapper (.cs) */
+  .rangeLeft .cs,
+  .rangeLeft select.js-custom-select{
+    flex: 0 0 150px;
+    min-width: 150px;
+  }
+
+  /* baris 2: search turun bawah full width */
+  .rangeLeft .txSearchInput{
+    flex: 1 1 100%;
+    width:100%;
+    min-width:0;
+  }
+
+  /* preset bawah align kiri */
+  .rangeRight{ justify-content:flex-start; }
+}
+.dateRangeInput{
+  width:100%;
+  background:var(--inputBg);
+  border:1px solid var(--borderTable);
+  border-radius:6px;
+  padding:0px 15px;
+  outline:0;
+  color:var(--colorInput);
+  letter-spacing:.2px;
+  text-align: center;
+  height:32px;
+  transition: all 0.2s;
+  min-width: 200px;
+}
+.dateRangeInput:hover{border-color: #3c89e8;}.dateRangeInput:focus{border-color:#1668dc!important;}
+.rangeRight{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.pbtn{background:transparent;color:var(--colorInput);padding:0px 15px;border:none;cursor:pointer;white-space:nowrap;font-size:14px;transition: all 0.2s;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height:32px;          /* sama macam daterange/dropdown */
+  line-height:32px;     /* elak baseline naik */
+  padding:0px 5px;       /* kekal style kau */
+}
+.pbtn:hover{color:#3c89e8}.pbtn:active{color:#1554ad}
+.pbtn.active{color:#1668dc;}
+@media (max-width:520px){.rangeRight{justify-content:flex-start}.pbtn{font-size:12px;padding:0px 5px}}
+  @media (max-width: 520px){
+  .flatpickr-calendar{
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    max-width: calc(100vw - 16px) !important;
+    z-index: 999999 !important;
+  }
+}
+.iconBtn{
+  width:34px; height:34px;
+  border-radius:8px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:transparent;
+  border:none;
+  cursor:pointer;
+  transition: all 0.2s;
+}
+.iconBtn:hover{ background: rgba(255,255,255,.06); }
+.icoRefresh{
+  color:var(--iconColor);
+  fill: currentColor;
+  transition: fill .2s ease, transform .2s ease;
+}
+.icoRefresh:hover{fill:#3c89e8;}.icoRefresh:active{fill:#1554ad;}
+.iconBtn.spinning .icoRefresh{
+  animation: spin360 .7s linear infinite;
+}
+@keyframes spin360{
+  to{ transform:rotate(360deg); }
+}
+.txTimeRow{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+.txTimeRow input{ flex:1; min-width:0; }
+.txTimeRow .btn{ white-space:nowrap; }
+
+@media (max-width:520px){
+  .txTimeRow{ flex-direction:column; align-items:stretch; }
+  .txTimeRow .btn{ width:100%; }
+}
+.vaultFooter{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:12px;
+  margin-top:14px;
+}
+
+.vaultFooterLeft{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  min-width:0;
+}
+
+.vaultFooterRight{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+
+/* responsive phone: jadi stack */
+@media (max-width:560px){
+  .vaultFooter{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  .vaultFooterRight{
+    justify-content:flex-start;
+  }
+}
+.vaultSearchWrap{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  margin-right:auto;   
+  min-width: 220px;
+  flex:1 1 auto; 
+  min-width:0;
+}
+
+.vaultSearchBox{
+  position:relative;
+  width:100%;
+  max-width:420px;
+}
+
+#vaultSearch{
+  width:100%;
+  height:32px;
+  padding:0 60px 0 14px;
+  border-radius:6px;
+  background:var(--inputBg);
+  border:1px solid #303030;
+  color:var(--colorInput);
+  font-size:14px;
+  outline:none;
+  transition: all 0.2s;
+}
+#vaultSearch:hover{border-color:#3c89e8;}
+#vaultSearch:focus{border-color:#1668dc;}
+.vaultSearchIcon{
+  position:absolute;
+  right:12px;
+  top:50%;
+  transform:translateY(-50%);
+  opacity:.7;
+  width:18px;
+  height:18px;
+  pointer-events:none;
+  color:var(--colorInput);
+}
+@media (max-width:600px){
+  .vaultSearchBox{
+    max-width:100%;
+  }
+}
+@media (max-width:700px){
+  header{
+    flex-wrap: nowrap;        /* jangan wrap */
+    gap:8px;
+  }
+  .vaultSearchWrap{
+    flex: 1 1 auto;           /*  search boleh shrink */
+    min-width: 0;
+    margin-right:auto;
+  }
+  .vaultSearchBox{ max-width:100%; }
+  .right{
+    flex: 0 0 auto;
+    flex-wrap: nowrap;        /*  icon tak turun */
+    margin-left:auto;
+  }
+}
+/* ❌ clear button */
+.vaultSearchClear{
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  width:28px;
+  height:28px;
+  border:none;
+  border-radius:999px;
+  background:transparent;
+  cursor:pointer;
+  padding:0;
+  display:none;          /* default hidden */
+  color:var(--colorInput);
+}
+
+.vaultSearchClear svg{
+  width:20px;
+  height:20px;
+  display:block;
+  margin:auto;
+  opacity:.85;
+  transition: all .2s;
+}
+
+.vaultSearchClear:hover svg{ opacity:1; color:#3c89e8; }
+.vaultSearchClear:active svg{ transform: scale(.95); color:#1554ad; }
+/* =========================
+    RIGHT DRAWER (MOBILE MENU)
+   ========================= */
+
+/* Button drawer (guna iconBtn style kau) */
+.rightDrawerBtn{ display:none; }
+
+/*  Overlay start bawah header */
+.drawerOverlay{
+  position: fixed;
+  top: var(--headerH);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,.55);
+  z-index: 9000;
+}
+
+/*  Drawer start bawah header */
+.rightDrawer{
+  position: fixed;
+  top: var(--headerH);
+  right: 0;
+  height: calc(100dvh - var(--headerH)); /*  guna 100dvh (mobile lebih tepat) */
+  width: min(320px, 88vw);
+  background: #001529;
+  border-left: 1px solid rgba(255,255,255,.12);
+  z-index: 9001;
+  transform: translateX(105%);
+  transition: transform .22s ease;
+  box-shadow: -18px 0 40px rgba(0,0,0,.45);
+  overflow: auto;
+}
+
+.rightDrawer.open{ transform: translateX(0); }
+
+.rightDrawerHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 14px;
+  border-bottom: 1px solid rgba(255,255,255,.10);
+}
+
+.rightDrawerTitle{
+  font-weight: 800;
+  color: rgba(255,255,255,.9);
+}
+
+.rightDrawerHead .iconBtn{
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.85);
+}
+.rightDrawerHead .iconBtn:hover{ border-color:#3c89e8; color:#3c89e8; }
+.rightDrawerHead .iconBtn:active{ border-color:#1554ad; color:#1554ad; }
+
+.rightDrawerBody{
+  padding: 14px;
+  display:flex;
+  flex-direction:column;
+  gap: 12px;
+}
+
+.drawerRow{
+  border: 1px solid #303030;
+  border-radius: 6px;
+  background: #141414;
+}
+
+.drawerLabel{
+  color: rgba(255,255,255,.85);
+  font-size: 14px;
+}
+
+.drawerValue{
+  color: rgba(255,255,255,.85);
+}
+
+
+/* RESPONSIVE: bila screen kecil/tablet -> pindah wallet ke drawer */
+@media (max-width: 900px){
+  .rightDrawerBtn{ display:inline-flex !important; }
+  #btnBalance{ display:none !important; }  /* hide wallet header */
+  #userDrop{ display:none !important; }    /* hide user dropdown header */
+}
+
+/* ===== PATCH FIX ===== */
+.drawerOverlay{ z-index: 9000 !important; }
+.rightDrawer{ z-index: 9001 !important; }
+
+.vaultSearchWrap,.vaultSearchBox,.right,.walletBtn{ min-width:0; }
+
+#walletAmount,.walletAmount{
+  max-width:140px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  display:block;
+  font-variant-numeric: tabular-nums;
+}
+
+.drawerOverlay{ display:none; }
+.drawerOverlay.open{ display:block; }
+/* ===== HEADER WALLET (btnBalance): icon kiri, amount betul2 center ===== */
+#btnBalance{
+  display:grid;
+  grid-template-columns: 24px 1fr 24px; /* kiri icon, tengah text, kanan spacer */
+  align-items:center;
+  gap:10px;
+}
+#btnBalance .walletIcon{ justify-self:center; }
+#btnBalance #balanceText{ justify-self:center; text-align:center; }
+
+/* spacer kanan (sebab header wallet tak ada span spacer) */
+#btnBalance::after{
+  content:"";
+  width:24px;
+  height:1px;
+  justify-self:center;
+}
+
+/* ===== HEADER USER DROPDOWN (btnUser): icon kiri, username center, caret kanan ===== */
+#btnUser{
+  display:grid;
+  grid-template-columns: 24px 1fr 24px;
+  align-items:center;
+  gap:10px;
+}
+#btnUser .userIcon{ justify-self:center; }
+#btnUser #usernameText{ justify-self:center; text-align:center; }
+#btnUser .caret{ justify-self:center; }
+
+/* ===== DRAWER USER ROW (drawerUserRow): icon kiri, text center, tiada caret ===== */
+#drawerUserRow{
+  display:grid !important;
+  grid-template-columns: 24px 1fr 24px;
+  align-items:center;
+  gap:10px;
+}
+#drawerUserRow .userIcon{ justify-self:center; }
+#drawerUserRow #drawerUsername{ justify-self:center; text-align:center; }
+#drawerUserRow .drawerSpacer{ justify-self:center; }
+
+/* ===== DRAWER WALLET ROW (drawerWalletRow): icon kiri, amount center ===== */
+#drawerWalletRow{
+  display:grid !important;
+  grid-template-columns: 24px 1fr 24px;
+  align-items:center;
+  gap:10px;
+}
+#drawerWalletRow .walletIcon{ justify-self:center; }
+#drawerWalletRow #drawerWallet{ justify-self:center; text-align:center; }
+#drawerWalletRow .drawerSpacer{ justify-self:center; }
+.btn.isLoading{
+  pointer-events:none;
+  opacity:.85;
+}
+
+.btn .btnSpin{
+  width:14px;height:14px;
+  display:inline-block;
+  margin-right:2px;
+  vertical-align:-2px;
+  animation: btnSpin .9s linear infinite;
+}
+
+@keyframes btnSpin{ to{ transform:rotate(360deg); } }
+.txSearchInput{
+  height:32px;
+  min-width:200px;
+  padding:0px 15px;
+  border-radius:6px;
+  border:1px solid var(--borderTable);
+  background: var(--inputBg);
+  color: var(--colorInput);
+  outline:none;
+  transition: all 0.2s;
+}
+.txSearchInput:hover{ border-color: #3c89e8; }
+.txSearchInput:focus{ border-color: #1668dc; }
+/*  align semua dalam baris filter jadi center */
+.rangeBar{ align-items:center; }
+.rangeRight{ align-items:center; } 
+.rangeRight{ gap:6px 8px; }
+.txSearchWrap{
+  position:relative;
+  display:inline-block;
+  width:100%;
+  min-width: 220px;
+}
+
+.txSearchWrap .txSearchInput{
+  width:100%;
+  padding-right: 44px;
+}
+  
+/* ====== MOBILE MODAL FIX (keyboard-safe + scrollable) ====== */
+
+/* Pastikan backdrop kekal fixed */
+.modalBack{
+  position: fixed;
+  inset: 0;
+  display: none;           /* kau dah guna display:flex bila open */
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  overflow: hidden;
+  z-index: 9999;
+}
+
+/* Modal panel */
+.modal{
+  width: min(720px, 100%);
+  max-height: calc(var(--vvh, 100vh) - 28px); /* ikut viewport sebenar (keyboard aware via JS) */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;         /* body yang scroll, bukan keseluruhan */
+}
+
+/* Header kekal atas */
+.modal .modalHead{
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: inherit;
+}
+
+/* BODY modal boleh scroll */
+.modal .modalBody{
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 14px;
+}
+
+/* Footer kekal bawah (Cancel/Save sentiasa nampak) */
+.modal .modalFoot{
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  background: inherit;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+}
+
+/* ====== Mobile style: jadikan bottom-sheet ====== */
+@media (max-width: 520px){
+  .modalBack{
+    align-items: flex-end;     /* turun bawah */
+    justify-content: center;
+    padding: 10px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  }
+  .modal{
+    width: 100%;
+    border-radius: 18px 18px 0 0;
+    max-height: calc(var(--vvh, 100vh) - 12px);
+  }
+}
+/* Chrome/Edge/Safari */
+.modal .modalBody::-webkit-scrollbar{
+  width: 10px;   /* vertical */
+  height: 10px;  /* horizontal */
+}
+.modal .modalBody::-webkit-scrollbar-track{
+  background: rgba(255,255,255,.06);
+  border-radius: 999px;
+}
+.modal .modalBody::-webkit-scrollbar-thumb{
+  background: rgba(160,160,160,.45);
+  border-radius: 999px;
+  border: 2px solid rgba(0,0,0,.25);
+}
+.modal .modalBody::-webkit-scrollbar-thumb:hover{
+  background: rgba(190,190,190,.65);
+}
+
+/* Firefox */
+.modal .modalBody{
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll) rgb(0 0 0 / 0%);
+}
+
+/* (Optional) bagi modal body tepi scrollbar tak "melekat" */
+.modal .modalBody{
+  scrollbar-gutter: stable both-edges; /* ok kalau browser support */
+}
+.modal::-webkit-scrollbar{ width:10px; height:10px; }
+.modal::-webkit-scrollbar-track{ background: rgba(255,255,255,.06); border-radius:999px; }
+.modal::-webkit-scrollbar-thumb{ background: rgba(160,160,160,.45); border-radius:999px; border:2px solid rgba(0,0,0,.25); }
+.modal::-webkit-scrollbar-thumb:hover{ background: rgba(190,190,190,.65); }
+.modal{ scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.25) rgba(255,255,255,.08); }
+.cConfirm{ position:fixed; inset:0; z-index:9999999; display:none; }
+.cConfirmBack{ position:absolute; inset:0; background:rgba(0,0,0,.55); background: rgba(0, 0, 0, .55);}
+.cConfirmBox{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:min(520px,92vw);
+  background: rgba(20,20,20,.96);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:14px;
+  box-shadow:0 22px 80px rgba(0,0,0,.6);
+  padding:14px;
+}
+.cConfirmTop{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; }
+.cConfirmTitle{ font-weight:700; color:rgba(255,255,255,.92); }
+.cConfirmX{
+  width:34px; height:34px; border:none; border-radius:10px;
+  background:transparent; color:rgba(255,255,255,.75); cursor:pointer;
+}
+.cConfirmX:hover{ background:rgba(255,255,255,.06); color:#fff; }
+.cConfirmX:active{transform:translateY(1px);color:rgba(255,255,255,.65);}
+.cConfirmMsg{ color:rgba(255,255,255,.82); font-size:14px; line-height:1.35; padding:6px 0 12px; white-space:pre-wrap; }
+.cConfirmBtns{ display:flex; justify-content:flex-end; gap:10px; }
+.cpInput{
+  width:100%;
+  padding:0px 15px;
+  border-radius:6px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.06);
+  color:rgba(255,255,255,.92);
+  outline:none;
+  transition: all 0.2s;
+}
+.cpInput:focus{border-color: #1668dc;}
+.cpInput:hover{border-color: #3c89e8;}
+.label-required::before {
+  content: "*";
+  display: inline-block;
+  margin-right: 4px;
+  color: #dc4446;
+  font-size: 14px;
+  font-family: SimSun, sans-serif;
+  line-height: 1;
+}
+/* ===== Toggle Switch (FIX CENTER + NO OVERFLOW) ===== */
+.switch{
+  position:relative;
+  width:44px;
+  height:20px;
+  display:inline-block;
+  flex:0 0 auto;
+}
+
+.switch input{
+  opacity:0;
+  width:0;
+  height:0;
+}
+
+.slider{
+  position:absolute;
+  inset:0;
+  background: #00000059;
+  border:1px solid var(--stroke);
+  border-radius:999px;
+  transition:.18s ease;
+}
+
+.slider:before{
+  content:"";
+  position:absolute;
+  width:16px;
+  height:16px;
+  top:50%;
+  left:1px;
+  transform: translateY(-50%);   /* center betul */
+  background: rgba(255,255,255,.85);
+  border-radius:999px;
+  transition:.18s ease;
+}
+
+/* ON */
+.switch input:checked + .slider{
+  background:#1668dc;
+}
+
+/* ✅ guna right, jangan translateX */
+.switch input:checked + .slider:before{
+  left:auto;
+  right:1px;
+  transform: translateY(-50%);
+}
+
+/* theme row align (desktop dropdown) */
+.userMenuItem.themeRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  grid-template-columns: none; /* override grid */
+  line-height:1; 
+}
+
+/* theme row align (mobile drawer top) */
+.drawerThemeRow{
+  display:flex !important;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding: 0px 15px;
+  height:32px;
+  border-radius:6px;
+  background: var(--inputBg);
+  border:1px solid var(--borderTable);
+  color: var(--colorInput);
+  line-height:1; 
+}
+  /* ===== PATCH: CENTER-kan SWITCH dalam row 32px (fix nampak turun) ===== */
+.userMenuItem.themeRow,
+.drawerThemeRow{
+  align-items: center !important;
+}
+
+/* paksa container switch ikut center row */
+.userMenuItem.themeRow .switch,
+.drawerThemeRow .switch{
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  align-self: center !important;
+
+  height: 100% !important;     /* ikut row height (32px) */
+  line-height: 0 !important;   /* buang baseline effect */
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* slider kekal 24px tapi di-center dalam row */
+.userMenuItem.themeRow .slider,
+.drawerThemeRow .slider{
+  position: relative !important;  /* supaya flex boleh center */
+  inset: auto !important;
+  width: 44px;
+  height: 20px;
+}
+
+/* kalau masih turun 1px (browser font), guna micro-adjust */
+.userMenuItem.themeRow .switch,
+.drawerThemeRow .switch{
+  transform: translateY(-1px);
+}
+  </style>
+</head>
+
+<body>
+<header>
+<!-- 🔍 VAULT SEARCH -->
+<div class="vaultSearchWrap">
+  <div class="vaultSearchBox">
+    <input id="vaultSearch" type="text"
+      placeholder="Searching..." data-clickfx>
+
+    <!-- 🔍 Search Icon -->
+    <svg class="vaultSearchIcon" id="searchIcon" viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="currentColor"
+        d="m15.97 17.031c-1.479 1.238-3.384 1.985-5.461 1.985-4.697 0-8.509-3.812-8.509-8.508s3.812-8.508 8.509-8.508c4.695 0 8.508 3.812 8.508 8.508 0 2.078-.747 3.984-1.985 5.461l4.749 4.75c.146.146.219.338.219.531 0 .587-.537.75-.75.75-.192 0-.384-.073-.531-.22zm-5.461-13.53c-3.868 0-7.007 3.14-7.007 7.007s3.139 7.007 7.007 7.007c3.866 0 7.007-3.14 7.007-7.007s-3.141-7.007-7.007-7.007z"/>
+    </svg>
+
+    <!-- ❌ Clear (SVG X kau) -->
+    <button type="button" id="clearSearch" class="vaultSearchClear" aria-label="Clear search">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="currentColor"
+          d="m12.002 2.005c5.518 0 9.998 4.48 9.998 9.997 0 5.518-4.48 9.998-9.998 9.998-5.517 0-9.997-4.48-9.997-9.998 0-5.517 4.48-9.997 9.997-9.997zm0 8.933-2.721-2.722c-.146-.146-.339-.219-.531-.219-.404 0-.75.324-.75.749 0 .193.073.384.219.531l2.722 2.722-2.728 2.728c-.147.147-.22.34-.22.531 0 .427.35.75.751.75.192 0 .384-.073.53-.219l2.728-2.728 2.729 2.728c.146.146.338.219.53.219.401 0 .75-.323.75-.75 0-.191-.073-.384-.22-.531l-2.727-2.728 2.717-2.717c.146-.147.219-.338.219-.531 0-.425-.346-.75-.75-.75-.192 0-.385.073-.531.22z"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+  <div class="right">
+  <button class="btn-modal walletBtn" id="btnBalance" data-clickfx>
+  <span class="walletIcon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+      <path d="M5 19V5zm0 2q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v2.5h-2V5H5v14h14v-2.5h2V19q0 .825-.587 1.413T19 21zm8-4q-.825 0-1.412-.587T11 15V9q0-.825.588-1.412T13 7h7q.825 0 1.413.588T22 9v6q0 .825-.587 1.413T20 17zm7-2V9h-7v6zm-4-1.5q.625 0 1.063-.437T17.5 12t-.437-1.062T16 10.5t-1.062.438T14.5 12t.438 1.063T16 13.5"/>
+    </svg>
+  </span>
+
+  <span class="num" id="balanceText">0.00</span>
+</button>
+  <!-- USER DROPDOWN -->
+  <div class="userDrop" id="userDrop">
+    <button class="btn-user" id="btnUser"  type="button" aria-haspopup="menu" aria-expanded="false" data-clickfx>
+      <span class="userIcon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+          <path d="M12 12a4 4 0 1 0-4-4a4 4 0 0 0 4 4zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5z"/>
+        </svg>
+      </span>
+      <span id="usernameText">user</span>
+      <span class="caret" aria-hidden="true">▾</span>
+    </button>
+
+    <div class="userMenu" id="userMenu" role="menu">
+<!-- ✅ THEME TOGGLE (desktop dropdown) -->
+<div class="userMenuItem themeRow" role="menuitem">
+  <span class="miText" id="themeLabelDesktop">Dark Mode</span>
+
+  <label class="switch" aria-label="Toggle theme">
+    <input id="themeToggleDesktop" type="checkbox">
+    <span class="slider"></span>
+  </label>
+</div>
+      <!-- NEW: Change Password (desktop dropdown) -->
+  <button class="userMenuItem" id="btnChangePass" type="button" role="menuitem">
+    <span class="miIcon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+        <path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 0 1 6 0v3H9zm3 4a1 1 0 0 1 1 1c0 .38-.21.72-.55.89L13 18h-2l.55-2.11A1 1 0 0 1 12 14z"/>
+      </svg>
+    </span>
+    <span class="miText">Change Password</span>
+  </button>
+      
+      <button class="userMenuItem" id="btnLogout" type="button" role="menuitem">
+        <span class="miIcon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M3 21V3h9v2H5v14h7v2zm13-4l-1.375-1.45l2.55-2.55H9v-2h8.175l-2.55-2.55L16 7l5 5z"/>
+          </svg>
+        </span>
+        <span class="miText">Logout</span>
+      </button>
+    </div>
+  </div>
+
+  <button id="btnRefresh" class="iconBtn" type="button" title="Refresh" aria-label="Refresh">
+  <svg class="icoRefresh" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+    <path d="m21.897 13.404.008-.057v.002c.024-.178.044-.357.058-.537.024-.302-.189-.811-.749-.811-.391 0-.715.3-.747.69-.018.221-.044.44-.078.656-.645 4.051-4.158 7.153-8.391 7.153-3.037 0-5.704-1.597-7.206-3.995l1.991-.005c.414 0 .75-.336.75-.75s-.336-.75-.75-.75h-4.033c-.414 0-.75.336-.75.75v4.049c0 .414.336.75.75.75s.75-.335.75-.75l.003-2.525c1.765 2.836 4.911 4.726 8.495 4.726 5.042 0 9.217-3.741 9.899-8.596zm-19.774-2.974-.009.056v-.002c-.035.233-.063.469-.082.708-.024.302.189.811.749.811.391 0 .715-.3.747-.69.022-.28.058-.556.107-.827.716-3.968 4.189-6.982 8.362-6.982 3.037 0 5.704 1.597 7.206 3.995l-1.991.005c-.414 0-.75.336-.75.75s.336.75.75.75h4.033c.414 0 .75-.336.75-.75v-4.049c0-.414-.336-.75-.75-.75s-.75.335-.75.75l-.003 2.525c-1.765-2.836-4.911-4.726-8.495-4.726-4.984 0-9.12 3.654-9.874 8.426z"/>
+  </svg>
+</button>
+
+<button id="btnRightDrawer" class="iconBtn rightDrawerBtn" type="button" title="Menu" aria-label="Menu">
+  <svg class="icoRefresh" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+    <path d="M24 6h-24v-4h24v4zm0 4h-24v4h24v-4zm0 8h-24v4h24v-4z"></path>
+  </svg>
+</button>
+  </div>
+</header>
+<!--  RIGHT DRAWER (mobile menu) -->
+<div id="rightDrawerOverlay" class="drawerOverlay"></div>
+
+<aside id="rightDrawer" class="rightDrawer" aria-hidden="true">
+  <div class="rightDrawerBody">
+<!-- ✅ THEME TOGGLE (mobile drawer - TOP) -->
+<div class="btn-modal drawerThemeRow" id="drawerThemeRow">
+  <span class="drawerText" id="themeLabelDrawer">Dark Mode</span>
+
+  <label class="switch" aria-label="Toggle theme">
+    <input id="themeToggleDrawer" type="checkbox">
+    <span class="slider"></span>
+  </label>
+</div>
+<!-- Wallet (ikut style desktop: icon kiri, text tengah) -->
+<div class="btn-modal" id="drawerWalletRow">
+  <span class="walletIcon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+      <path d="M5 19V5zm0 2q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v2.5h-2V5H5v14h14v-2.5h2V19q0 .825-.587 1.413T19 21zm8-4q-.825 0-1.412-.587T11 15V9q0-.825.588-1.412T13 7h7q.825 0 1.413.588T22 9v6q0 .825-.587 1.413T20 17zm7-2V9h-7v6zm-4-1.5q.625 0 1.063-.437T17.5 12t-.437-1.062T16 10.5t-1.062.438T14.5 12t.438 1.063T16 13.5"/>
+    </svg>
+  </span>
+  <span class="drawerText num" id="drawerWallet">0.00</span>
+  <span class="drawerSpacer" aria-hidden="true"></span>
+</div>
+
+<!-- Username -->
+<div class="btn-user" id="drawerUserRow">
+  <span class="userIcon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+      <path d="M12 12a4 4 0 1 0-4-4a4 4 0 0 0 4 4zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5z"/>
+    </svg>
+  </span>
+  <span class="drawerText" id="drawerUsername">user</span>
+  <span class="drawerSpacer" aria-hidden="true"></span>
+</div>
+    
+<button id="drawerChangePassBtn" class="userMenuItem" type="button">
+  <span class="miIcon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+      <path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 0 1 6 0v3H9zm3 4a1 1 0 0 1 1 1c0 .38-.21.72-.55.89L13 18h-2l.55-2.11A1 1 0 0 1 12 14z"/>
+    </svg>
+  </span>
+  <span class="miText">Change Password</span>
+  <span></span>
+</button>
+    
+<button id="drawerLogoutBtn" class="userMenuItem" type="button">
+  <span class="miIcon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+      <path d="M3 21V3h9v2H5v14h7v2zm13-4l-1.375-1.45l2.55-2.55H9v-2h8.175l-2.55-2.55L16 7l5 5z"/>
+    </svg>
+  </span>
+  <span class="miText">Logout</span>
+  <span></span>
+</button>
+  </div>
+</aside>
+
+<div class="container">
+  <div class="topRow">
+    <div class="tabs">
+      <button class="tab active" id="tabOpen">Open</button>
+      <button class="tab" id="tabHistory">History</button>
+    </div>
+
+    <div class="actions">
+      <button class="btn" id="btnAddPoint" data-clickfx>Add Point</button>
+      <button class="btn" id="btnNewVault" data-clickfx>New Vault</button>
+    </div>
+  </div>
+
+  <!-- OPEN -->
+  <div id="viewOpen" class="grid"></div>
+  <div id="viewHistory" class="grid hide"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- MODALS -->
+<div class="modalBack" id="mBalance">
+  <div class="modal">
+    <div class="modalHead">
+      <div>
+        <div class="title">My Wallet</div>
+        <div class="sub">History Update Balance.</div>
+      </div>
+      <button class="x" data-close="mBalance">✕</button>
+    </div>
+    <div class="modalBody">
+<div class="kpiRow">
+  <div class="kpi">
+    <div class="k">Availabe Balance</div>
+    <div class="v num" id="balanceBig">0.00</div>
+  </div>
+
+  <div class="kpi">
+    <div class="k">Current Balance</div>
+    <div class="v num" id="balanceBefore">0.00</div>
+  </div>
+
+  <div class="kpi">
+    <div class="k">Update Balance</div>
+    <div class="v num" id="balanceDelta">0.00</div>
+  </div>
+
+  <div class="kpi">
+    <div class="k">Last Update</div>
+    <div class="v num" id="balanceUpdated">-</div>
+  </div>
+</div>
+      <div class="hr"></div>
+      <div class="hint">History Add Balance Wallet.</div>
+    </div>
+    <div class="modalFoot">
+      <button class="btn ghost" data-close="mBalance">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="modalBack" id="mAddPoint">
+  <div class="modal">
+    <div class="modalHead">
+      <div>
+        <div class="title">Add Point</div>
+        <div class="sub">Available For Admin.</div>
+      </div>
+      <button class="x" data-close="mAddPoint">✕</button>
+    </div>
+    <div class="modalBody">
+      <label>Type</label>
+      <select id="apType" class="js-custom-select">
+        <option value="in">In</option>
+        <option value="out">Out</option>
+      </select>
+
+      <div class="row">
+        <div>
+          <label>Total Amount</label>
+          <input id="apAmount" type="text" inputmode="decimal" />
+        </div>
+        <div>
+          <label>Note</label>
+          <input id="apNote" />
+        </div>
+      </div>
+    </div>
+    <div class="modalFoot">
+      <button class="btn ghost" data-close="mAddPoint">Cancel</button>
+      <button class="btn" id="apSave" data-loading="Saving..." data-close-modal="mAddPoint" data-clickfx>Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modalBack" id="mNewVault">
+  <div class="modal">
+    <div class="modalHead">
+      <div>
+        <div class="title">Open New Vault</div>
+        <div class="sub">title Example: Business.</div>
+      </div>
+      <button class="x" data-close="mNewVault">✕</button>
+    </div>
+    <div class="modalBody">
+      <label><span class="label-required"></span>Title</label>
+      <input id="nvTitle" />
+
+      <label><span class="label-required"></span>Note</label>
+      <textarea id="nvNote"></textarea>
+
+      <!--  NEW: Transaction Time -->
+      <label><span class="label-required"></span>Transaction Time</label>
+      <div class="txTimeRow">
+        <input id="txTime_newVault" type="datetime-local" />
+        <button id="txTimeToggle_newVault" type="button" class="btn ghost">Unlock</button>
+      </div>
+      <div class="hint">Jika Lock, masa akan ikut masa sekarang.</div>
+    </div>
+    <div class="modalFoot">
+      <button class="btn ghost" data-close="mNewVault">Cancel</button>
+      <button class="btn" id="nvCreate" data-loading="Creating..." data-close-modal="mNewVault" data-clickfx>Create</button>
+    </div>
+  </div>
+</div>
+
+<div class="modalBack" id="mCash">
+  <div class="modal">
+    <div class="modalHead">
+      <div>
+        <div class="title">Cash Transfer</div>
+        <div class="sub" id="cashVaultTitle">-</div>
+      </div>
+      <button class="x" data-close="mCash">✕</button>
+    </div>
+    <div class="modalBody">
+      <label><span class="label-required"></span>Type</label>
+      <select id="cashType" class="js-custom-select">
+        <option value="cash_in">Cash-In</option>
+        <option value="cash_out">Cash-Out</option>
+      </select>
+
+      <div class="row">
+        <div>
+          <label><span class="label-required"></span>Total Amount</label>
+          <input id="cashAmount" type="text" inputmode="decimal" />
+        </div>
+        <div>
+          <label><span class="label-required"></span>Note</label>
+          <input id="cashNote" />
+        </div>
+      </div>
+
+      <!-- ✅ NEW: Transaction Time -->
+      <label><span class="label-required"></span>Transaction Time</label>
+      <div class="txTimeRow">
+        <input id="txTime_cash" type="datetime-local" />
+        <button id="txTimeToggle_cash" type="button" class="btn ghost">Unlock</button>
+      </div>
+      <div class="hint">Jika Lock, masa akan ikut masa sekarang.</div>
+    </div>
+    <div class="modalFoot">
+      <button class="btn ghost" data-close="mCash">Cancel</button>
+      <button class="btn" id="cashSave" data-loading="Saving..." data-close-modal="mCash" data-clickfx>Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modalBack" id="mBuy">
+  <div class="modal">
+    <div class="modalHead">
+      <div>
+        <div class="title">Buy</div>
+        <div class="sub" id="buyVaultTitle">-</div>
+      </div>
+      <button class="x" data-close="mBuy">✕</button>
+    </div>
+    <div class="modalBody">
+      <label><span class="label-required"></span>Category</label>
+      <select id="buyCat" class="js-custom-select">
+        <option value="baby_pig">Pets</option>
+        <option value="feed">Feeding</option>
+        <option value="other">Other</option>
+      </select>
+
+      <div class="row">
+        <div>
+          <label><span class="label-required"></span>Quantity</label>
+          <input id="buyQty"   type="text" inputmode="numeric" />
+        </div>
+        <div>
+          <label><span class="label-required"></span>Price Quantity</label>
+          <input id="buyPrice" type="text" inputmode="decimal" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label><span class="label-required"></span>Total Price</label>
+          <input id="buyTotal" type="text" inputmode="decimal" />
+          <div class="hint" id="buyBalanceHint"></div>
+        </div>
+        <div>
+          <label><span class="label-required"></span>Note</label>
+          <input id="buyNote" />
+        </div>
+      </div>
+
+      <!-- ✅ NEW: Transaction Time -->
+      <label><span class="label-required"></span>Transaction Time</label>
+      <div class="txTimeRow">
+        <input id="txTime_buy" type="datetime-local" />
+        <button id="txTimeToggle_buy" type="button" class="btn ghost">Unlock</button>
+      </div>
+      <div class="hint">Jika Lock, masa akan ikut masa sekarang.</div>
+    </div>
+    <div class="modalFoot">
+      <button class="btn ghost" data-close="mBuy">Cancel</button>
+      <button class="btn" id="buySave"  data-loading="Saving..."data-close-modal="mBuy" data-clickfx>Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modalBack" id="mSell">
+  <div class="modal">
+    <div class="modalHead">
+      <div>
+        <div class="title">Selling</div>
+        <div class="sub" id="sellVaultTitle">-</div>
+      </div>
+      <button class="x" data-close="mSell">✕</button>
+    </div>
+    <div class="modalBody">
+      <div class="row">
+        <div>
+          <label><span class="label-required"></span>Price Quantity</label>
+          <input id="sellPriceKg" type="text" inputmode="decimal" />
+        </div>
+        <div>
+          <label><span class="label-required"></span>Total Kg</label>
+          <input id="sellKg"      type="text" inputmode="decimal" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label><span class="label-required"></span>Total Quantity</label>
+          <input id="sellEkor"    type="text" inputmode="numeric" />
+          <div class="hint" id="sellEkorHint"></div>
+        </div>
+
+        <div>
+          <label><span class="label-required"></span>Missing</label>
+          <input id="sellMissing" type="number" disabled placeholder="auto" />
+        </div>
+
+        <div>
+          <label><span class="label-required"></span>Total Amount</label>
+          <input id="sellTotal"   type="text" inputmode="decimal" />
+        </div>
+      </div>
+
+      <label><span class="label-required"></span>Note</label>
+      <input id="sellNote" />
+
+      <!-- ✅ NEW: Transaction Time -->
+      <label><span class="label-required"></span>Transaction Time</label>
+      <div class="txTimeRow">
+        <input id="txTime_sell" type="datetime-local" />
+        <button id="txTimeToggle_sell" type="button" class="btn ghost">Unlock</button>
+      </div>
+      <div class="hint">Jika Lock, masa akan ikut masa sekarang.</div>
+    </div>
+    <div class="modalFoot">
+      <button class="btn ghost" data-close="mSell">Cancel</button>
+      <button class="btn" id="sellSave" data-loading="Saving..." data-close-modal="mSell" data-clickfx>Save</button>
+    </div>
+  </div>
+</div>
+  
+<div class="modalBack" id="mMissing">
+  <div class="modal">
+    <div class="modalHead">
+      <div>
+        <div class="title">Missing</div>
+        <div class="sub" id="missingVaultTitle">-</div>
+      </div>
+      <button class="x" data-close="mMissing">✕</button>
+    </div>
+
+    <div class="modalBody">
+      <div class="row">
+        <div>
+          <label><span class="label-required"></span>Quantity Missing</label>
+          <input id="missQty"   type="text" inputmode="numeric" />
+        </div>
+        <div>
+          <label><span class="label-required"></span>Price Quantity</label>
+          <input id="missPrice" type="text" inputmode="decimal" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label><span class="label-required"></span>Total Amount</label>
+          <input id="missTotal" type="text" disabled placeholder="auto" />
+        </div>
+        <div>
+          <label><span class="label-required"></span>Note</label>
+          <input id="missNote" />
+        </div>
+      </div>
+
+      <!-- ✅ NEW: Transaction Time -->
+      <label><span class="label-required"></span>Transaction Time</label>
+      <div class="txTimeRow">
+        <input id="txTime_missing" type="datetime-local" />
+        <button id="txTimeToggle_missing" type="button" class="btn ghost">Unlock</button>
+      </div>
+      <div class="hint">Jika Lock, masa akan ikut masa sekarang.</div>
+    </div>
+
+    <div class="modalFoot">
+      <button class="btn ghost" data-close="mMissing">Cancel</button>
+      <button class="btn" id="missSave" data-loading="Saving..." data-close-modal="mMissing" data-clickfx>Save</button>
+    </div>
+  </div>
+</div>
+<!-- ✅ CHANGE PASSWORD MODAL -->
+<div class="modalBack" id="mChangePass" style="display:none;">
+  <div class="modal" style="max-width:520px;">
+    <div class="modalHead">
+      <div>
+        <div class="title">Change Password</div>
+        <div class="sub">Masukkan password lama & password baru.</div>
+      </div>
+      <button class="x" data-close="mChangePass">✕</button>
+    </div>
+
+    <div class="modalBody">
+      <div id="cpHint" class="hint" style="margin-bottom:10px;"></div>
+
+      <label><span class="label-required"></span>Old Password</label>
+      <input id="cpOld" type="password" autocomplete="current-password" />
+
+      <div class="row">
+        <div>
+          <label><span class="label-required"></span>New Password</label>
+          <input id="cpNew" type="password" autocomplete="new-password" />
+        </div>
+        <div>
+          <label><span class="label-required"></span>Confirm New Password</label>
+          <input id="cpNew2" type="password" autocomplete="new-password" />
+        </div>
+      </div>
+
+      <div class="hint">Minimum 6 characters.</div>
+    </div>
+
+    <div class="modalFoot">
+      <button class="btn ghost" data-close="mChangePass" type="button">Cancel</button>
+      <button class="btn" id="cpSave" data-loading="Saving..." data-close-modal="mChangePass" data-clickfx>Save</button>
+    </div>
+  </div>
+</div>
+<!-- VIEW NOTE MODAL -->
+<div class="modalBack" id="mViewNote" style="display:none;">
+  <div class="modal" style="max-width:520px;">
+    <div class="modalHead" style="display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-weight:800;">Note</div>
+      <button class="btn ghost" data-close="mViewNote" type="button" aria-label="Close">✕</button>
+    </div>
+
+    <div class="modalBody">
+      <div id="viewNoteText" class="hint" style="white-space:pre-wrap;line-height:1.45;"></div>
+    </div>
+
+    <div class="modalFoot" style="display:flex;justify-content:flex-end;gap:10px;">
+      <button class="btn ghost" data-close="mViewNote" type="button">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="cConfirm" class="cConfirm" style="display:none;">
+  <div class="cConfirmBack" data-cc="close"></div>
+
+  <div class="cConfirmBox" role="dialog" aria-modal="true" aria-labelledby="ccTitle">
+    <div class="cConfirmTop">
+      <div id="ccTitle" class="cConfirmTitle">Confirm</div>
+      <button class="cConfirmX" type="button" data-cc="close" aria-label="Close">✕</button>
+    </div>
+
+    <div id="ccMsg" class="cConfirmMsg">Are you sure?</div>
+
+    <div class="cConfirmBtns">
+      <button id="ccCancel" class="btn ghost" type="button">Cancel</button>
+      <button id="ccOk" class="btn danger" type="button">OK</button>
+    </div>
+  </div>
+</div>
+
+<div id="cPrompt" class="cConfirm" style="display:none;">
+  <div class="cConfirmBack" data-cp="close"></div>
+
+  <div class="cConfirmBox" role="dialog" aria-modal="true" aria-labelledby="cpTitle">
+    <div class="cConfirmTop">
+      <div id="cpTitle" class="cConfirmTitle">Edit Title</div>
+      <button class="cConfirmX" type="button" data-cp="close" aria-label="Close">✕</button>
+    </div>
+
+    <div id="cpMsg" class="cConfirmMsg">New title?</div>
+
+    <input id="cpInput" class="cpInput" type="text" placeholder="Type title..." autocomplete="off"/>
+
+    <div class="cConfirmBtns" style="margin-top:12px;">
+      <button id="cpCancel" class="btn ghost" type="button">Cancel</button>
+      <button id="cpOk" class="btn" type="button">Save</button>
+    </div>
+  </div>
+</div>
+<script src="../daterange/flatpick.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import {
+  getAuth, onAuthStateChanged, signOut,
+  EmailAuthProvider, reauthenticateWithCredential, updatePassword
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import {
+  getDatabase, ref, get, set, push, update, remove, onValue,
+  serverTimestamp, query, orderByChild, limitToLast, runTransaction
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+  // === CONFIG KAU ===
+  const firebaseConfig = {
+    apiKey: "AIzaSyCXGxdJOEbcotIXRWyDGHNNCbcmFev-qZY",
+    authDomain: "farm-a9071.firebaseapp.com",
+    databaseURL: "https://farm-a9071-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "farm-a9071",
+    storageBucket: "farm-a9071.firebasestorage.app",
+    messagingSenderId: "979250293394",
+    appId: "1:979250293394:web:af419dd2b325017a41944b"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  const $ = (id)=>document.getElementById(id);
+  function setSelectAndSync(selectId, value){
+  const el = document.getElementById(selectId);
+  if(!el) return;
+
+  el.value = value;
+  el.dispatchEvent(new Event("change", { bubbles:true }));
+  el.dispatchEvent(new Event("input",  { bubbles:true }));
+}
+  function vaultRefOpen(){
+  return ref(db, "vaults/open");
+}
+function vaultRefHist(){
+  return ref(db, "vaults/history");
+}
+  // ===== CUSTOM SELECT BUILDER =====
+function initCustomSelects(root=document){
+  const selects = Array.from(root.querySelectorAll("select.js-custom-select"));
+  selects.forEach(sel => makeCustomSelect(sel));
+}
+
+function makeCustomSelect(selectEl){
+  if(selectEl.dataset.csBuilt === "1") return;
+  selectEl.dataset.csBuilt = "1";
+  selectEl.classList.add("native-select");
+
+  const wrap = document.createElement("div");
+  wrap.className = "cs";
+  wrap.tabIndex = 0;
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "cs__btn";
+
+  const value = document.createElement("span");
+  value.className = "cs__value";
+
+  const arrow = document.createElement("span");
+  arrow.className = "cs__arrow";
+  arrow.textContent = "▾";
+
+  btn.appendChild(value);
+  btn.appendChild(arrow);
+
+  const menu = document.createElement("div");
+  menu.className = "cs__menu";
+
+  function renderValue(){
+    const opt = selectEl.options[selectEl.selectedIndex];
+    value.textContent = opt ? opt.textContent : "Select...";
+  }
+
+  function rebuildOptions(){
+    menu.innerHTML = "";
+    Array.from(selectEl.options).forEach((o, idx)=>{
+      const item = document.createElement("div");
+      item.className = "cs__opt";
+      item.setAttribute("role","option");
+      item.dataset.value = o.value;
+      item.dataset.index = String(idx);
+      item.textContent = o.textContent;
+      item.setAttribute("aria-selected", o.selected ? "true":"false");
+      item.addEventListener("click", ()=>{
+        
+        selectEl.selectedIndex = idx;
+        renderValue();
+        
+        menu.querySelectorAll(".cs__opt").forEach(x=>x.setAttribute("aria-selected","false"));
+        item.setAttribute("aria-selected","true");
+    
+        selectEl.dispatchEvent(new Event("change",{bubbles:true}));
+        selectEl.dispatchEvent(new Event("input",{bubbles:true}));
+
+        closeAllCustomSelects();
+      });
+
+      menu.appendChild(item);
+    });
+  }
+
+  function open(){
+    closeAllCustomSelects();
+    wrap.classList.add("open");
+  }
+  function close(){
+    wrap.classList.remove("open");
+  }
+  function toggle(){
+    wrap.classList.contains("open") ? close() : open();
+  }
+
+  btn.addEventListener("click", (e)=>{
+    e.preventDefault();
+    toggle();
+  });
+  wrap.addEventListener("keydown", (e)=>{
+    if(e.key === "Escape") close();
+    if(e.key === "Enter" || e.key === " "){
+      e.preventDefault();
+      toggle();
+    }
+  });
+  selectEl.parentNode.insertBefore(wrap, selectEl);
+  wrap.appendChild(btn);
+  wrap.appendChild(selectEl);
+  wrap.appendChild(menu);
+  rebuildOptions();
+  renderValue();
+  selectEl.addEventListener("change", ()=>{
+    menu.querySelectorAll(".cs__opt").forEach(x=>{
+      x.setAttribute("aria-selected", x.dataset.value === selectEl.value ? "true":"false");
+    });
+    renderValue();
+  });
+
+  wrap._csRebuild = rebuildOptions;
+}
+
+function closeAllCustomSelects(){
+  document.querySelectorAll(".cs.open").forEach(x=>x.classList.remove("open"));
+}
+
+document.addEventListener("click", (e)=>{
+  if(!e.target.closest(".cs")) closeAllCustomSelects();
+});
+
+// ===== TOAST UPGRADE (bottom + animate show/hide) =====
+let __toastTimer = null;
+
+function toast(message, type = "success", ms = 2600){
+  const el = $("toast");
+  if(!el) return;
+
+  const svgSuccess = `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="currentColor"
+        d="M9.55 17.25 4.8 12.5l1.4-1.4 3.35 3.35 8.25-8.25 1.4 1.4z"/>
+    </svg>
+  `;
+
+  const svgError = `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="currentColor"
+        d="m12 10.93 5.719-5.72c.146-.146.339-.219.531-.219.404 0 .75.324.75.749 0 .193-.073.385-.219.532l-5.72 5.719 5.719 5.719c.147.147.22.339.22.531 0 .427-.349.75-.75.75-.192 0-.385-.073-.531-.219l-5.719-5.719-5.719 5.719c-.146.146-.339.219-.531.219-.401 0-.75-.323-.75-.75 0-.192.073-.384.22-.531l5.719-5.719-5.72-5.719c-.146-.147-.219-.339-.219-.532 0-.425.346-.749.75-.749.192 0 .385.073.531.219z"/>
+    </svg>
+  `;
+
+  const icon = (type === "error") ? svgError : svgSuccess;
+
+  // reset timer
+  if(__toastTimer) clearTimeout(__toastTimer);
+  __toastTimer = null;
+
+  // set variant class (jgn overwrite show)
+  el.className = `toast ${type}`;
+
+  // build UI
+  el.innerHTML = `
+    <div class="toastCard">
+      <div class="toastIcon">${icon}</div>
+      <div class="toastMsg">${escapeHtml(String(message || ""))}</div>
+      <button class="toastClose" type="button" aria-label="Close">✕</button>
+    </div>
+  `;
+
+  // show (CSS animate guna .show)
+  el.style.display = "block";
+  // force reflow supaya transition confirm jalan
+  void el.offsetHeight;
+  el.classList.add("show");
+
+  const hide = ()=>{
+    if(__toastTimer) clearTimeout(__toastTimer);
+    __toastTimer = null;
+
+    // animate keluar
+    el.classList.remove("show");
+
+    // lepas transition baru clear
+    setTimeout(()=>{
+      el.style.display = "none";
+      el.className = "toast";
+      el.innerHTML = "";
+    }, 230);
+  };
+
+  el.querySelector(".toastClose")?.addEventListener("click", hide, { once:true });
+
+  if(ms && ms > 0){
+    __toastTimer = setTimeout(hide, ms);
+  }
+}
+function confirmBox(message, opts = {}){
+  const root = document.getElementById("cConfirm");
+  const titleEl = document.getElementById("ccTitle");
+  const msgEl = document.getElementById("ccMsg");
+  const ok = document.getElementById("ccOk");
+  const cancel = document.getElementById("ccCancel");
+
+  if(!root || !titleEl || !msgEl || !ok || !cancel){
+    return Promise.resolve(window.confirm(message));
+  }
+
+  titleEl.textContent = opts.title || "Confirm";
+  msgEl.textContent = message || "Are you sure?";
+
+  ok.textContent = opts.okText || "OK";
+  cancel.textContent = opts.cancelText || "Cancel";
+
+  // reset class ok button (jaga class btn kau)
+  ok.className = "btn " + (opts.okClass || "danger");
+
+  root.style.display = "block";
+  void root.offsetHeight;
+
+  return new Promise((resolve)=>{
+    const cleanup = ()=>{
+      root.style.display = "none";
+      ok.onclick = null;
+      cancel.onclick = null;
+      root.querySelectorAll("[data-cc]").forEach(x=> x.onclick = null);
+      document.removeEventListener("keydown", onKey);
+    };
+
+    const done = (val)=>{ cleanup(); resolve(val); };
+
+    const onKey = (e)=>{
+      if(e.key === "Escape") done(false);
+      if(e.key === "Enter") done(true);
+    };
+    document.addEventListener("keydown", onKey);
+
+    root.querySelectorAll('[data-cc="close"]').forEach(x=>{
+      x.onclick = ()=> done(false);
+    });
+
+    cancel.onclick = ()=> done(false);
+    ok.onclick = ()=> done(true);
+  });
+}
+function promptBox(message, opts = {}){
+  const root = document.getElementById("cPrompt");
+  const titleEl = document.getElementById("cpTitle");
+  const msgEl = document.getElementById("cpMsg");
+  const input = document.getElementById("cpInput");
+  const ok = document.getElementById("cpOk");
+  const cancel = document.getElementById("cpCancel");
+
+  if(!root || !titleEl || !msgEl || !input || !ok || !cancel){
+    const v = window.prompt(message, opts.defaultValue || "");
+    return Promise.resolve(v);
+  }
+
+  titleEl.textContent = opts.title || "Input";
+  msgEl.textContent = message || "Enter value";
+  input.value = (opts.defaultValue ?? "");
+  input.placeholder = opts.placeholder || "Type here...";
+
+  ok.textContent = opts.okText || "Save";
+  cancel.textContent = opts.cancelText || "Cancel";
+  ok.className = "btn " + (opts.okClass || ""); // ikut style btn kau
+
+  root.style.display = "block";
+  void root.offsetHeight;
+
+  // auto focus + select
+  setTimeout(()=>{
+    input.focus();
+    input.select();
+  }, 0);
+
+  return new Promise((resolve)=>{
+    const cleanup = ()=>{
+      root.style.display = "none";
+      ok.onclick = null;
+      cancel.onclick = null;
+      root.querySelectorAll("[data-cp]").forEach(x=> x.onclick = null);
+      document.removeEventListener("keydown", onKey);
+    };
+
+    const done = (val)=>{ cleanup(); resolve(val); };
+
+    const onKey = (e)=>{
+      if(e.key === "Escape") done(null);
+      if(e.key === "Enter") done(input.value);
+    };
+    document.addEventListener("keydown", onKey);
+
+    root.querySelectorAll('[data-cp="close"]').forEach(x=>{
+      x.onclick = ()=> done(null);
+    });
+
+    cancel.onclick = ()=> done(null);
+    ok.onclick = ()=> done(input.value);
+  });
+}
+const sleep = (ms)=> new Promise(r=>setTimeout(r, ms));
+const SPINNER_SVG = `
+<svg class="btnSpin" viewBox="0 0 24 24" aria-hidden="true">
+  <path fill="currentColor" opacity=".28"
+    d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8a8 8 0 0 1-8 8z"/>
+  <path fill="currentColor"
+    d="M20 12a8 8 0 0 0-8-8v2.2A5.8 5.8 0 0 1 17.8 12z"/>
+</svg>`;
+
+function setBtnLoading(btn, on, label){
+  if(!btn) return;
+  if(on){
+    if(btn.dataset._busy === "1") return;
+    btn.dataset._busy = "1";
+    btn.dataset._oldHtml = btn.innerHTML;
+
+    const txt = label || btn.getAttribute("data-loading") || btn.textContent.trim() || "Loading...";
+    btn.classList.add("isLoading");
+    btn.disabled = true;
+    btn.innerHTML = `${SPINNER_SVG}<span>${txt}</span>`;
+  }else{
+    btn.dataset._busy = "0";
+    btn.classList.remove("isLoading");
+    btn.disabled = false;
+    if(btn.dataset._oldHtml){
+      btn.innerHTML = btn.dataset._oldHtml;
+      delete btn.dataset._oldHtml;
+    }
+  }
+}
+
+function bindLoadingClick(btnId, handler){
+  const btn = document.getElementById(btnId);
+  if(!btn) return;
+
+  btn.addEventListener("click", async ()=>{
+    if(btn.disabled) return; // elak double click spam
+
+    setBtnLoading(btn, true);
+    await sleep(80); // bagi spinner sempat appear
+
+    const MIN_TIME = 800; // minimum loading time
+    const start = Date.now();
+
+    try{
+      // handler wajib throw kalau gagal
+      const msg = await handler(); // boleh return string utk success toast
+
+      // pastikan loading tak terlalu cepat
+      const elapsed = Date.now() - start;
+      const wait = Math.max(0, MIN_TIME - elapsed);
+      if(wait) await sleep(wait);
+
+      setBtnLoading(btn, false);
+
+      // tutup modal jika ada
+      const mid = btn.getAttribute("data-close-modal");
+      if(mid) closeModal(mid);
+
+      // bagi modal animation habis dulu baru toast
+      await sleep(180);
+
+      if(typeof msg === "string" && msg.trim()){
+        toast(msg, "success");
+      }
+
+    }catch(e){
+      console.error(e);
+
+      const elapsed = Date.now() - start;
+      const wait = Math.max(0, MIN_TIME - elapsed);
+      if(wait) await sleep(wait);
+
+      setBtnLoading(btn, false);
+
+      // ❌ error = modal kekal buka
+      toast(e?.message || "Failed", "error");
+    }
+  });
+}
+
+  const fmt = (n)=> (Number(n||0)).toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
+  const fmtDT = (ms)=>{
+   if(!ms) return "-";
+   const d = new Date(ms);
+   const pad = (n)=> String(n).padStart(2,"0");
+   const day   = pad(d.getDate());
+   const month = pad(d.getMonth() + 1);
+   const year  = d.getFullYear();
+   const hour  = pad(d.getHours());
+   const min   = pad(d.getMinutes());
+   const sec   = pad(d.getSeconds());
+  return `${day}/${month}/${year} ${hour}:${min}:${sec}`;
+ };
+// TX TIME (admin lock/unlock)
+function toLocalInputValue(ms = Date.now()){
+  const d = new Date(ms);
+  const pad = (n)=> String(n).padStart(2,"0");
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function parseDatetimeLocalToMs(v){
+  const s = String(v||"").trim();
+  if(!s) return NaN;
+  const ms = Date.parse(s);
+  return Number.isFinite(ms) ? ms : NaN;
+}
+
+function txSettingRef(kind){
+  return ref(db, `settings/txTime/allowManual/${kind}`);
+}
+
+function initTxTimeControl({ kind, inputId, toggleId }){
+  const input = $(inputId);
+  const btn = $(toggleId);
+  if(!input) return;
+
+  input.value = toLocalInputValue(Date.now());
+
+  if(btn && !me.isAdmin) btn.style.display = "none";
+
+  onValue(txSettingRef(kind), (snap)=>{
+    const allow = snap.exists() ? !!snap.val() : false;
+    input.disabled = !allow;
+
+    if(btn && me.isAdmin){
+      btn.textContent = allow ? "Lock" : "Unlock";
+      btn.dataset.allow = String(allow);
+    }
+  });
+
+  if(btn && me.isAdmin){
+    btn.addEventListener("click", async ()=>{
+      await runTransaction(txSettingRef(kind), (cur)=> !cur);
+    });
+  }
+}
+
+async function getAtMsFromControl(kind, inputId){
+  const allowSnap = await get(txSettingRef(kind));
+  const allow = allowSnap.exists() ? !!allowSnap.val() : false;
+
+  if(!allow) return Date.now();
+
+  const ms = parseDatetimeLocalToMs($(inputId)?.value);
+  return Number.isFinite(ms) ? ms : Date.now();
+}
+
+function resetTxTimeInput(inputId){
+  const input = $(inputId);
+  if(input) input.value = toLocalInputValue(Date.now());
+}
+
+const startOfDayMs = (d)=> new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0,0,0,0).getTime();
+const endOfDayMs   = (d)=> new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23,59,59,999).getTime();
+
+const WEEK_START = 1; // Monday
+function startOfWeekMs(d){
+  const x = new Date(d);
+  const day = x.getDay();
+  const diff = (day - WEEK_START + 7) % 7;
+  x.setDate(x.getDate() - diff);
+  return startOfDayMs(x);
+}
+function endOfWeekMs(d){
+  const s = new Date(startOfWeekMs(d));
+  const e = new Date(s);
+  e.setDate(e.getDate()+6);
+  return endOfDayMs(e);
+}
+function startOfMonthMs(d){ return new Date(d.getFullYear(), d.getMonth(), 1, 0,0,0,0).getTime(); }
+function endOfMonthMs(d){ return new Date(d.getFullYear(), d.getMonth()+1, 0, 23,59,59,999).getTime(); }
+
+function presetRangeMs(key){
+  const now = new Date();
+  if(key==="today") return { startMs:startOfDayMs(now), endMs:endOfDayMs(now) };
+  if(key==="yesterday"){
+    const y = new Date(now); y.setDate(y.getDate()-1);
+    return { startMs:startOfDayMs(y), endMs:endOfDayMs(y) };
+  }
+  if(key==="thisWeek")  return { startMs:startOfWeekMs(now), endMs:endOfWeekMs(now) };
+  if(key==="lastWeek"){
+    const lw = new Date(now); lw.setDate(lw.getDate()-7);
+    return { startMs:startOfWeekMs(lw), endMs:endOfWeekMs(lw) };
+  }
+  if(key==="thisMonth") return { startMs:startOfMonthMs(now), endMs:endOfMonthMs(now) };
+  if(key==="lastMonth"){
+    const lm = new Date(now.getFullYear(), now.getMonth()-1, 1);
+    return { startMs:startOfMonthMs(lm), endMs:endOfMonthMs(lm) };
+  }
+  return null;
+}
+
+function setActivePreset(vaultId, key){
+  const g = document.querySelector(`[data-presets="${vaultId}"]`);
+  if(!g) return;
+  g.querySelectorAll(".pbtn").forEach(b=>{
+    b.classList.toggle("active", b.dataset.preset===key);
+  });
+}
+function clearActivePreset(vaultId){
+  const g = document.querySelector(`[data-presets="${vaultId}"]`);
+  if(!g) return;
+  g.querySelectorAll(".pbtn").forEach(b=> b.classList.remove("active"));
+}
+function ymd(ms){
+  const d = new Date(ms);
+  const pad = (n)=> String(n).padStart(2,"0");
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+}
+// ===== LIVE MONEY FORMAT: 1000 -> 1,000.00 =====
+function _stripNum(s){
+  return String(s ?? "")
+    .replace(/[^\d.]/g, "")
+    .replace(/(\..*)\./g, "$1"); // only one dot
+}
+function moneyFormat(raw){
+  if(raw === "" || raw === ".") return "";
+  const n = Number(raw);
+  if(!Number.isFinite(n)) return "";
+  return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function moneyVal(idOrEl){
+  const el = (typeof idOrEl === "string") ? $(idOrEl) : idOrEl;
+  const raw = _stripNum(el?.value);
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : 0;
+}
+function intVal(idOrEl){
+  const el = (typeof idOrEl === "string") ? $(idOrEl) : idOrEl;
+  const raw = String(el?.value ?? "").replace(/[^\d]/g, "");
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : 0;
+}
+function formatMoneyTyping(raw){
+  raw = _stripNum(raw);
+
+  if(raw === "") return "";
+  if(raw === ".") return "0.";
+
+  // split integer & decimals
+  const parts = raw.split(".");
+  let intPart = parts[0] || "0";
+  let decPart = parts[1] ?? "";
+
+  intPart = intPart.replace(/^0+(?=\d)/, "");
+  if(decPart.length > 2) decPart = decPart.slice(0,2);
+  intPart = Number(intPart || "0").toLocaleString("en-US");
+  if(raw.endsWith(".") && parts.length === 2) return intPart + ".";
+  if(decPart.length > 0) return intPart + "." + decPart;
+
+  return intPart;
+}
+
+function attachMoney(el){
+  if(!el) return;
+  el.addEventListener("input", ()=>{
+    const start = el.selectionStart || 0;
+    const before = el.value;
+
+    el.value = formatMoneyTyping(before);
+    el.setSelectionRange(el.value.length, el.value.length);
+  });
+
+  el.addEventListener("blur", ()=>{
+    const raw = _stripNum(el.value);
+    el.value = raw ? moneyFormat(raw) : "";
+  });
+}
+function attachInt(el){
+  if(!el) return;
+  el.addEventListener("input", ()=>{
+    const raw = String(el.value ?? "").replace(/[^\d]/g, "");
+    el.value = raw ? Number(raw).toLocaleString("en-US") : "";
+  });
+}
+function formatKgTyping(raw){
+  raw = _stripNum(raw);
+
+  if(raw === "") return "";
+  if(raw === ".") return "0.";
+
+  const parts = raw.split(".");
+  let intPart = parts[0] || "0";
+  let decPart = parts[1] ?? "";
+
+  intPart = intPart.replace(/^0+(?=\d)/, "");
+  // kalau nak limit decimal kg max 2 (boleh ubah 3 kalau kau mahu)
+  if(decPart.length > 2) decPart = decPart.slice(0,2);
+
+  intPart = Number(intPart || "0").toLocaleString("en-US");
+
+  if(raw.endsWith(".") && parts.length === 2) return intPart + ".";
+  if(decPart.length > 0) return intPart + "." + decPart;
+  return intPart;
+}
+
+function attachKg(el){
+  if(!el) return;
+
+  // typing: commas + decimal, tak paksa .00
+  el.addEventListener("input", ()=>{
+    el.value = formatKgTyping(el.value);
+    el.setSelectionRange(el.value.length, el.value.length);
+  });
+
+  // blur: kemaskan je (still tak paksa .00)
+  el.addEventListener("blur", ()=>{
+    el.value = formatKgTyping(el.value);
+  });
+}
+  let me = { uid:null, username:null, isAdmin:false };
+  let currentBalance = 0;
+  const WALLET_ID = "main";
+  let buyTotalManual = false;
+
+  // UI state
+  let activeView = "open";
+  let ctxVaultId = null; 
+  let ctxAvailablePig = 0;
+  let ctxMissingPig = 0;
+  let ctxEdit = null; 
+  const vaultFilters = {};   // { [vaultId]: { startMs, endMs } }
+  const vaultPickers = {};   // { [vaultId]: flatpickrInstance }
+  const vaultTxCache = {}; 
+  const vaultTypeFilters = {};
+  const vaultTxSearchFilters = {};
+  const vaultTxUnsubs = {};
+  let vaultSearchTerm = "";
+  let openVaultDataCache = {};
+  let histVaultDataCache = {};
+  // ===== RIGHT DRAWER GLOBAL (ONE-TIME) =====
+let btnDrawer = null;
+let drawer = null;
+let overlay = null;
+
+let drawerWallet = null;
+let drawerUsername = null;
+let drawerLogoutBtn = null;
+
+let drawerBound = false;
+let __scrollY = 0;
+
+function syncDrawer(){
+  const balEl = document.getElementById("balanceText");
+  if(drawerWallet && balEl) drawerWallet.textContent = balEl.textContent.trim();
+
+  const uEl = document.getElementById("usernameText");
+  if(drawerUsername && uEl) drawerUsername.textContent = uEl.textContent.trim();
+}
+
+function lockScroll(){
+  __scrollY = window.scrollY || document.documentElement.scrollTop || 0;
+  document.documentElement.classList.add("drawerOpen");
+  document.body.classList.add("drawerOpen");
+  document.body.style.top = `-${__scrollY}px`;
+  const sb = window.innerWidth - document.documentElement.clientWidth;
+  document.body.style.paddingRight = sb ? (sb + "px") : "";
+  const header = document.querySelector("header");
+  if(header) header.style.paddingRight = sb ? (sb + "px") : "";
+}
+
+function unlockScroll(){
+  document.documentElement.classList.remove("drawerOpen");
+  document.body.classList.remove("drawerOpen");
+  document.body.style.top = "";
+  document.body.style.paddingRight = "";
+  const header = document.querySelector("header");
+  if(header) header.style.paddingRight = "";
+  window.scrollTo(0, __scrollY);
+}
+
+function openDrawer(){
+  syncDrawer();
+  if(overlay) overlay.classList.add("open");
+  if(drawer){
+    drawer.classList.add("open");
+    drawer.setAttribute("aria-hidden","false");
+  }
+  lockScroll();
+}
+
+function closeDrawer(){
+  if(drawer){
+    drawer.classList.remove("open");
+    drawer.setAttribute("aria-hidden","true");
+  }
+  if(overlay) overlay.classList.remove("open");
+  unlockScroll();
+}
+function openWalletFromAnywhere(){
+  try{ closeDrawer(); }catch(_){}
+  openModal("mBalance");
+}
+function toggleDrawer(){
+  if(drawer && drawer.classList.contains("open")) closeDrawer();
+  else openDrawer();
+}
+
+function onOutsideDrawerClick(e){
+  if(!drawer || !drawer.classList.contains("open")) return;
+
+  const insideDrawer = drawer.contains(e.target);
+  const onBtn = btnDrawer && btnDrawer.contains(e.target);
+
+  // klik luar drawer (dan bukan button) => close
+  if(!insideDrawer && !onBtn){
+    closeDrawer();
+  }
+}
+
+function initRightDrawerOnce(){
+  if(drawerBound) return;
+  drawerBound = true;
+
+  btnDrawer = document.getElementById("btnRightDrawer");
+  drawer = document.getElementById("rightDrawer");
+  overlay = document.getElementById("rightDrawerOverlay");
+
+  drawerWallet = document.getElementById("drawerWallet");
+  drawerUsername = document.getElementById("drawerUsername");
+  drawerLogoutBtn = document.getElementById("drawerLogoutBtn");
+  const drawerWalletRow = document.getElementById("drawerWalletRow"); 
+  if(drawerWalletRow){
+  drawerWalletRow.addEventListener("click", (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    openWalletFromAnywhere();
+  });
+}
+
+  if(btnDrawer){
+    btnDrawer.addEventListener("click", (e)=>{
+      e.preventDefault();
+      e.stopPropagation(); // penting: elak click luar trigger
+      toggleDrawer();
+    });
+  }
+
+  if(drawer){
+    drawer.addEventListener("click", (e)=> e.stopPropagation());
+  }
+
+  if(overlay){
+    overlay.addEventListener("click", closeDrawer);
+  }
+
+  document.addEventListener("keydown", (e)=>{
+    if(e.key === "Escape") closeDrawer();
+  });
+
+  // capture = paling power (walaupun ada stopPropagation tempat lain)
+  document.addEventListener("click", onOutsideDrawerClick, true);
+
+  // logout button dalam drawer
+  if(drawerLogoutBtn){
+    drawerLogoutBtn.addEventListener("click", async ()=>{
+      try{
+        await signOut(auth);
+        location.replace("../login/");
+      }catch(e){
+        console.error(e);
+        toast(e?.message || "Logout failed");
+      }
+    });
+  }
+}
+  // ===== MODAL helper =====
+  function openModal(id){ $(id).style.display="flex"; }
+function closeModal(id){
+  $(id).style.display="none";
+  if(id==="mCash" || id==="mBuy" || id==="mMissing" || id==="mSell"){
+    ctxEdit = null;
+  }
+  if(id==="mNewVault") resetTxTimeInput("txTime_newVault");
+  if(id==="mCash")    resetTxTimeInput("txTime_cash");
+  if(id==="mBuy")     resetTxTimeInput("txTime_buy");
+  if(id==="mMissing") resetTxTimeInput("txTime_missing");
+  if(id==="mSell")    resetTxTimeInput("txTime_sell");
+}
+  document.addEventListener("click",(e)=>{
+    const t = e.target;
+    if(t?.dataset?.close) closeModal(t.dataset.close);
+    if(t.classList.contains("modalBack")) t.style.display="none";
+  });
+// ===== MOBILE KEYBOARD VIEWPORT FIX =====
+(function(){
+  function setVVH(){
+    const h = (window.visualViewport && window.visualViewport.height)
+      ? window.visualViewport.height
+      : window.innerHeight;
+    document.documentElement.style.setProperty("--vvh", h + "px");
+  }
+
+  setVVH();
+  window.addEventListener("resize", setVVH);
+  if(window.visualViewport){
+    window.visualViewport.addEventListener("resize", setVVH);
+    window.visualViewport.addEventListener("scroll", setVVH);
+  }
+
+  // Bila focus input dalam modal, auto scroll bagi field nampak
+  document.addEventListener("focusin", (e)=>{
+    const el = e.target;
+    if(!(el instanceof HTMLElement)) return;
+    if(!el.closest(".modal")) return;
+
+    setTimeout(()=>{
+      try{
+        el.scrollIntoView({ block: "center", behavior: "smooth" });
+      }catch(_){}
+    }, 150);
+  });
+})();
+// ===== ROLE =====
+async function loadRole(uid){
+  const r = await get(ref(db, `roles/${uid}`));
+  const role = r.exists() ? r.val() : {};
+  me.isAdmin = role?.isAdmin === true;
+  me.username = role?.username || me.username || "user";
+  const rolePill = $("rolePill");
+  if(rolePill){
+    rolePill.textContent = me.isAdmin ? "Admin" : "Client";
+  }
+  const usernameText = $("usernameText");
+  if(usernameText){
+    usernameText.textContent = me.username;
+  }
+  const btnAddPoint = $("btnAddPoint");
+  if(btnAddPoint){
+    btnAddPoint.classList.toggle("hide", !me.isAdmin);
+  }
+}
+
+function wireBalanceListener(){
+  const balPath = `finance/balance/${WALLET_ID}`;
+
+  onValue(ref(db, balPath), (snap)=>{
+    const v = snap.val() || {};
+    currentBalance = Number(v.amount||0);
+
+    const txt = fmt(currentBalance);
+    const isNeg = currentBalance < 0;
+
+    const elSmall  = $("balanceText");   // header top
+    const elBig    = $("balanceBig");    // modal
+    const elDrawer = $("drawerWallet");  //  sidebar drawer
+
+    if(elSmall)  elSmall.textContent  = txt;
+    if(elBig)    elBig.textContent    = txt;
+    if(elDrawer) elDrawer.textContent = txt;
+
+    // ✅ apply class good/bad untuk semua sekali
+    [elSmall, elBig, elDrawer].forEach(el=>{
+      if(!el) return;
+      el.classList.remove("good","bad");
+      el.classList.add(isNeg ? "bad" : "good");
+    });
+
+    const upd = $("balanceUpdated");
+    if(upd) upd.textContent = v.updatedAtMs ? fmtDT(v.updatedAtMs) : "-";
+  });
+}
+function wireLastLedgerListener(){
+  const elDelta = $("balanceDelta");
+  const elBefore = $("balanceBefore");
+  const elCurrent = $("balanceBig");
+
+  if(!elDelta) return;
+
+  const ledPath = `finance/ledger/${WALLET_ID}`;
+  const qy = query(ref(db, ledPath), orderByChild("atMs"), limitToLast(80));
+
+  onValue(qy, (snap)=>{
+    if(!snap.exists()){
+      elDelta.textContent = fmt(0);
+      if(elBefore) elBefore.textContent = fmt(0);
+      return;
+    }
+
+    const obj = snap.val() || {};
+    const arr = Object.entries(obj).sort((a,b)=>
+      Number(b[1]?.atMs || 0) - Number(a[1]?.atMs || 0)
+    );
+
+    const hit = arr.find(([_, v]) => v?.kind === "add_point");
+
+    if(!hit){
+      elDelta.textContent = fmt(0);
+      if(elBefore) elBefore.textContent = fmt(0);
+      return;
+    }
+
+    const last = hit[1] || {};
+    const delta = Number(last.delta ?? 0);
+
+    elDelta.textContent = fmt(delta);
+
+    elDelta.classList.remove("good","bad");
+    if(delta < 0) elDelta.classList.add("bad");
+    else elDelta.classList.add("good");
+
+    // ✅ kira last balance
+    const current = Number(
+      (elCurrent?.textContent || "0").replace(/[^0-9.-]/g,"")
+    );
+
+    const before = current - delta;
+
+if(elBefore){
+  elBefore.textContent = fmt(before);
+  elBefore.classList.remove("good","bad");
+
+  if(before < 0){
+    elBefore.classList.add("bad");
+  }else{
+    elBefore.classList.add("good");
+  }
+}
+  });
+}
+async function changeBalance(delta, meta, atMsOverride){
+  const now = Number(atMsOverride || Date.now());
+  const balAmountRef = ref(db, `finance/balance/${WALLET_ID}/amount`);
+  const balMetaRef   = ref(db, `finance/balance/${WALLET_ID}`);
+
+  // 1) atomic update amount
+  const txRes = await runTransaction(balAmountRef, (cur)=>{
+    const n = Number(cur || 0);
+    return n + Number(delta || 0);
+  });
+
+  if(!txRes.committed) throw new Error("Balance update cancelled.");
+
+  const newAmount = Number(txRes.snapshot.val() || 0);
+
+  // 2) update meta + ledger (non-atomic ok, sebab amount dah selamat)
+  const ledRef  = push(ref(db, `finance/ledger/${WALLET_ID}`));
+  const updates = {};
+
+  updates[`finance/balance/${WALLET_ID}`] = {
+    amount: newAmount,
+    updatedAt: serverTimestamp(),
+    updatedAtMs: now,
+    byUid: me.uid,
+    byUser: me.username
+  };
+
+  updates[`finance/ledger/${WALLET_ID}/${ledRef.key}`] = {
+    ...(meta||{}),
+    delta,
+    balanceAfter: newAmount,
+    at: serverTimestamp(),
+    atMs: now,
+    byUid: me.uid,
+    byUser: me.username
+  };
+
+  await update(ref(db), updates);
+}
+
+  // ===== VAULTS =====
+async function createVault(title, note, createdAtMs){
+  const now = Number(createdAtMs || Date.now());
+  const vRef = push(vaultRefOpen());
+  await set(vRef, {
+    title: String(title||"").trim(),
+    note: String(note||"").trim(),
+    status: "open",
+    createdAt: serverTimestamp(),
+    createdAtMs: now,
+    createdByUid: me.uid,
+    createdBy: me.username,
+    summary: { totalCost:0, totalKg:0, totalEkor:0, totalRevenue:0, profit:0 }
+  });
+}
+async function addTx(vaultId, tx, atMsOverride){
+  const now = Number(atMsOverride || Date.now());
+  const txRef = push(ref(db, `vaults/${activeView==="open" ? "open":"history"}/${vaultId}/transactions`));
+  await set(txRef, { ...tx, at: serverTimestamp(), atMs: now, byUid: me.uid, byUser: me.username });
+  await recomputeVaultSummary(vaultId, activeView==="open" ? "open":"history");
+}
+
+async function recomputeVaultSummary(vaultId, bucket){
+  const snap = await get(ref(db, `vaults/${bucket}/${vaultId}/transactions`));
+  const txs = snap.exists() ? snap.val() : {};
+
+  let totalCost=0, totalKg=0, totalEkor=0, totalRevenue=0;
+  let missingQty = 0;
+
+  let sellKgSum = 0;
+  let sellPriceKgWeighted = 0;
+
+  let babyQty = 0;
+  let babyTotal = 0;
+  let babyPriceSum = 0;
+
+  for(const k of Object.keys(txs)){
+    const t = txs[k];
+
+    if(t.kind==="missing"){
+      missingQty += Number(t.qty||0);
+    }
+
+    if(t.kind==="buy"){
+      const tTotal = Number(t.total||0);
+      totalCost += tTotal;
+
+      if(t.category === "baby_pig"){
+        const q = Number(t.qty||0);
+        const p = Number(t.price||0);
+        babyQty += q;
+        babyTotal += tTotal;
+        babyPriceSum += (q * p);
+      }
+    }
+
+    if(t.kind==="sell"){
+      const kg = Number(t.kg||0);
+      const pk = Number(t.priceKg||0);
+
+      totalRevenue += Number(t.total||0);
+      totalKg += kg;
+      totalEkor += Number(t.ekor||0);
+
+      if(kg > 0 && pk > 0){
+        sellKgSum += kg;
+        sellPriceKgWeighted += (pk * kg);
+      }
+    }
+  } // ✅ INI YANG KAU TAK ADA TADI (tutup for)
+
+  const profit = totalRevenue - totalCost;
+  const babyAvgPrice = babyQty > 0 ? (babyPriceSum / babyQty) : 0;
+  const avgPriceKg = sellKgSum > 0 ? (sellPriceKgWeighted / sellKgSum) : 0;
+
+  await update(ref(db, `vaults/${bucket}/${vaultId}`), {
+    summary: {
+      totalCost, totalKg, totalEkor, totalRevenue, profit,
+      babyPig: { qty:babyQty, avgPrice:babyAvgPrice, total:babyTotal },
+      missing: { qty: missingQty },
+      sell: { avgPriceKg },
+      availablePig: Math.max(0, babyQty - missingQty - totalEkor)
+    },
+    updatedAt: serverTimestamp(),
+    updatedAtMs: Date.now()
+  });
+}
+
+  async function closeVault(vaultId){
+    // move open -> history (multi update)
+    const openSnap = await get(ref(db, `vaults/open/${vaultId}`));
+    if(!openSnap.exists()) return;
+
+    const data = openSnap.val();
+    const now = Date.now();
+
+    const updates = {};
+    updates[`vaults/history/${vaultId}`] = {
+      ...data,
+      status: "closed",
+      closedAt: serverTimestamp(),
+      closedAtMs: now,
+      closedByUid: me.uid,
+      closedBy: me.username
+    };
+    updates[`vaults/open/${vaultId}`] = null;
+    await update(ref(db), updates);
+  }
+async function uncloseVault(vaultId){
+  const histPath = `vaults/history/${vaultId}`;
+  const openPath = `vaults/open/${vaultId}`;
+
+  const histSnap = await get(ref(db, histPath));
+  if(!histSnap.exists()) return;
+
+  const data = histSnap.val() || {};
+  const now = Date.now();
+
+  const { closedAt, closedAtMs, closedBy, closedByUid, ...rest } = data;
+
+  const openData = {
+    ...rest,
+    status: "open",
+    reopenedAt: serverTimestamp(),
+    reopenedAtMs: now,
+    reopenedByUid: me.uid,
+    reopenedBy: me.username,
+    updatedAt: serverTimestamp(),
+    updatedAtMs: now
+  };
+
+  // 🔥 IMPORTANT: multi-location update supaya listener trigger betul
+  const updates = {};
+  updates[openPath] = openData;
+  updates[histPath] = null;
+
+  await update(ref(db), updates);
+}
+  // ===== RENDER =====
+  function setView(v){
+    activeView = v;
+    $("tabOpen").classList.toggle("active", v==="open");
+    $("tabHistory").classList.toggle("active", v==="history");
+    $("viewOpen").classList.toggle("hide", v!=="open");
+    $("viewHistory").classList.toggle("hide", v!=="history");
+  }
+
+function vaultCardHTML(vaultId, v, bucket){
+  const s = v.summary || { totalCost:0,totalKg:0,totalEkor:0,totalRevenue:0,profit:0 };
+  const bp = (s.babyPig || { qty:0, avgPrice:0, total:0 });
+
+  const missingQty = Number(s.missing?.qty || 0);
+  const totalEkor  = Number(s.totalEkor || 0);
+
+  const availablePig = Number(
+    s.availablePig ?? Math.max(0, Number(bp.qty||0) - missingQty - totalEkor)
+  );
+
+  const avgPriceKg = Number(s.sell?.avgPriceKg || 0);
+
+  const profitVal   = Number(s.profit || 0);
+  const profitClass = profitVal >= 0 ? "kpiGood" : "kpiBad";
+
+  const SALES_RATE  = 0.40;
+  const salesValue  = profitVal * SALES_RATE;
+  const salesClass  = salesValue >= 0 ? "kpiGood" : "kpiBad";
+  const createdBy = v?.createdBy || "-";
+  const created = v.createdAtMs ? fmtDT(v.createdAtMs) : "-";
+  const updated = v.updatedAtMs ? fmtDT(v.updatedAtMs) : "-";
+  const closed  = v.closedAtMs  ? fmtDT(v.closedAtMs)  : "-";
+
+  const canEdit = me.isAdmin;
+  const isHistory = bucket === "history";
+  const ownerUid = v?.createdByUid || null;
+  const isOwner = ownerUid && ownerUid === me.uid;
+  const canOperateOpen = !isHistory && (me.isAdmin || isOwner);
+
+  return `
+    <div class="card" data-vid="${vaultId}" data-bucket="${bucket}">
+      <div class="cardHead">
+        <div>
+          <div class="title">${escapeHtml(v.title || "Untitled Vault")}</div>
+          <div class="sub">
+            Created: <span class="num">${created}</span>
+            ${isHistory ? ` • Closed: <span class="num">${closed}</span>` : ``}
+            <br>Updated: <span class="num">${updated}</span>
+          </div>
+        </div>
+
+        <div class="vaultBtns">
+${!isHistory ? `
+  ${canOperateOpen ? `
+    <button class="btn ghost" data-act="cash" data-id="${vaultId}">Cash Transfer</button>
+    <button class="btn ghost" data-act="buy" data-id="${vaultId}">Buy</button>
+    <button class="btn ghost" data-act="missing" data-id="${vaultId}">Missing</button>
+    <button class="btn ghost" data-act="sell" data-id="${vaultId}">Sell</button>
+    <button class="btn danger" data-act="close" data-id="${vaultId}">Closing</button>
+  ` : ``}
+` : `
+  ${canEdit ? `<button class="btn ghost" data-act="histEdit" data-id="${vaultId}">Edit Title</button>` : ``}
+`}
+        </div>
+      </div>
+
+      <div class="cardBody">
+
+        <!-- KPI BUY kiri + SELL kanan -->
+        <div class="kpiSplit">
+
+          <!-- LEFT: BUY -->
+          <div class="kpiTableCard">
+            <div class="kpiTableHead">Total Buyed</div>
+            <table class="kpiTable">
+              <tr><td>Total Cash Out</td><td class="kpiGood" data-kpi="cashOut">0.00</td></tr>
+              <tr><td>Total Expenses</td><td class="kpiGood" data-kpi="buyCost">${fmt(s.totalCost)}</td></tr>
+              <tr><td>Total Pets</td><td data-kpi="buyQty">${Number((s.babyPig?.qty||0)).toLocaleString()}</td></tr>
+              <tr><td>Total Price Quantity</td><td class="kpiGood" data-kpi="buyAvg">${fmt((s.babyPig?.avgPrice||0))}</td></tr>
+              <tr><td>Total Price</td><td class="kpiGood" data-kpi="buyTotal">${fmt((s.babyPig?.total||0))}</td></tr>
+              <tr><td>Total Feeding</td><td class="kpiGood" data-kpi="feedTotal">0.00</td></tr>
+              <tr><td>Total Other</td><td class="kpiGood" data-kpi="otherTotal">0.00</td></tr>
+              <tr><td>Total Cash In/Out</td><td class="kpiGood" data-kpi="cashNet">0.00</td></tr>
+              <tr><td>Total Sales</td><td class="${salesClass}" data-kpi="sales">${fmt(salesValue)}</td></tr>
+            </table>
+          </div>
+
+          <!-- RIGHT: SELL -->
+          <div class="kpiTableCard">
+            <div class="kpiTableHead">Total Sell</div>
+            <table class="kpiTable">
+              <tr><td>Total Cash In</td><td class="kpiGood" data-kpi="cashIn">0.00</td></tr>
+              <tr><td>Total Seller</td><td class="kpiGood" data-kpi="sellRevenue">${fmt(s.totalRevenue)}</td></tr>
+              <tr><td>Total Quantity KG</td><td class="kpiGood" data-kpi="sellAvgKg">${fmt((s.sell?.avgPriceKg||0))}</td></tr>
+              <tr><td>Total KG</td><td class="kpiGood" data-kpi="sellKg">${fmt(s.totalKg)}</td></tr>
+              <tr><td>Total Quantity</td><td class="kpiGood" data-kpi="sellEkor">${Number(s.totalEkor||0).toLocaleString()}</td></tr>
+              <tr><td>Total Missing</td><td class="kpiBad" data-kpi="missingQty">${Number(s.missing?.qty||0).toLocaleString()}</td></tr>
+              <tr><td>Total Price Missing</td><td class="kpiGood" data-kpi="missingTotal">0.00</td></tr>
+              <tr><td>Total Pets Available</td><td class="kpiGood" data-kpi="availablePig">${availablePig.toLocaleString()}</td></tr>
+              <tr><td>Total Profit</td><td class="${profitClass}" data-kpi="profit">${fmt(profitVal)}</td></tr>
+            </table>
+          </div>
+
+        </div>
+
+        <div class="hr"></div>
+        <div class="rangeBar" data-rangebar="${vaultId}">
+<div class="rangeLeft">
+  <input class="dateRangeInput" data-range="${vaultId}" type="text" readonly>
+
+  <select class="js-custom-select" data-typefilter="${vaultId}" style="min-width:160px">
+    <option value="all">All Type</option>
+    <option value="cash_in">Cash In</option>
+    <option value="cash_out">Cash Out</option>
+    <option value="buy">Buy</option>
+    <option value="missing">Missing</option>
+    <option value="sell">Sell</option>
+  </select>
+
+  <!-- ✅ NEW -->
+<div class="txSearchWrap">
+  <input class="txSearchInput"
+    type="text"
+    placeholder="Search transaction..."
+    data-txsearch="${vaultId}">
+
+  <button type="button" class="vaultSearchClear" data-txclear="${vaultId}" aria-label="Clear search">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="currentColor" d="m12.002 2.005c5.518 0 9.998 4.48 9.998 9.997 0 5.518-4.48 9.998-9.998 9.998-5.517 0-9.997-4.48-9.997-9.998 0-5.517 4.48-9.997 9.997-9.997zm0 8.933-2.721-2.722c-.146-.146-.339-.219-.531-.219-.404 0-.75.324-.75.749 0 .193.073.384.219.531l2.722 2.722-2.728 2.728c-.147.147-.22.34-.22.531 0 .427.35.75.751.75.192 0 .384-.073.53-.219l2.728-2.728 2.729 2.728c.146.146.338.219.53.219.401 0 .75-.323.75-.75 0-.191-.073-.384-.22-.531l-2.727-2.728 2.717-2.717c.146-.147.219-.338.219-.531 0-.425-.346-.75-.75-.75-.192 0-.385.073-.531.22z"></path>
+  </button>
+</div>
+</div>
+
+  <div class="rangeRight" data-presets="${vaultId}">
+    <button class="pbtn" data-preset="today"     data-vid="${vaultId}">Today</button>
+    <button class="pbtn" data-preset="yesterday" data-vid="${vaultId}">Yesterday</button>
+    <button class="pbtn" data-preset="thisWeek"  data-vid="${vaultId}">This Week</button>
+    <button class="pbtn" data-preset="lastWeek"  data-vid="${vaultId}">Last Week</button>
+    <button class="pbtn" data-preset="thisMonth" data-vid="${vaultId}">This Month</button>
+    <button class="pbtn" data-preset="lastMonth" data-vid="${vaultId}">Last Month</button>
+  </div>
+</div>
+
+        <div class="tblWrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:120px">Type</th>
+                <th>Transaction</th>
+                <th style="width:120px">Quantity</th>
+                <th style="width:150px">Price Quantity</th>
+                <th style="width:150px">Total Amount</th>
+                <th style="width:180px">Date & Time</th>
+                <th style="width:180px">Actions</th>
+              </tr>
+            </thead>
+            <tbody data-tbody="${vaultId}">
+              <tr><td colspan="7" class="hint">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+${(v.note || v.createdBy) ? `<div class="hr"></div>` : ``}
+
+<div class="vaultFooter">
+  <div class="vaultFooterLeft">
+    ${v.note ? `<div class="hint"><b>Note:</b> ${escapeHtml(v.note)}</div>` : ``}
+    <div class="create-vault"><b>Create By:</b> ${escapeHtml(createdBy)}</div>
+  </div>
+
+  <div class="vaultFooterRight">
+    ${
+      (!isHistory)
+        ? `
+          ${
+            (me.isAdmin || isOwner)
+              ? `<button class="btn danger" data-act="vaultDel" data-id="${vaultId}" data-b="open">Delete Vault</button>`
+              : ``
+          }
+        `
+        : `
+          ${(() => {
+            const isOwnerUnclose =
+              me.isAdmin ||
+              (v?.createdByUid && v.createdByUid === me.uid) ||
+              (v?.closedByUid && v.closedByUid === me.uid);
+
+            return isOwnerUnclose
+              ? `<button class="btn ghost" data-act="vaultUnclose" data-id="${vaultId}">Unclosing</button>`
+              : ``;
+          })()}
+          ${me.isAdmin ? `<button class="btn danger" data-act="vaultDel" data-id="${vaultId}" data-b="history">Delete Vault</button>` : ``}
+        `
+    }
+  </div>
+</div>
+
+      </div>
+    </div>
+  `;
+}
+
+function txRowHTML(vaultId, txId, t, bucket){
+  const at = t.atMs ? fmtDT(t.atMs) : "-";
+
+  let typeTag = `<span class="tag">TX</span>`;
+  if(t.kind==="cash") typeTag = `<span class="tag ${t.direction==="in"?"in":"out"}">${t.direction==="in"?"CASH-IN":"CASH-OUT"}</span>`;
+  if(t.kind==="buy")  typeTag = `<span class="tag buy">BUY</span>`;
+  if(t.kind==="sell") typeTag = `<span class="tag sell">SELL</span>`;
+  if(t.kind==="missing") typeTag = `<span class="tag out">MISSING</span>`;
+
+  // Amount
+let amount = Number(t.total || t.amount || 0);
+if(t.kind === "cash" && t.direction === "out"){
+  amount = -Math.abs(amount);
+}
+if(t.kind === "missing"){
+  amount = -Math.abs(amount);
+}
+const amountText = fmt(amount);
+const amtClass = amount < 0 ? "amtNeg" : "";
+
+  // === NEW: qty (ekor) & unit price column ===
+  let qtyEkor = "";
+  let unitPrice = "";
+
+  if(t.kind==="buy"){
+    qtyEkor = Number(t.qty||0) ? String(Number(t.qty||0).toLocaleString()) : "";
+    unitPrice = Number(t.price||0) ? fmt(t.price||0) : "";
+  }else if(t.kind==="missing"){
+    qtyEkor = Number(t.qty||0) ? String(Number(t.qty||0).toLocaleString()) : "";
+    unitPrice = Number(t.price||0) ? fmt(t.price||0) : "";
+}else if(t.kind==="sell"){
+  qtyEkor = Number(t.ekor||0) ? String(Number(t.ekor||0).toLocaleString()) : "";
+  unitPrice = Number(t.priceKg||0) ? fmt(t.priceKg||0) : "";
+  }else{
+    qtyEkor = "";
+    unitPrice = "";
+  }
+
+  // Description (dah tak ada "qty @ ...")
+  const desc = buildTxDesc(t);
+
+const vaultOwnerUid = window.__vaultOwner?.[vaultId]; // kita isi nanti masa render
+const isOwner = (vaultOwnerUid && vaultOwnerUid === me.uid);
+const showActions = (bucket === "open")
+  ? (me.isAdmin || isOwner)
+  : me.isAdmin;
+
+const hasNote = String(t.note||"").trim().length > 0;
+let rowClass = "";
+if(t.kind === "missing") rowClass += " row-missing";
+if(t.kind === "cash" && t.direction === "out") rowClass += " row-cashout";
+rowClass = rowClass.trim();
+return `
+    <tr data-txid="${txId}" class="${rowClass}">
+      <td>${typeTag}</td>
+      <td>${escapeHtml(desc)}</td>
+
+      <td class="num">${escapeHtml(qtyEkor || "-")}</td>
+      <td class="num">${escapeHtml(unitPrice || "-")}</td>
+
+      <td class="num ${amtClass}">${amountText}</td>
+      <td class="num">${at}</td>
+      <td>
+        ${showActions ? `
+          <div style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap">
+${hasNote ? `
+  <button class="btn-view" style="padding:8px 10px"
+    data-act="txView"
+    data-v="${vaultId}" data-b="${bucket}" data-t="${txId}">
+    View
+  </button>
+` : ``}
+            <button class="btn-edit" style="padding:8px 10px"
+              data-act="txEdit" data-v="${vaultId}" data-b="${bucket}" data-t="${txId}">
+              Edit
+            </button>
+            <button class="btn-delete" style="padding:8px 10px"
+              data-act="txDel" data-v="${vaultId}" data-b="${bucket}" data-t="${txId}">
+              Delete
+            </button>
+          </div>
+        ` : `<span class="hint">-</span>`}
+      </td>
+    </tr>
+  `;
+}
+
+function buildTxDesc(t){
+  if(t.kind==="cash"){
+    return t.direction==="in" ? "Cash-In" : "Cash-Out";
+  }
+
+  if(t.kind==="buy"){
+    return t.category==="baby_pig" ? "Pets"
+         : (t.category==="feed" ? "Feeding" : "Other");
+  }
+
+  if(t.kind==="missing"){
+    return "Missing";
+  }
+
+  if(t.kind==="sell"){
+    return `${fmt(t.kg||0)} kg`;
+  }
+
+  return "Transaction";
+}
+
+  function escapeHtml(s){
+    return String(s||"").replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[m]));
+  }
+  function txBalanceEffect(t){
+  if(!t) return 0;
+
+  if(t.kind === "cash"){
+    const amt = Number(t.amount || t.total || 0);
+    return (t.direction === "in") ? amt : -amt;
+  }
+
+  if(t.kind === "buy"){
+    return -Math.abs(Number(t.total || 0));
+  }
+
+  if(t.kind === "sell"){
+    return Math.abs(Number(t.total || 0));
+  }
+  return 0;
+}
+async function adjustBalanceForTxDelete({ bucket, vaultId, txId, txObj }) {
+  // txObj boleh pass terus (kalau dah ada), kalau tak kita get dari DB
+  let t = txObj;
+
+  if(!t){
+    const snap = await get(ref(db, `vaults/${bucket}/${vaultId}/transactions/${txId}`));
+    if(!snap.exists()) return;
+    t = snap.val();
+  }
+
+  const eff = txBalanceEffect(t); // cash/buy/sell effect
+  if(eff === 0) return; // missing tak sentuh balance
+
+  // reverse effect bila delete
+  const delta = -eff;
+
+  // guna masa tx asal kalau ada (lebih cun dalam ledger)
+  const atMs = Number(t.atMs || Date.now());
+
+  await changeBalance(delta, {
+    kind: "tx_delete_adjust",
+    txKind: t.kind,
+    vaultId,
+    txId,
+    note: "Delete tx rollback"
+  }, atMs);
+}
+function openViewNote(noteText){
+  const txt = String(noteText || "").trim();
+  $("viewNoteText").textContent = txt ? txt : "No note.";
+  openModal("mViewNote");
+}
+function renderVaultList(targetId, data, bucket){
+  const el = $(targetId);
+  const entries = Object.entries(data||{});
+    window.__vaultOwner = window.__vaultOwner || {};
+  for(const [id,v] of entries){
+    window.__vaultOwner[id] = v?.createdByUid || null;
+  }
+
+  // sort: latest createdAtMs desc
+  entries.sort((a,b)=> (Number(b[1]?.createdAtMs||0) - Number(a[1]?.createdAtMs||0)));
+
+  if(entries.length===0){
+    el.innerHTML = `<div class="card"><div class="cardBody"><div class="hint">No vault yet.</div></div></div>`;
+    return;
+  }
+
+  el.innerHTML = entries.map(([id,v]) => vaultCardHTML(id,v,bucket)).join("");
+  for(const [id] of entries){
+    initVaultDateRangeUI(id);
+  }
+  for(const [id] of entries){
+    const txPath = `vaults/${bucket}/${id}/transactions`;
+
+    // ✅ remove old listener for same vaultId (if exist)
+    if(vaultTxUnsubs[id]){
+      vaultTxUnsubs[id]();
+      delete vaultTxUnsubs[id];
+    }
+
+    // ✅ attach new listener + store unsubscribe
+    vaultTxUnsubs[id] = onValue(ref(db, txPath), (snap)=>{
+      const txs = snap.exists()? snap.val() : {};
+      const tbody = document.querySelector(`[data-tbody="${id}"]`);
+      if(!tbody) return;
+
+      const rows = Object.entries(txs);
+      rows.sort((a,b)=> Number(b[1]?.atMs||0) - Number(a[1]?.atMs||0));
+
+      if(rows.length===0){
+      vaultTxCache[id] = { bucket, rows: [] };
+      rerenderVaultTbody(id);                
+      return;
+      }
+
+      vaultTxCache[id] = { bucket, rows };
+      rerenderVaultTbody(id);
+    });
+  }
+}
+function rerenderVaultTbody(vaultId){
+  const cache = vaultTxCache[vaultId];
+  const tbody = document.querySelector(`[data-tbody="${vaultId}"]`);
+  if(!tbody || !cache) return;
+
+  const { bucket, rows } = cache;
+  const f = vaultFilters[vaultId];
+
+let use = rows;
+
+// date range filter
+if(f){
+  use = use.filter(([txId,t])=>{
+    const ms = Number(t?.atMs||0);
+    return ms >= f.startMs && ms <= f.endMs;
+  });
+}
+
+const tf = vaultTypeFilters[vaultId] || "all";
+if(tf !== "all"){
+  use = use.filter(([_, t])=>{
+    if(!t) return false;
+
+    if(tf === "cash_in")  return t.kind === "cash" && t.direction === "in";
+    if(tf === "cash_out") return t.kind === "cash" && t.direction === "out";
+
+    // buy / missing / sell
+    return t.kind === tf;
+  });
+}
+// ✅ SEARCH filter
+const q = String(vaultTxSearchFilters[vaultId] || "").trim().toLowerCase();
+if(q){
+  use = use.filter(([_, t])=>{
+    if(!t) return false;
+
+    const desc = buildTxDesc(t); // Cash In / Pets / Feed / Death Pets / "10.00 kg"
+    const note = String(t.note||"");
+    const kind = String(t.kind||"");
+    const dir  = String(t.direction||"");
+    const cat  = String(t.category||"");
+
+    const hay = `${desc} ${note} ${kind} ${dir} ${cat}`.toLowerCase();
+    return hay.includes(q);
+  });
+}
+  // ✅ IMPORTANT: KPI kena update walaupun table kosong
+  updateVaultKpiFromFiltered(vaultId);
+
+  if(use.length===0){
+    tbody.innerHTML = `<tr><td colspan="7" class="hint">No transaction in this date range.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = use.map(([txId,t]) => txRowHTML(vaultId, txId, t, bucket)).join("");
+}
+function bindTxSearchClear(vaultId){
+  const input = document.querySelector(`input[data-txsearch="${vaultId}"]`);
+  const btn   = document.querySelector(`button[data-txclear="${vaultId}"]`);
+  if(!input || !btn) return;
+
+  const sync = ()=>{
+    btn.style.display = input.value.trim() ? "inline-flex" : "none";
+  };
+
+  // elak double bind bila vault rerender
+  if(input.dataset._clearBound === "1"){
+    sync();
+    return;
+  }
+  input.dataset._clearBound = "1";
+
+  input.addEventListener("input", sync);
+
+  btn.addEventListener("click", ()=>{
+    input.value = "";
+    sync();
+    input.dispatchEvent(new Event("input", { bubbles:true })); // trigger filter
+    input.focus();
+  });
+
+  sync();
+}
+function initVaultDateRangeUI(vaultId){
+  const input = document.querySelector(`.dateRangeInput[data-range="${vaultId}"]`);
+  if(!input) return;
+
+  // === TYPE FILTER dropdown ===
+  const sel = document.querySelector(`select[data-typefilter="${vaultId}"]`);
+  if(sel){
+    sel.value = vaultTypeFilters[vaultId] || "all";
+    sel.onchange = ()=>{
+      vaultTypeFilters[vaultId] = sel.value || "all";
+      rerenderVaultTbody(vaultId);
+    };
+  }
+// === TX SEARCH (per vault) ===
+const s = document.querySelector(`input[data-txsearch="${vaultId}"]`);
+if(s){
+  s.value = vaultTxSearchFilters[vaultId] || "";
+  s.oninput = ()=>{
+    vaultTxSearchFilters[vaultId] = s.value || "";
+    rerenderVaultTbody(vaultId);
+  };
+   bindTxSearchClear(vaultId);
+}
+  // === DATE RANGE ===
+  const def = vaultFilters[vaultId] || presetRangeMs("thisMonth");
+  vaultFilters[vaultId] = def;
+
+  const existing = vaultPickers[vaultId];
+  if(existing){
+    if(existing.input !== input){
+      try{ existing.destroy(); }catch(_){}
+      delete vaultPickers[vaultId];
+    }else{
+      input.value = `${ymd(def.startMs)} → ${ymd(def.endMs)}`;
+      return;
+    }
+  }
+
+  input.value = `${ymd(def.startMs)} → ${ymd(def.endMs)}`;
+
+  vaultPickers[vaultId] = flatpickr(input, {
+    mode: "range",
+    dateFormat: "Y-m-d",
+    showMonths: 2,
+    closeOnSelect: false,
+    defaultDate: [new Date(def.startMs), new Date(def.endMs)],
+
+    onReady: ()=> {
+      input.value = `${ymd(def.startMs)} → ${ymd(def.endMs)}`;
+      clearActivePreset(vaultId);
+      setTimeout(()=>{ input.value = `${ymd(def.startMs)} → ${ymd(def.endMs)}`; }, 0);
+    },
+
+    onOpen: ()=> {
+      const f = vaultFilters[vaultId] || def;
+      if(!input.value.trim()){
+        input.value = `${ymd(f.startMs)} → ${ymd(f.endMs)}`;
+      }
+    },
+
+    onChange: (dates)=>{
+      if(dates.length === 2){
+        const startMs = startOfDayMs(dates[0]);
+        const endMs   = endOfDayMs(dates[1]);
+        vaultFilters[vaultId] = { startMs, endMs };
+
+        input.value = `${ymd(startMs)} → ${ymd(endMs)}`;
+        clearActivePreset(vaultId);
+        rerenderVaultTbody(vaultId);
+      }
+    },
+
+    onClose: (dates)=>{
+      if(dates.length === 0){
+        const f = vaultFilters[vaultId] || def;
+        input.value = `${ymd(f.startMs)} → ${ymd(f.endMs)}`;
+        return;
+      }
+      if(dates.length === 1){
+        const startMs = startOfDayMs(dates[0]);
+        const endMs   = endOfDayMs(dates[0]);
+        vaultFilters[vaultId] = { startMs, endMs };
+
+        input.value = `${ymd(startMs)} → ${ymd(endMs)}`;
+        clearActivePreset(vaultId);
+        rerenderVaultTbody(vaultId);
+      }
+    }
+  });
+
+  // build custom select UI for that card
+  const card = document.querySelector(`.card[data-vid="${vaultId}"]`);
+  if(card) initCustomSelects(card);
+}
+function updateVaultKpiFromFiltered(vaultId){
+  const cache = vaultTxCache[vaultId];
+  if(!cache) return;
+
+  const { rows } = cache; // rows = [[txId, txObj], ...]
+  const f = vaultFilters[vaultId];
+
+  // apply filter
+  let use = rows;
+  if(f){
+    use = rows.filter(([_,t])=>{
+      const ms = Number(t?.atMs||0);
+      return ms >= f.startMs && ms <= f.endMs;
+    });
+  }
+
+  // compute KPI from filtered tx
+  let buyCost = 0;
+  let babyQty = 0, babyTotal = 0, babyPriceSum = 0;
+  let feedTotal = 0;
+  let otherTotal = 0; 
+  let sellRevenue = 0;
+  let sellKg = 0;
+  let sellEkor = 0;
+  let sellKgSum = 0, sellPriceKgWeighted = 0;
+  let missingQty = 0;
+  let missingTotal = 0;
+
+  // ✅ NEW: cash in/out totals
+  let cashIn = 0;
+  let cashOut = 0;
+
+  for(const [txId, t] of use){
+    if(!t || !t.kind) continue;
+
+    // ✅ cash summary
+    if(t.kind === "cash"){
+      const amt = Number(t.amount || t.total || 0);
+      if(t.direction === "in") cashIn += amt;
+      else cashOut += amt;
+    }
+if(t.kind === "buy"){
+  const total = Number(t.total||0);
+  buyCost += total;
+
+  if(t.category === "baby_pig"){
+    const q = Number(t.qty||0);
+    const p = Number(t.price||0);
+    babyQty += q;
+    babyTotal += total;
+    babyPriceSum += (q * p);
+  } else if(t.category === "feed"){
+    feedTotal += total; 
+  } else {
+    otherTotal += total;
+  }
+}
+
+    if(t.kind === "sell"){
+      const total = Number(t.total||0);
+      const kg = Number(t.kg||0);
+      const ekor = Number(t.ekor||0);
+      const pk = Number(t.priceKg||0);
+
+      sellRevenue += total;
+      sellKg += kg;
+      sellEkor += ekor;
+
+      if(kg > 0 && pk > 0){
+        sellKgSum += kg;
+        sellPriceKgWeighted += (pk * kg);
+      }
+    }
+
+if(t.kind === "missing"){
+  missingQty += Number(t.qty||0);
+  missingTotal += Number(t.total || t.amount || 0); // ✅ jumlah harga mati
+}
+  }
+
+  const profit = sellRevenue - buyCost;
+  const SALES_RATE = 0.40;
+  const sales = profit * SALES_RATE;
+
+  const buyAvg = babyQty > 0 ? (babyPriceSum / babyQty) : 0;
+  const sellAvgKg = sellKgSum > 0 ? (sellPriceKgWeighted / sellKgSum) : 0;
+
+  const availablePig = Math.max(0, babyQty - missingQty - sellEkor);
+
+  // helper: update text in this vault card only
+  const card = document.querySelector(`.card[data-vid="${vaultId}"]`);
+  if(!card) return;
+
+  const setKpi = (key, text)=>{
+    const el = card.querySelector(`[data-kpi="${key}"]`);
+    if(el) el.textContent = text;
+  };
+
+  // ✅ update CASH IN/OUT
+  setKpi("cashIn", fmt(cashIn));
+
+const cashOutEl = card.querySelector(`[data-kpi="cashOut"]`);
+if(cashOutEl){
+  cashOutEl.textContent = fmt(cashOut);
+  cashOutEl.classList.remove("kpiBad");
+  cashOutEl.classList.add("kpiGood");
+}
+  // update BUY
+  setKpi("buyCost", fmt(buyCost));
+  setKpi("buyQty", babyQty.toLocaleString());
+  setKpi("buyAvg", fmt(buyAvg));
+  setKpi("buyTotal", fmt(babyTotal));
+  setKpi("feedTotal", fmt(feedTotal));
+  setKpi("otherTotal", fmt(otherTotal));
+
+  // update PROFIT & SALES + color
+  const profitEl = card.querySelector(`[data-kpi="profit"]`);
+  if(profitEl){
+    profitEl.textContent = fmt(profit);
+    profitEl.classList.toggle("kpiGood", profit >= 0);
+    profitEl.classList.toggle("kpiBad", profit < 0);
+  }
+
+  const salesEl = card.querySelector(`[data-kpi="sales"]`);
+  if(salesEl){
+    salesEl.textContent = fmt(sales);
+    salesEl.classList.toggle("kpiGood", sales >= 0);
+    salesEl.classList.toggle("kpiBad", sales < 0);
+  }
+ // ===== CASH IN/OUT NET =====
+const cashNet = cashIn - cashOut;  // duit masuk tolak duit keluar
+
+const cashNetEl = card.querySelector(`[data-kpi="cashNet"]`);
+if(cashNetEl){
+  cashNetEl.textContent = fmt(cashNet);
+  cashNetEl.classList.toggle("kpiGood", cashNet >= 0);
+  cashNetEl.classList.toggle("kpiBad",  cashNet < 0);
+}
+  // update SELL
+  setKpi("sellRevenue", fmt(sellRevenue));
+  setKpi("sellAvgKg", fmt(sellAvgKg));
+  setKpi("sellKg", fmt(sellKg));
+  setKpi("sellEkor", sellEkor.toLocaleString());
+
+  // missing & available
+const missQtyEl = card.querySelector(`[data-kpi="missingQty"]`);
+if(missQtyEl){
+  missQtyEl.textContent = missingQty.toLocaleString();
+  missQtyEl.classList.toggle("kpiGood", missingQty === 0);
+  missQtyEl.classList.toggle("kpiBad",  missingQty > 0);
+}
+
+// missing total (0.00 hijau, ada -> merah & negatif)
+const missTotalEl = card.querySelector(`[data-kpi="missingTotal"]`);
+if(missTotalEl){
+  const showVal = (missingTotal > 0) ? -missingTotal : 0; // ✅ negatif bila ada
+  missTotalEl.textContent = fmt(showVal);
+
+  missTotalEl.classList.toggle("kpiGood", missingTotal === 0);
+  missTotalEl.classList.toggle("kpiBad",  missingTotal > 0);
+}
+
+setKpi("availablePig", availablePig.toLocaleString());
+}
+function vaultMatchesSearch(v, term){
+  if(!term) return true;
+  const t = term.toLowerCase();
+  return (
+    String(v.title||"").toLowerCase().includes(t) ||
+    String(v.note||"").toLowerCase().includes(t) ||
+    String(v.createdBy||"").toLowerCase().includes(t)
+  );
+}
+
+function filterVaultData(data){
+  const out = {};
+  for(const [id,v] of Object.entries(data||{})){
+    if(vaultMatchesSearch(v, vaultSearchTerm)) out[id]=v;
+  }
+  return out;
+}
+
+function rerenderVaultLists(){
+  renderVaultList("viewOpen", filterVaultData(openVaultDataCache), "open");
+  renderVaultList("viewHistory", filterVaultData(histVaultDataCache), "history");
+}
+function wireVaultListeners(){
+  onValue(query(vaultRefOpen(), orderByChild("createdAtMs"), limitToLast(80)), (snap)=>{
+    openVaultDataCache = snap.exists()? snap.val() : {};
+    rerenderVaultLists();
+  });
+
+  onValue(query(vaultRefHist(), orderByChild("createdAtMs"), limitToLast(120)), (snap)=>{
+    histVaultDataCache = snap.exists()? snap.val() : {};
+    rerenderVaultLists();
+  });
+}
+ async function assertCanOperateOpenVault(vaultId){
+  if(me.isAdmin) return true;
+  const s = await get(ref(db, `vaults/open/${vaultId}/createdByUid`));
+  const owner = s.exists() ? s.val() : null;
+  return owner === me.uid;
+}
+  // ===== EVENTS =====
+ $("btnBalance").addEventListener("click", openWalletFromAnywhere);
+// ===== USER DROPDOWN TOGGLE =====
+const userDrop = $("userDrop");
+const userBtn  = $("btnUser");
+const userMenu = $("userMenu");
+// ===== CHANGE PASSWORD =====
+function openChangePass(){
+  if($("cpOld"))  $("cpOld").value  = "";
+  if($("cpNew"))  $("cpNew").value  = "";
+  if($("cpNew2")) $("cpNew2").value = "";
+  if($("cpHint")) $("cpHint").textContent = "";
+  openModal("mChangePass");
+}
+
+async function doChangePassword(){
+  const user = auth.currentUser;
+  if(!user || !user.email) throw new Error("No user session.");
+
+  const oldPass = $("cpOld")?.value || "";
+  const newPass  = $("cpNew")?.value || "";
+  const newPass2 = $("cpNew2")?.value || "";
+
+  if(!oldPass || !newPass || !newPass2) throw new Error("Sila isi semua field.");
+  if(newPass.length < 6) throw new Error("Password baru minimum 6 characters.");
+  if(newPass !== newPass2) throw new Error("Confirm password tak sama.");
+
+  try{
+    const cred = EmailAuthProvider.credential(user.email, oldPass);
+    await reauthenticateWithCredential(user, cred);
+    await updatePassword(user, newPass);
+
+    $("cpOld").value = "";
+    $("cpNew").value = "";
+    $("cpNew2").value = "";
+
+    return "Password success change.";
+  }catch(e){
+    const code = String(e?.code || "");
+
+    if(code === "auth/invalid-login-credentials" || code === "auth/wrong-password"){
+      throw new Error("Password lama salah.");
+    }
+    if(code === "auth/too-many-requests"){
+      throw new Error("Terlalu banyak cubaan, cuba lagi nanti.");
+    }
+    if(code === "auth/requires-recent-login"){
+      throw new Error("Sesi dah lama. Sila logout/login semula.");
+    }
+    if(code === "auth/weak-password"){
+      throw new Error("Password baru terlalu lemah (min 6).");
+    }
+
+    throw new Error(e?.message || "Failed update password.");
+  }
+}
+
+// Button dalam dropdown (desktop)
+const btnChangePass = $("btnChangePass");
+if(btnChangePass){
+  btnChangePass.addEventListener("click", ()=>{
+    closeUserMenu();
+    openChangePass();
+  });
+}
+
+// Button dalam drawer (mobile sidebar)
+const drawerChangePassBtn = $("drawerChangePassBtn");
+if(drawerChangePassBtn){
+  drawerChangePassBtn.addEventListener("click", ()=>{
+    try{ closeDrawer(); }catch(_){}
+    openChangePass();
+  });
+}
+
+// Save dalam modal
+const cpSave = $("cpSave");
+if(cpSave){
+  bindLoadingClick("cpSave", doChangePassword);
+}
+
+function closeUserMenu(){
+  userDrop.classList.remove("open");
+  userBtn.setAttribute("aria-expanded", "false");
+}
+
+function toggleUserMenu(){
+  const open = userDrop.classList.toggle("open");
+  userBtn.setAttribute("aria-expanded", open ? "true" : "false");
+}
+
+userBtn.addEventListener("click", (e)=>{
+  e.preventDefault();
+  toggleUserMenu();
+});
+
+// click luar -> close
+document.addEventListener("click", (e)=>{
+  if(!e.target.closest("#userDrop")) closeUserMenu();
+});
+
+// optional: ESC close
+document.addEventListener("keydown", (e)=>{
+  if(e.key === "Escape") closeUserMenu();
+});
+
+// Logout (kekal fungsi asal)
+$("btnLogout").addEventListener("click", async ()=>{
+  closeUserMenu();
+  await signOut(auth);
+  location.replace("../login/");
+});
+
+  $("tabOpen").addEventListener("click", ()=> setView("open"));
+  $("tabHistory").addEventListener("click", ()=> setView("history"));
+
+  $("btnAddPoint").addEventListener("click", ()=>{
+    if(!me.isAdmin){ toast("Limited user: tiada akses Add Point."); return; }
+    setSelectAndSync("apType", "in"); $("apAmount").value=""; $("apNote").value="";
+    openModal("mAddPoint");
+  });
+
+  $("btnNewVault").addEventListener("click", ()=>{
+    $("nvTitle").value=""; $("nvNote").value="";
+    resetTxTimeInput("txTime_newVault");
+    openModal("mNewVault");
+  });
+
+async function onApSave(){
+  if(!me.isAdmin) throw new Error("No access.");
+  const type = ($("apType")?.value || "in");
+  const amount = moneyVal("apAmount");
+  const note = ($("apNote")?.value || "").trim();
+
+  if(amount <= 0){
+    throw new Error("Total Amount mesti > 0");
+  }
+  const delta = (type === "in") ? amount : -amount;
+  await changeBalance(delta, { kind:"add_point", direction:type, amount, note });
+  $("apAmount").value = "";
+  $("apNote").value = "";
+  return "Wallet updated.";
+}
+ bindLoadingClick("apSave", onApSave);
+  
+async function onNvCreate(){
+  const title = $("nvTitle").value.trim();
+  const note  = $("nvNote").value.trim();
+  if(!title) throw new Error("Title wajib isi.");
+
+  const createdAtMs = await getAtMsFromControl("newVault", "txTime_newVault");
+  await createVault(title, note, createdAtMs);
+
+  setView("open");
+  return "Vault created.";
+}
+bindLoadingClick("nvCreate", onNvCreate);
+
+  // table button actions (event delegation)
+  document.addEventListener("click", async (e)=>{
+    const btn = e.target.closest("[data-act]");
+    if(!btn) return;
+
+    const act = btn.dataset.act;
+    const vid = btn.dataset.id;
+
+    if(act==="cash"){
+      ctxVaultId = vid;
+      const vSnap = await get(ref(db, `vaults/open/${vid}`));
+      $("cashVaultTitle").textContent = vSnap.exists()? `Vault: ${vSnap.val().title}` : "Vault";
+      setSelectAndSync("cashType", "cash_in"); $("cashAmount").value=""; $("cashNote").value="";
+      resetTxTimeInput("txTime_cash");
+      if(!(await assertCanOperateOpenVault(vid))){
+      toast("No access: this vault is not yours.");
+      return;
+      }
+      openModal("mCash");
+    }
+
+    if(act==="buy"){
+      ctxVaultId = vid;
+      const vSnap = await get(ref(db, `vaults/open/${vid}`));
+      $("buyVaultTitle").textContent = vSnap.exists()? `Vault: ${vSnap.val().title}` : "Vault";
+      setSelectAndSync("buyCat", "baby_pig");
+      $("buyQty").value=""; $("buyPrice").value=""; $("buyTotal").value="";
+      $("buyNote").value="";
+      $("buyBalanceHint").textContent = `Current balance: ${fmt(currentBalance)}`;
+      if(!(await assertCanOperateOpenVault(vid))){
+      toast("No access: this vault is not yours.");
+      return;
+      }
+      buyTotalManual = false;
+      calcBuy();
+      openModal("mBuy");
+    }
+    if(act==="missing"){
+  ctxVaultId = vid;
+  const vSnap = await get(ref(db, `vaults/open/${vid}`));
+  $("missingVaultTitle").textContent = vSnap.exists()? `Vault: ${vSnap.val().title}` : "Vault";
+
+  $("missQty").value="";
+  $("missPrice").value="";
+  $("missTotal").value="";
+  $("missNote").value="";
+  if(!(await assertCanOperateOpenVault(vid))){
+  toast("No access: this vault is not yours.");
+  return;
+  }
+  openModal("mMissing");
+}
+
+if(act==="sell"){
+  ctxVaultId = vid;
+  const vSnap = await get(ref(db, `vaults/open/${vid}`));
+  $("sellVaultTitle").textContent = vSnap.exists()? `Vault: ${vSnap.val().title}` : "Vault";
+
+  const s = (vSnap.exists() ? (vSnap.val().summary || {}) : {});
+const babyQty  = Number(s.babyPig?.qty || 0);
+const missQty  = Number(s.missing?.qty || 0);
+const soldEkor = Number(s.totalEkor || 0);
+
+ctxMissingPig = missQty;
+ctxAvailablePig = Math.max(0, babyQty - missQty - soldEkor);
+// ✅ block kalau stok 0
+const sellSaveBtn = $("sellSave");
+if(sellSaveBtn) sellSaveBtn.disabled = (ctxAvailablePig <= 0);
+
+if(ctxAvailablePig <= 0){
+  $("sellEkorHint").textContent = "Available Quantity: 0";
+  toast("quantity not available", "error");
+  return; // ✅ stop sini, modal tak buka
+}
+
+$("sellMissing").value = String(ctxMissingPig);
+$("sellEkorHint").textContent = `Available Quantity: ${ctxAvailablePig}`;
+
+  $("sellPriceKg").value=""; $("sellKg").value="";
+  $("sellEkor").value=""; $("sellTotal").value="";
+  $("sellNote").value="";
+
+  // reset border
+  $("sellEkor").style.borderColor = "rgba(255,255,255,.12)";
+  if(!(await assertCanOperateOpenVault(vid))){
+  toast("No access: this vault is not yours.");
+  return;
+  }
+  openModal("mSell");
+}
+
+if(act==="close"){
+  if(!(await assertCanOperateOpenVault(vid))){
+    toast("No access: this vault is not yours.");
+    return;
+  }
+
+ const yes = await confirmBox("Closing vault? Vault akan dipindah ke History.", {
+  title: "Closing Vault",
+  okText: "Yes, Close",
+  cancelText: "Cancel",
+  okClass: "danger"
+});
+if(!yes) return;
+
+  try{
+    await closeVault(vid);
+    toast("Vault closed → History.");
+  }catch(e){
+    console.error(e);
+    toast(e?.message || "Failed");
+  }
+}
+    if(act==="txEdit"){
+  const vaultId = btn.dataset.v;
+  const bucket  = btn.dataset.b;
+  const txId    = btn.dataset.t;
+
+  const txSnap = await get(ref(db, `vaults/${bucket}/${vaultId}/transactions/${txId}`));
+  if(!txSnap.exists()){ toast("TX not found"); return; }
+
+  const t = txSnap.val();
+
+  ctxVaultId = vaultId;
+  ctxEdit = { vaultId, bucket, txId, oldTx: t };
+
+  // Open modal ikut jenis
+  if(t.kind==="cash"){
+    $("cashVaultTitle").textContent = `Edit Cash • Vault: ${vaultId}`;
+    $("cashType").value = (t.direction==="in") ? "cash_in" : "cash_out";
+    $("cashAmount").value = String(t.amount ?? t.total ?? "");
+    $("cashNote").value = String(t.note||"");
+    openModal("mCash");
+  }
+
+  if(t.kind==="buy"){
+    $("buyVaultTitle").textContent = `Edit Buy • Vault: ${vaultId}`;
+    setSelectAndSync("buyCat", t.category || "baby_pig");
+    $("buyQty").value = String(t.qty ?? "");
+    $("buyPrice").value = String(t.price ?? "");
+    $("buyTotal").value = String(t.total ?? "");
+    $("buyNote").value = String(t.note||"");
+    $("buyBalanceHint").textContent = `Current balance: ${fmt(currentBalance)}`;
+    buyTotalManual = false;
+    calcBuy();
+    openModal("mBuy");
+    calcBuy();
+  }
+
+  if(t.kind==="missing"){
+    $("missingVaultTitle").textContent = `Edit Missing • Vault: ${vaultId}`;
+    $("missQty").value = String(t.qty ?? "");
+    $("missPrice").value = String(t.price ?? "");
+    $("missTotal").value = String(t.total ?? "");
+    $("missNote").value = String(t.note||"");
+    openModal("mMissing");
+    calcMissing();
+  }
+
+  if(t.kind==="sell"){
+    $("sellVaultTitle").textContent = `Edit Sell • Vault: ${vaultId}`;
+
+    // update context available (biar limit ekor masih ikut summary)
+    const vSnap = await get(ref(db, `vaults/open/${vaultId}`));
+    const s = (vSnap.exists() ? (vSnap.val().summary || {}) : {});
+    const babyQty  = Number(s.babyPig?.qty || 0);
+    const missQty  = Number(s.missing?.qty || 0);
+    const soldEkor = Number(s.totalEkor || 0);
+    ctxMissingPig = missQty;
+    const oldEkor = Number(t.ekor || 0);
+    ctxAvailablePig = Math.max(0, babyQty - missQty - soldEkor + oldEkor);
+
+    $("sellMissing").value = String(ctxMissingPig);
+    $("sellEkorHint").textContent = `Available Quantity: ${ctxAvailablePig}`;
+
+    $("sellPriceKg").value = String(t.priceKg ?? "");
+    $("sellKg").value = String(t.kg ?? "");
+    $("sellEkor").value = String(t.ekor ?? "");
+    $("sellTotal").value = String(t.total ?? "");
+    $("sellNote").value = String(t.note||"");
+
+    $("sellEkor").style.borderColor = "rgba(255,255,255,.12)";
+    openModal("mSell");
+    calcSell();
+    validateSellEkor();
+  }
+
+  return;
+}
+if(act==="txView"){
+  const vaultId = btn.dataset.v;
+  const bucket  = btn.dataset.b;
+  const txId    = btn.dataset.t;
+
+  const snap = await get(ref(db, `vaults/${bucket}/${vaultId}/transactions/${txId}/note`));
+  const note = snap.exists() ? String(snap.val() || "") : "";
+  openViewNote(note);
+  return;
+}
+if(act==="txDel"){
+  const vaultId = btn.dataset.v;
+  const bucket  = btn.dataset.b;
+  const txId    = btn.dataset.t;
+
+  if(bucket==="history" && !me.isAdmin){
+    toast("Limited user: tiada akses delete history.");
+    return;
+  }
+  const yes = await confirmBox("Delete transaction?", {
+  title:"Delete",
+  okText:"Delete",
+  cancelText:"Cancel",
+  okClass:"danger"
+});
+if(!yes) return;
+
+  try{
+    const txPath = `vaults/${bucket}/${vaultId}/transactions/${txId}`;
+
+    // 1) ambil tx dulu utk rollback kira delta (sbb lepas remove dah hilang)
+    const txSnap = await get(ref(db, txPath));
+    if(!txSnap.exists()){ toast("TX not found."); return; }
+    const t = txSnap.val();
+
+    // 2) REMOVE dulu — kalau permission denied dia akan throw kat sini
+    await remove(ref(db, txPath));
+
+    // 3) recompute dulu
+    await recomputeVaultSummary(vaultId, bucket);
+
+    // 4) BARU adjust wallet (open sahaja)
+    if(bucket === "open"){
+      await adjustBalanceForTxDelete({ bucket, vaultId, txId, txObj: t });
+    }
+
+    toast("Deleted.");
+  }catch(e){
+    console.error(e);
+    toast(e?.message || "Failed");
+  }
+}
+
+if(act==="histEdit"){
+  if(!me.isAdmin){ toast("No access."); return; }
+
+  const oldSnap = await get(ref(db, `vaults/history/${vid}/title`));
+  const oldTitle = oldSnap.exists() ? String(oldSnap.val() || "") : "";
+
+  const newTitle = await promptBox("New title?", {
+    title: "Edit Title",
+    defaultValue: oldTitle,
+    placeholder: "Enter new vault title...",
+    okText: "Save",
+    cancelText: "Cancel"
+  });
+
+  if(newTitle == null) return;               // cancel / X
+  if(!String(newTitle).trim()){ toast("Title wajib isi."); return; }
+
+  try{
+    await update(ref(db, `vaults/history/${vid}`), {
+      title: String(newTitle).trim(),
+      updatedAt: serverTimestamp(),
+      updatedAtMs: Date.now()
+    });
+    toast("Updated title.");
+  }catch(e){
+    console.error(e);
+    toast(e?.message || "Failed");
+  }
+}
+if(act==="vaultDel"){
+  const bucket = btn.dataset.b || "open";
+
+  if(bucket==="history" && !me.isAdmin){
+    toast("Admin sahaja boleh delete vault history.");
+    return;
+  }
+
+  const msg = bucket==="history"
+    ? "Delete vault HISTORY ini? Semua data akan hilang (tak boleh undo)."
+    : "Delete vault ini? Semua transaksi dalam vault akan hilang.";
+
+  const yes = await confirmBox(msg, {
+  title:"Delete Vault",
+  okText:"Delete",
+  cancelText:"Cancel",
+  okClass:"danger"
+});
+if(!yes) return;
+
+  try{
+    // 1) ambil semua tx dalam vault
+    const txSnap = await get(ref(db, `vaults/${bucket}/${vid}/transactions`));
+    const txs = txSnap.exists() ? txSnap.val() : {};
+
+    // 2) kira total effect (cash/buy/sell)
+    let sumEff = 0;
+    for(const k of Object.keys(txs)){
+      sumEff += txBalanceEffect(txs[k]);
+    }
+
+    // 3) reverse sekali jalan (lebih kemas)
+   if(bucket === "open" && sumEff !== 0){
+    await changeBalance(-sumEff, {
+      kind:"vault_delete_adjust",
+      bucket,
+      vaultId: vid,
+      note:"Delete vault rollback all tx"
+    }, Date.now());
+  }
+
+    // 4) delete vault node
+    await remove(ref(db, `vaults/${bucket}/${vid}`));
+
+    toast("Vault deleted.");
+  }catch(e){
+    console.error(e);
+    toast("Failed delete vault.");
+  }
+}
+if(act==="vaultUnclose"){
+  // ambil data history untuk check owner
+  const hs = await get(ref(db, `vaults/history/${vid}`));
+  if(!hs.exists()){
+    toast("Vault history not found.");
+    return;
+  }
+  const v = hs.val() || {};
+
+  const isOwnerUnclose =
+    me.isAdmin ||
+    (v.createdByUid && v.createdByUid === me.uid) ||
+    (v.closedByUid && v.closedByUid === me.uid);
+
+  if(!isOwnerUnclose){
+    toast("You only can unclose vault you created/closed.");
+    return;
+  }
+
+  const yes = await confirmBox("Unclosing vault ini? Vault akan balik ke Open Vault.", {
+  title:"Unclosing",
+  okText:"Yes, Unclose",
+  cancelText:"Cancel",
+  okClass:"ghost"  // atau "primary" kalau ada
+});
+if(!yes) return;
+  try{
+    await uncloseVault(vid);
+    toast("Vault moved back to Open Vault.");
+    setView("open");
+  }catch(e){
+    console.error(e);
+    toast(e?.message || "Failed unclosing.");
+  }
+}
+  });
+
+// CASH SAVE (CREATE + EDIT) — upgraded (no auto close on error)
+async function onCashSave(){
+  const type = $("cashType").value;
+  const amount = moneyVal("cashAmount");
+  const note = $("cashNote").value.trim();
+
+  // ❌ validation fail => THROW (modal kekal buka)
+  if(amount <= 0) throw new Error("Amount mesti > 0");
+
+  const direction = (type === "cash_in") ? "in" : "out";
+  const delta = (direction === "in") ? amount : -amount;
+
+  const newTx = { kind:"cash", direction, amount, total: amount, note };
+
+  // ambil masa sekali sahaja
+  const atMs = await getAtMsFromControl("cash", "txTime_cash");
+
+  // ===== EDIT MODE =====
+  if(ctxEdit && ctxEdit.txId){
+    const old = ctxEdit.oldTx;
+
+    const oldEff = txBalanceEffect(old);
+    const newEff = txBalanceEffect(newTx);
+    const diff = newEff - oldEff;
+
+    // adjust balance ikut beza
+    if(diff !== 0){
+      await changeBalance(diff, {
+        kind:"tx_edit_adjust",
+        txKind:"cash",
+        vaultId: ctxEdit.vaultId,
+        txId: ctxEdit.txId,
+        note:"Edit cash"
+      }, atMs);
+    }
+
+    await update(ref(db, `vaults/${ctxEdit.bucket}/${ctxEdit.vaultId}/transactions/${ctxEdit.txId}`), {
+      ...newTx,
+      atMs,
+      editedAt: serverTimestamp(),
+      editedAtMs: Date.now(),
+      editedByUid: me.uid,
+      editedBy: me.username
+    });
+
+    await recomputeVaultSummary(ctxEdit.vaultId, ctxEdit.bucket);
+
+    ctxEdit = null;
+
+    // ✅ success => return message (toast keluar lepas modal close)
+    return "Cash updated.";
+  }
+
+  // ===== CREATE MODE =====
+  await changeBalance(delta, {
+    kind:"cash_transfer",
+    direction, amount, note,
+    vaultId: ctxVaultId
+  }, atMs);
+
+  await addTx(ctxVaultId, newTx, atMs);
+
+  // ✅ success
+  return "Cash transfer saved.";
+}
+
+bindLoadingClick("cashSave", onCashSave);
+// BUY AUTO CALC
+function calcBuy(){
+  const qty   = intVal("buyQty");
+  const price = moneyVal("buyPrice");
+  const autoTotal = (qty > 0 && price > 0) ? (qty * price) : 0;
+  if(!buyTotalManual){
+    $("buyTotal").value = autoTotal ? moneyFormat(String(autoTotal)) : "";
+  }
+
+  const total = moneyVal("buyTotal");
+  const enough = total <= currentBalance;
+  $("buyTotal").style.borderColor = enough ? "rgba(255,255,255,.12)" : "rgba(239,68,68,.65)";
+  $("buyBalanceHint").textContent = enough
+    ? `Balance: ${fmt(currentBalance - total)}`
+    : `Insufficient balance: ${fmt(total)} (Balance: ${fmt(currentBalance)})`;
+}
+["buyQty","buyPrice"].forEach(id=> $(id).addEventListener("input", ()=>{
+  buyTotalManual = false;   // bila qty/price berubah -> auto balik
+  calcBuy();
+}));
+
+$("buyTotal").addEventListener("input", ()=>{
+  buyTotalManual = true;    // bila user sentuh total -> jadi manual
+  calcBuy();
+});
+
+// BUY SAVE (CREATE + EDIT) — upgraded
+async function onBuySave(){
+  const category = $("buyCat").value;
+  const qty   = intVal("buyQty");
+  const price = moneyVal("buyPrice");
+  const total = moneyVal("buyTotal") || (qty * price);
+  const note  = $("buyNote").value.trim();
+
+  // ❌ validation fail → THROW (modal kekal buka)
+  if(total <= 0) throw new Error("Total mesti > 0");
+
+  const atMs = await getAtMsFromControl("buy", "txTime_buy"); // manual time
+  const newTx = { kind:"buy", category, qty, price, total, note };
+
+  // ===== EDIT MODE =====
+  if(ctxEdit && ctxEdit.txId){
+    const old = ctxEdit.oldTx;
+
+    const oldEff = txBalanceEffect(old);
+    const newEff = txBalanceEffect(newTx);
+    const diff = newEff - oldEff; // buy = negatif
+
+    // kalau tambah cost → pastikan cukup balance
+    if(diff < 0 && Math.abs(diff) > currentBalance){
+      throw new Error("Balance tak cukup untuk edit buy (tambahan cost).");
+    }
+
+    // adjust balance ikut beza
+    if(diff !== 0){
+      await changeBalance(diff, {
+        kind:"tx_edit_adjust",
+        txKind:"buy",
+        vaultId: ctxEdit.vaultId,
+        txId: ctxEdit.txId,
+        note:"Edit buy"
+      }, atMs);
+    }
+
+    await update(ref(db, `vaults/${ctxEdit.bucket}/${ctxEdit.vaultId}/transactions/${ctxEdit.txId}`), {
+      ...newTx,
+      atMs,
+      editedAt: serverTimestamp(),
+      editedAtMs: Date.now(),
+      editedByUid: me.uid,
+      editedBy: me.username
+    });
+
+    await recomputeVaultSummary(ctxEdit.vaultId, ctxEdit.bucket);
+
+    ctxEdit = null;
+
+    // ✅ success
+    return "Buy updated.";
+  }
+
+  // ===== CREATE MODE =====
+  if(total > currentBalance){
+    throw new Error("Modal tak cukup untuk buy.");
+  }
+
+  await changeBalance(-total, {
+    kind:"buy", category, qty, price, total, note,
+    vaultId: ctxVaultId
+  }, atMs);
+
+  await addTx(ctxVaultId, newTx, atMs);
+
+  // ✅ success
+  return "Buy saved.";
+}
+
+bindLoadingClick("buySave", onBuySave);
+// MISSING AUTO CALC
+function calcMissing(){
+  const q = intVal("missQty");
+  const p = moneyVal("missPrice");
+  const t = q*p;
+  $("missTotal").value = t ? moneyFormat(String(t)) : "";
+}
+["missQty","missPrice"].forEach(id=> $(id).addEventListener("input", calcMissing));
+
+// MISSING SAVE (CREATE + EDIT) — upgraded
+async function onMissSave(){
+  const qty   = intVal("missQty");
+  const price = moneyVal("missPrice");
+  const total = qty * price;
+  const note  = $("missNote").value.trim();
+
+  // ❌ validation fail → modal kekal buka
+  if(qty <= 0 || price <= 0){
+    throw new Error("Missing & harga mesti > 0");
+  }
+
+  const atMs = await getAtMsFromControl("missing", "txTime_missing"); // manual time
+  const newTx = { kind:"missing", qty, price, total, note };
+
+  // ===== EDIT MODE =====
+  if(ctxEdit && ctxEdit.txId){
+    await update(ref(db, `vaults/${ctxEdit.bucket}/${ctxEdit.vaultId}/transactions/${ctxEdit.txId}`), {
+      ...newTx,
+      atMs,
+      editedAt: serverTimestamp(),
+      editedAtMs: Date.now(),
+      editedByUid: me.uid,
+      editedBy: me.username
+    });
+
+    await recomputeVaultSummary(ctxEdit.vaultId, ctxEdit.bucket);
+
+    ctxEdit = null;
+
+    // ✅ success
+    return "Missing updated.";
+  }
+
+  // ===== CREATE MODE =====
+  await addTx(ctxVaultId, newTx, atMs);
+
+  // ✅ success
+  return "Missing saved.";
+}
+
+bindLoadingClick("missSave", onMissSave);
+// SELL AUTO CALC
+function calcSell(){
+  const priceKg = moneyVal("sellPriceKg");
+  const kg = moneyVal("sellKg");
+  const total = priceKg * kg;
+  $("sellTotal").value = total ? moneyFormat(String(total)) : "";
+}
+["sellPriceKg","sellKg"].forEach(id=> $(id).addEventListener("input", calcSell));
+
+// SELL SAVE (CREATE + EDIT) — upgraded
+async function onSellSave(){
+    // ✅ safety: kalau stok 0, walaupun modal terbuka sebab bug/lag
+  if(ctxAvailablePig <= 0){
+    throw new Error("quantity not available");
+  }
+  const priceKg = moneyVal("sellPriceKg");
+  const kg      = moneyVal("sellKg");
+  const ekor    = intVal("sellEkor");
+  const total   = moneyVal("sellTotal") || (priceKg * kg);
+  const note    = $("sellNote").value.trim();
+
+  // ❌ validation fail → modal kekal buka
+  if(total <= 0 || kg <= 0){
+    throw new Error("Price/Kg dan Kg mesti isi.");
+  }
+  if(ekor > ctxAvailablePig){
+    $("sellEkor")?.focus();
+    throw new Error(`Total ekor tak boleh lebih dari tersedia (${ctxAvailablePig}).`);
+  }
+
+  const atMs = await getAtMsFromControl("sell", "txTime_sell"); // manual time
+  const newTx = { kind:"sell", priceKg, kg, ekor, total, note };
+
+  // ===== EDIT MODE =====
+  if(ctxEdit && ctxEdit.txId){
+    const old = ctxEdit.oldTx;
+
+    const oldEff = txBalanceEffect(old);
+    const newEff = txBalanceEffect(newTx);
+    const diff   = newEff - oldEff;
+
+    // kalau diff negatif (kena tolak balik), check balance cukup
+    if(diff < 0 && Math.abs(diff) > currentBalance){
+      throw new Error("Balance tak cukup untuk edit sell (kena tolak balik).");
+    }
+
+    if(diff !== 0){
+      await changeBalance(diff, {
+        kind:"tx_edit_adjust",
+        txKind:"sell",
+        vaultId: ctxEdit.vaultId,
+        txId: ctxEdit.txId,
+        note:"Edit sell"
+      }, atMs);
+    }
+
+    await update(ref(db, `vaults/${ctxEdit.bucket}/${ctxEdit.vaultId}/transactions/${ctxEdit.txId}`), {
+      ...newTx,
+      atMs,
+      editedAt: serverTimestamp(),
+      editedAtMs: Date.now(),
+      editedByUid: me.uid,
+      editedBy: me.username
+    });
+
+    await recomputeVaultSummary(ctxEdit.vaultId, ctxEdit.bucket);
+
+    ctxEdit = null;
+
+    // ✅ success
+    return "Sell updated.";
+  }
+
+  // ===== CREATE MODE =====
+  await changeBalance(+total, { kind:"sell", priceKg, kg, ekor, total, note, vaultId: ctxVaultId }, atMs);
+  await addTx(ctxVaultId, newTx, atMs);
+
+  // ✅ success
+  return "Sell saved.";
+}
+
+bindLoadingClick("sellSave", onSellSave);
+// VALIDATE EKOR INPUT
+function validateSellEkor(){
+    // ✅ kalau stok 0, terus bagi merah & jangan bagi ok
+  if(ctxAvailablePig <= 0){
+    $("sellEkorHint").textContent = "Available Quantity: 0";
+    $("sellEkor").style.borderColor = "rgba(239,68,68,.85)";
+    return false;
+  }
+  const ekor = intVal("sellEkor");
+  const ok = ekor <= ctxAvailablePig;
+
+  $("sellEkor").style.borderColor = ok ? "rgba(255,255,255,.12)" : "rgba(239,68,68,.85)";
+  $("sellEkorHint").textContent = ok
+    ? `Available Quantity: ${ctxAvailablePig}`
+    : `Maximal Available: ${ctxAvailablePig} Not Available ${ekor}`;
+
+  return ok;
+}
+$("sellEkor").addEventListener("input", validateSellEkor);
+
+document.addEventListener("click", (e)=>{
+  const btn = e.target.closest(".pbtn[data-preset][data-vid]");
+  if(!btn) return;
+
+  const vaultId = btn.dataset.vid;
+  const key = btn.dataset.preset;
+
+  const r = presetRangeMs(key);
+  if(!r) return;
+
+  vaultFilters[vaultId] = r;
+
+  const fp = vaultPickers[vaultId];
+  if(fp){
+    fp.setDate([new Date(r.startMs), new Date(r.endMs)], true); // auto trigger render
+  }else{
+    rerenderVaultTbody(vaultId);
+  }
+
+  setActivePreset(vaultId, key);
+});
+  // ===== AUTH BOOT =====
+onAuthStateChanged(auth, async (user)=>{
+  if(!user){ location.replace("../login/"); return; }
+
+  me.uid = user.uid;
+
+  const p = await get(ref(db, `profiles/${me.uid}`));
+  me.username = p.exists() ? (p.val().username || "user") : "user";
+  $("usernameText").textContent = me.username;
+
+  await loadRole(me.uid);
+  initTxTimeControl({ kind:"newVault", inputId:"txTime_newVault", toggleId:"txTimeToggle_newVault" });
+  initTxTimeControl({ kind:"cash",    inputId:"txTime_cash",    toggleId:"txTimeToggle_cash" });
+  initTxTimeControl({ kind:"buy",     inputId:"txTime_buy",     toggleId:"txTimeToggle_buy" });
+  initTxTimeControl({ kind:"missing", inputId:"txTime_missing", toggleId:"txTimeToggle_missing" });
+  initTxTimeControl({ kind:"sell",    inputId:"txTime_sell",    toggleId:"txTimeToggle_sell" });
+
+  wireBalanceListener();
+  wireLastLedgerListener();
+  wireVaultListeners();
+  const searchInput = document.getElementById("vaultSearch");
+  if(searchInput){
+  searchInput.addEventListener("input", e=>{
+    vaultSearchTerm = e.target.value.trim();
+    rerenderVaultLists();
+  });
+}
+  setView("open");
+  initCustomSelects();
+    // ===== LIVE FORMAT INPUTS =====
+  attachMoney($("apAmount"));
+  attachMoney($("cashAmount"));
+
+  attachInt($("buyQty"));
+  attachMoney($("buyPrice"));
+  attachMoney($("buyTotal"));
+
+  attachMoney($("sellPriceKg"));
+  attachKg($("sellKg"));
+  attachInt($("sellEkor"));
+  attachMoney($("sellTotal"));
+
+  attachInt($("missQty"));
+  attachMoney($("missPrice"));
+    // 🔄 REFRESH BUTTON
+  const btnRefresh = document.getElementById("btnRefresh");
+  if(btnRefresh){
+    btnRefresh.addEventListener("click", ()=>{
+      btnRefresh.classList.add("spinning");
+      setTimeout(()=> location.reload(), 250);
+    });
+  }
+initRightDrawerOnce();
+function syncHeaderHeightVar(){
+  const header = document.querySelector("header");
+  if(!header) return;
+  const h = Math.round(header.getBoundingClientRect().height || 64);
+  document.documentElement.style.setProperty("--headerH", h + "px");
+}
+syncHeaderHeightVar();
+window.addEventListener("resize", syncHeaderHeightVar);
+syncDrawer();
+  toast("Ready.");
+});
+// ===== SEARCH INPUT UI =====
+document.addEventListener("DOMContentLoaded", () => {
+  const searchInput = document.getElementById("vaultSearch");
+  const clearBtn = document.getElementById("clearSearch");
+  const searchIcon = document.getElementById("searchIcon");
+  if (!searchInput || !clearBtn || !searchIcon) {
+    console.warn("Search UI missing element:", { searchInput, clearBtn, searchIcon });
+    return;
+  }
+  function toggleSearchUI() {
+    const hasText = searchInput.value.trim().length > 0;
+    searchIcon.style.display = hasText ? "none" : "block";
+    clearBtn.style.display   = hasText ? "inline-flex" : "none";
+  }
+  searchInput.addEventListener("input", () => {
+    toggleSearchUI();
+    // filterVaults(searchInput.value);
+  });
+  clearBtn.addEventListener("click", () => {
+    searchInput.value = "";
+    toggleSearchUI();
+    searchInput.focus();
+    searchInput.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  toggleSearchUI();
+});
+document.addEventListener("keydown", function(e){
+  if(e.key !== "Escape") return;
+  const openModal = document.querySelector(".modalBack[style*='flex'], .modalBack[style*='block']");
+  if(openModal){
+    openModal.style.display = "none";
+  }
+});
+(function(){
+  document.addEventListener("pointerdown", (e)=>{
+    const el = e.target.closest("[data-clickfx]");
+    if(!el) return;
+
+    // kalau element disabled (button/fieldset)
+    if (el.matches("button:disabled, input:disabled, select:disabled, textarea:disabled")) return;
+
+    el.classList.remove("clicked");
+    void el.offsetWidth; // restart anim
+    el.classList.add("clicked");
+
+    clearTimeout(el.__cfx);
+    el.__cfx = setTimeout(()=> el.classList.remove("clicked"), 650);
+  }, true);
+})();
+// ===== THEME TOGGLE =====
+const THEME_KEY = "farm_theme"; // "dark" | "light"
+let _syncingTheme = false;
+
+function applyTheme(theme){
+  const isLight = theme === "light";
+
+  document.documentElement.classList.toggle("theme-light", isLight);
+
+  const d1 = document.getElementById("themeToggleDesktop");
+  const d2 = document.getElementById("themeToggleDrawer");
+
+  _syncingTheme = true;
+  try{
+    if(d1) d1.checked = !isLight; // checked = dark
+    if(d2) d2.checked = !isLight;
+  } finally {
+    _syncingTheme = false;
+  }
+
+  const l1 = document.getElementById("themeLabelDesktop");
+  const l2 = document.getElementById("themeLabelDrawer");
+  const txt = isLight ? "Light Mode" : "Dark Mode";
+  if(l1) l1.textContent = txt;
+  if(l2) l2.textContent = txt;
+}
+
+function loadTheme(){
+  const saved = localStorage.getItem(THEME_KEY);
+  return (saved === "light" || saved === "dark") ? saved : "dark";
+}
+
+function setTheme(theme){
+  localStorage.setItem(THEME_KEY, theme);
+  applyTheme(theme);
+
+  // ✅ optional notify same-page listeners
+  window.dispatchEvent(new CustomEvent("farmThemeChanged", { detail: theme }));
+}
+
+function initThemeToggle(){
+  applyTheme(loadTheme());
+
+  const desktop = document.getElementById("themeToggleDesktop");
+  const drawer  = document.getElementById("themeToggleDrawer");
+
+  function onToggleChange(e){
+    if(_syncingTheme) return;
+    const isDarkChecked = !!e.target.checked;
+    setTheme(isDarkChecked ? "dark" : "light");
+  }
+
+  if(desktop) desktop.addEventListener("change", onToggleChange);
+  if(drawer)  drawer.addEventListener("change", onToggleChange);
+}
+
+document.addEventListener("DOMContentLoaded", initThemeToggle);
+
+// ✅ bila theme berubah dari tab/page lain
+window.addEventListener("storage", (e)=>{
+  if(e.key !== THEME_KEY) return;
+  applyTheme(loadTheme());
+});
+</script>
+</body>
+</html>

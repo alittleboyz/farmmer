@@ -2793,7 +2793,8 @@ document.addEventListener("click", (e)=>{
 });
   // ===== AUTH BOOT =====
 onAuthStateChanged(auth, async (user)=>{
-    if(!user){
+  if(!user){
+    location.replace("../login/");
     return;
   }
   try{
@@ -2801,10 +2802,6 @@ onAuthStateChanged(auth, async (user)=>{
   }catch(err){
     console.error("ensureFinanceSeed error:", err);
   }
-  console.log("UID NOW:", user?.uid);
-  console.log("EMAIL:", user?.email);
-  if(!user){ location.replace("../login/"); return; }
-
   me.uid = user.uid;
 
   const p = await get(ref(db, `profiles/${me.uid}`));

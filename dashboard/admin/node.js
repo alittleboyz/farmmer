@@ -1918,6 +1918,7 @@ function filterVaultData(data){
 function rerenderVaultLists(){
   renderVaultList("viewOpen", filterVaultData(openVaultDataCache), "open");
   renderVaultList("viewHistory", filterVaultData(histVaultDataCache), "history");
+  applyLang(getLang());
 }
 function wireVaultListeners(){
   onValue(query(vaultRefOpen(), orderByChild("createdAtMs"), limitToLast(80)), (snap)=>{
@@ -2860,6 +2861,7 @@ function syncHeaderHeightVar(){
 syncHeaderHeightVar();
 window.addEventListener("resize", syncHeaderHeightVar);
 syncDrawer();
+  applyLang(getLang());
   toast("Ready.");
 });
 // ===== SEARCH INPUT UI =====
@@ -2911,6 +2913,229 @@ document.addEventListener("keydown", function(e){
     el.__cfx = setTimeout(()=> el.classList.remove("clicked"), 650);
   }, true);
 })();
+// ===== i18n (EN/ID) =====
+const LANG_KEY = "farm_lang";
+
+function getLang(){
+  const v = localStorage.getItem(LANG_KEY);
+  return (v === "id" || v === "en") ? v : "en";
+}
+function setLang(lang){
+  if(lang !== "en" && lang !== "id") return;
+  localStorage.setItem(LANG_KEY, lang);
+  applyLang(lang); // apply terus
+}
+// ===== LANGUAGE DROPDOWN (OPEN/CLOSE + PICK) =====
+function wireLangDropdown(btnId, menuId, wrapId){
+  const btn  = document.getElementById(btnId);
+  const menu = document.getElementById(menuId);
+  const wrap = document.getElementById(wrapId);
+  if(!btn || !menu || !wrap) {
+    console.warn("Lang dropdown missing:", {btnId, menuId, wrapId});
+    return;
+  }
+
+  function open(){
+    menu.style.display = "block";
+    btn.setAttribute("aria-expanded","true");
+  }
+  function close(){
+    menu.style.display = "none";
+    btn.setAttribute("aria-expanded","false");
+  }
+  function toggle(){
+    (menu.style.display === "block") ? close() : open();
+  }
+
+  // ✅ elak click luar/close lain kacau
+  wrap.addEventListener("click", (e)=> e.stopPropagation());
+  menu.addEventListener("click", (e)=> e.stopPropagation());
+
+  btn.addEventListener("click", (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    toggle();
+  });
+
+  // pilih bahasa
+  menu.querySelectorAll("[data-lang]").forEach(opt=>{
+    opt.addEventListener("click", (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      const lang = opt.getAttribute("data-lang");
+      setLang(lang);
+      close();
+    });
+  });
+
+  // click luar tutup
+  document.addEventListener("click", (e)=>{
+    if(!e.target.closest("#"+wrapId)) close();
+  });
+
+  // esc tutup
+  document.addEventListener("keydown", (e)=>{
+    if(e.key === "Escape") close();
+  });
+}
+
+// INIT sekali sahaja
+document.addEventListener("DOMContentLoaded", ()=>{
+  wireLangDropdown("btnLangDesktop","langMenuDesktop","langWrapDesktop");
+  wireLangDropdown("btnLangDrawer","langMenuDrawer","langWrapDrawer");
+});
+// ===== AUTO TEXT MAP (exact match) =====
+const TEXT_EN_TO_ID = {
+
+  "Language": "Bahasa",
+  "Dark Mode": "Mode Gelap",
+  "Light Mode": "Mode Terang",
+  "Change Password": "Ubah Kata Sandi",
+  "Logout": "Keluar",
+  "Searching...": "Cari...",
+  
+  // KPI / Summary
+"Total Buyed": "Jumlah Beli",
+"Total Bought": "Jumlah Beli",
+"Total Sell": "Jumlah Jual",
+"Total Sold": "Jumlah Jual",
+"Total Sales": "Jumlah Jualan",
+"Total Feeding": "Jumlah Makanan",
+"Total Pets": "Jumlah Ternakan",
+"Total Expenses": "Jumlah Perbelanjaan",
+"Total Other": "Jumlah Lain-lain",
+"Total Cash In": "Jumlah Tunai Masuk",
+"Total Cash Out": "Jumlah Tunai Keluar",
+"Total Cash In/Out": "Jumlah Tunai Masuk/Keluar",
+"Total Price Quantity": "Jumlah Harga Seunit",
+"Total Price": "Jumlah Harga",
+"Available Quantity": "Kuantiti Tersedia",
+
+// Date preset / filter
+"Today": "Hari Ini",
+"Yesterday": "Semalam",
+"This Week": "Minggu Ini",
+"Last Week": "Minggu Lepas",
+"This Month": "Bulan Ini",
+"Last Month": "Bulan Lepas",
+"This Year": "Tahun Ini",
+"Last Year": "Tahun Lepas",
+"All": "Semua",
+"Custom": "Tersuai",
+"Date Range": "Julat Tarikh",
+"No transaction in this date range.": "Tiada transaksi dalam julat tarikh ini.",
+"No vault yet.": "Belum ada vault.",
+  
+  "Open": "Buka",
+  "History": "Riwayat",
+  "Add Point": "Tambah Poin",
+  "New Vault": "Buat Vault",
+
+  "My Wallet": "Dompet Saya",
+  "Availabe Balance": "Baki Tersedia",
+  "Current Balance": "Baki Semasa",
+  "Update Balance": "Kemaskini Baki",
+  "Last Update": "Kemas Kini Terakhir",
+  "Close": "Tutup",
+
+  "Cancel": "Batal",
+  "Save": "Simpan",
+  "Saving...": "Menyimpan...",
+  "Creating...": "Mencipta...",
+  "Create": "Cipta",
+  "Unlock": "Buka Kunci",
+
+  "Type": "Jenis",
+  "In": "Masuk",
+  "Logout": "Keluar",
+  "Note": "Catatan",
+  "Title": "Tajuk",
+  "Transaction Time": "Masa Transaksi",
+
+  "Cash Transfer": "Pemindahan Tunai",
+  "Cash-In": "Tunai Masuk",
+  "Cash-Out": "Tunai Keluar",
+
+  "Buy": "Beli",
+  "Selling": "Jual",
+  "Missing": "Hilang",
+  "Category": "Kategori",
+  "Quantity": "Kuantiti",
+  "Price Quantity": "Harga Seunit",
+  "Total Price": "Jumlah Harga",
+  "Total Amount": "Jumlah"
+};
+
+const TEXT_ID_TO_EN = Object.fromEntries(
+  Object.entries(TEXT_EN_TO_ID).map(([en,id]) => [id,en])
+);
+
+// ===== APPLY LANG (auto translate all exact strings) =====
+function applyLang(lang){
+  // A) placeholders
+  document.querySelectorAll("[placeholder]").forEach(el=>{
+    const p = (el.getAttribute("placeholder") || "").trim();
+    if(!p) return;
+
+    if(lang === "id"){
+      if(TEXT_EN_TO_ID[p]) el.setAttribute("placeholder", TEXT_EN_TO_ID[p]);
+    }else{
+      if(TEXT_ID_TO_EN[p]) el.setAttribute("placeholder", TEXT_ID_TO_EN[p]);
+    }
+  });
+
+  // B) translate text nodes (exact match only)
+  const walker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_TEXT,
+    {
+      acceptNode(node){
+        const p = node.parentNode;
+        if(!p) return NodeFilter.FILTER_REJECT;
+        const tag = (p.tagName || "").toLowerCase();
+        if(tag === "script" || tag === "style" || tag === "noscript") return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    }
+  );
+
+  let n;
+  while((n = walker.nextNode())){
+    const raw = n.nodeValue;
+    const t = (raw || "").trim();
+    if(!t) continue;
+
+    if(lang === "id"){
+      if(TEXT_EN_TO_ID[t]) n.nodeValue = raw.replace(t, TEXT_EN_TO_ID[t]);
+    }else{
+      if(TEXT_ID_TO_EN[t]) n.nodeValue = raw.replace(t, TEXT_ID_TO_EN[t]);
+    }
+  }
+
+  // C) update badge EN/ID (kalau ada)
+  const short = (lang === "id") ? "ID" : "EN";
+  const td = document.getElementById("langTextDesktop");
+  const tr = document.getElementById("langTextDrawer");
+  if(td) td.textContent = short;
+  if(tr) tr.textContent = short;
+
+  // D) theme label ikut mode semasa
+  const isLight = document.documentElement.classList.contains("theme-light");
+  const themeDesktop = document.getElementById("themeLabelDesktop");
+  const themeDrawer  = document.getElementById("themeLabelDrawer");
+  if(themeDesktop) themeDesktop.textContent = isLight ? "Mode Terang" : "Mode Gelap";
+  if(themeDrawer)  themeDrawer.textContent  = isLight ? "Mode Terang" : "Mode Gelap";
+}
+
+// init apply on load
+document.addEventListener("DOMContentLoaded", ()=>{
+  applyLang(getLang());
+});
+
+// sync kalau tab lain tukar
+window.addEventListener("storage", (e)=>{
+  if(e.key === LANG_KEY) applyLang(getLang());
+});
 // ===== THEME TOGGLE =====
 const THEME_KEY = "farm_theme"; // "dark" | "light"
 let _syncingTheme = false;
@@ -2919,7 +3144,7 @@ function applyTheme(theme){
   const isLight = theme === "light";
 
   document.documentElement.classList.toggle("theme-light", isLight);
-
+  applyLang(getLang());
   const d1 = document.getElementById("themeToggleDesktop");
   const d2 = document.getElementById("themeToggleDrawer");
 
@@ -2933,9 +3158,7 @@ function applyTheme(theme){
 
   const l1 = document.getElementById("themeLabelDesktop");
   const l2 = document.getElementById("themeLabelDrawer");
-  const txt = isLight ? "Light Mode" : "Dark Mode";
-  if(l1) l1.textContent = txt;
-  if(l2) l2.textContent = txt;
+  applyLang(getLang());
 }
 
 function loadTheme(){

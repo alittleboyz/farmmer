@@ -2990,40 +2990,38 @@ const TEXT_EN_TO_ID = {
   "Language": "Bahasa",
   "Dark Mode": "Mode Gelap",
   "Light Mode": "Mode Terang",
-  "Change Password": "Ubah Kata Sandi",
+  "Change Password": "Ubah Sandi",
   "Logout": "Keluar",
-  "Searching...": "Cari...",
+  "Searching...": "Pencarian...",
   
   // KPI / Summary
-"Total Buyed": "Jumlah Beli",
-"Total Bought": "Jumlah Beli",
-"Total Sell": "Jumlah Jual",
-"Total Sold": "Jumlah Jual",
-"Total Sales": "Jumlah Jualan",
-"Total Feeding": "Jumlah Makanan",
-"Total Pets": "Jumlah Ternakan",
-"Total Expenses": "Jumlah Perbelanjaan",
-"Total Other": "Jumlah Lain-lain",
-"Total Cash In": "Jumlah Tunai Masuk",
-"Total Cash Out": "Jumlah Tunai Keluar",
-"Total Cash In/Out": "Jumlah Tunai Masuk/Keluar",
-"Total Price Quantity": "Jumlah Harga Seunit",
-"Total Price": "Jumlah Harga",
-"Available Quantity": "Kuantiti Tersedia",
+"Total Bought": "Total Beli",
+"Total Sold": "Total Jual",
+"Total Sales": "Total Penjualan",
+"Total Feeding": "Total Makanan",
+"Total Pets": "Total Peliharaan",
+"Total Expenses": "Total Pengeluaran",
+"Total Other": "Total Lainya",
+"Total Cash In": "Total Masuk Tunai",
+"Total Cash Out": "Total Keluar Tunai",
+"Total Cash In/Out": "Total Tunai Masuk/Keluar",
+"Total Price Quantity": "Total Harga Seunit",
+"Total Price": "Total Harga",
+"Available Quantity": "Unit Tersedia",
 
 // Date preset / filter
 "Today": "Hari Ini",
-"Yesterday": "Semalam",
+"Yesterday": "Kemarin",
 "This Week": "Minggu Ini",
-"Last Week": "Minggu Lepas",
+"Last Week": "Minggu Lalu",
 "This Month": "Bulan Ini",
-"Last Month": "Bulan Lepas",
+"Last Month": "Bulan Lalu",
 "This Year": "Tahun Ini",
-"Last Year": "Tahun Lepas",
+"Last Year": "Tahun Lalu",
 "All": "Semua",
-"Custom": "Tersuai",
-"Date Range": "Julat Tarikh",
-"No transaction in this date range.": "Tiada transaksi dalam julat tarikh ini.",
+"Custom": "Khusus",
+"Date Range": "Pilih Tanggal",
+"No transaction in this date range.": "Tiada transaksi dalam Tanngal yang di pilih.",
 "No vault yet.": "Belum ada vault.",
   
   "Open": "Buka",
@@ -3032,38 +3030,41 @@ const TEXT_EN_TO_ID = {
   "New Vault": "Buat Vault",
 
   "My Wallet": "Dompet Saya",
-  "Availabe Balance": "Baki Tersedia",
-  "Current Balance": "Baki Semasa",
-  "Update Balance": "Kemaskini Baki",
-  "Last Update": "Kemas Kini Terakhir",
+  "Availabe Balance": "Saldo tersedia",
+  "Current Balance": "Saldo saat ini",
+  "Update Balance": "Pembaruan Saldo",
+  "Last Update": "Pembaruan Terakhir",
   "Close": "Tutup",
 
   "Cancel": "Batal",
   "Save": "Simpan",
   "Saving...": "Menyimpan...",
-  "Creating...": "Mencipta...",
-  "Create": "Cipta",
+  "Creating...": "Membuat...",
+  "Create": "Membuat",
   "Unlock": "Buka Kunci",
 
   "Type": "Jenis",
   "In": "Masuk",
   "Logout": "Keluar",
   "Note": "Catatan",
-  "Title": "Tajuk",
-  "Transaction Time": "Masa Transaksi",
+  "Title": "Judul",
+  "Transaction Time": "Waktu Transaksi",
 
   "Cash Transfer": "Pemindahan Tunai",
   "Cash-In": "Tunai Masuk",
   "Cash-Out": "Tunai Keluar",
-
+  
   "Buy": "Beli",
   "Selling": "Jual",
+  "Total Quantity": "Total Unit",
+  "Available Quantity:": "Unit Tersedia",
   "Missing": "Hilang",
+  "Quantity Missing": "Unit Kehilangan",
   "Category": "Kategori",
-  "Quantity": "Kuantiti",
+  "Quantity": "Unit",
   "Price Quantity": "Harga Seunit",
-  "Total Price": "Jumlah Harga",
-  "Total Amount": "Jumlah"
+  "Total Price": "Total Harga",
+  "Total Amount": "Total Jumlah"
 };
 
 const TEXT_ID_TO_EN = Object.fromEntries(
@@ -3119,12 +3120,15 @@ function applyLang(lang){
   if(td) td.textContent = short;
   if(tr) tr.textContent = short;
 
-  // D) theme label ikut mode semasa
-  const isLight = document.documentElement.classList.contains("theme-light");
-  const themeDesktop = document.getElementById("themeLabelDesktop");
-  const themeDrawer  = document.getElementById("themeLabelDrawer");
-  if(themeDesktop) themeDesktop.textContent = isLight ? "Mode Terang" : "Mode Gelap";
-  if(themeDrawer)  themeDrawer.textContent  = isLight ? "Mode Terang" : "Mode Gelap";
+// D) theme label ikut mode semasa + ikut language
+const isLight = document.documentElement.classList.contains("theme-light");
+const enText = isLight ? "Light Mode" : "Dark Mode";
+let show = enText;
+if(lang === "id") show = TEXT_EN_TO_ID[enText] || enText;
+const themeDesktop = document.getElementById("themeLabelDesktop");
+const themeDrawer  = document.getElementById("themeLabelDrawer");
+if(themeDesktop) themeDesktop.textContent = show;
+if(themeDrawer)  themeDrawer.textContent  = show;
 }
 
 // init apply on load
@@ -3158,7 +3162,6 @@ function applyTheme(theme){
 
   const l1 = document.getElementById("themeLabelDesktop");
   const l2 = document.getElementById("themeLabelDrawer");
-  applyLang(getLang());
 }
 
 function loadTheme(){

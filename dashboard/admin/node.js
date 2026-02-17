@@ -1216,7 +1216,7 @@ ${!isHistory ? `
 
           <!-- LEFT: BUY -->
           <div class="kpiTableCard">
-            <div class="kpiTableHead">Total Buyed</div>
+            <div class="kpiTableHead">Total Bought</div>
             <table class="kpiTable">
               <tr><td>Total Cash Out</td><td class="kpiGood" data-kpi="cashOut">0.00</td></tr>
               <tr><td>Total Expenses</td><td class="kpiGood" data-kpi="buyCost">${fmt(s.totalCost)}</td></tr>
@@ -1232,7 +1232,7 @@ ${!isHistory ? `
 
           <!-- RIGHT: SELL -->
           <div class="kpiTableCard">
-            <div class="kpiTableHead">Total Sell</div>
+            <div class="kpiTableHead">Total Sold</div>
             <table class="kpiTable">
               <tr><td>Total Cash In</td><td class="kpiGood" data-kpi="cashIn">0.00</td></tr>
               <tr><td>Total Seller</td><td class="kpiGood" data-kpi="sellRevenue">${fmt(s.totalRevenue)}</td></tr>
@@ -2993,21 +2993,30 @@ const TEXT_EN_TO_ID = {
   "Change Password": "Ubah Sandi",
   "Logout": "Keluar",
   "Searching...": "Pencarian...",
+  "Search transaction...": "Pencarian transaksi...",
   
   // KPI / Summary
 "Total Bought": "Total Beli",
 "Total Sold": "Total Jual",
 "Total Sales": "Total Penjualan",
-"Total Feeding": "Total Makanan",
+"Total Feeding": "Total Harga Makanan",
 "Total Pets": "Total Peliharaan",
 "Total Expenses": "Total Pengeluaran",
-"Total Other": "Total Lainya",
+"Total Other": "Total Lainnya",
 "Total Cash In": "Total Masuk Tunai",
 "Total Cash Out": "Total Keluar Tunai",
 "Total Cash In/Out": "Total Tunai Masuk/Keluar",
 "Total Price Quantity": "Total Harga Seunit",
 "Total Price": "Total Harga",
 "Available Quantity": "Unit Tersedia",
+    // KPI / Summary
+"Total Seller": "Total Hasil Jual",
+"Total Quantity KG": "Total Unit KG",
+"Total KG": "Total KG",
+"Total Missing": "Total Unit Kehilangan",
+"Total Price Missing": "Total Harga Kehilangan",
+"Total Pets Available": "Total Tersedia Peliharaan",
+"Total Profit": "Total Keuntungan",
 
 // Date preset / filter
 "Today": "Hari Ini",
@@ -3023,6 +3032,9 @@ const TEXT_EN_TO_ID = {
 "Date Range": "Pilih Tanggal",
 "No transaction in this date range.": "Tiada transaksi dalam Tanngal yang di pilih.",
 "No vault yet.": "Belum ada vault.",
+"Transaction": "Transaksi",
+"Actions": "Tindakan",
+"Date & Time": "Tanggal & Waktu",
   
   "Open": "Buka",
   "History": "Riwayat",
@@ -3055,7 +3067,7 @@ const TEXT_EN_TO_ID = {
   "Cash-Out": "Tunai Keluar",
   
   "Buy": "Beli",
-  "Selling": "Jual",
+  "Selling": "Menjual",
   "Total Quantity": "Total Unit",
   "Available Quantity:": "Unit Tersedia",
   "Missing": "Hilang",

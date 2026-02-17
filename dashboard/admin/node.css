@@ -1487,3 +1487,6 @@ input[type="number"]{
 }
 .langOpt:hover{ background: var(--bgDropdownhover); color: var(--colorHover); }
 .langOpt:active{ color: var(--colorActive); }
+.miSvg{
+  display:block;
+}

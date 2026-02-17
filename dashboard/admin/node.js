@@ -1226,7 +1226,7 @@ ${!isHistory ? `
               <tr><td>Total Feeding</td><td class="kpiGood" data-kpi="feedTotal">0.00</td></tr>
               <tr><td>Total Other</td><td class="kpiGood" data-kpi="otherTotal">0.00</td></tr>
               <tr><td>Total Cash In/Out</td><td class="kpiGood" data-kpi="cashNet">0.00</td></tr>
-              <tr><td>Total Sales</td><td class="${salesClass}" data-kpi="sales">${fmt(salesValue)}</td></tr>
+              <tr><td>Total Profit</td><td class="${salesClass}" data-kpi="sales">${fmt(salesValue)}</td></tr>
             </table>
           </div>
 
@@ -1242,7 +1242,7 @@ ${!isHistory ? `
               <tr><td>Total Missing</td><td class="kpiBad" data-kpi="missingQty">${Number(s.missing?.qty||0).toLocaleString()}</td></tr>
               <tr><td>Total Price Missing</td><td class="kpiGood" data-kpi="missingTotal">0.00</td></tr>
               <tr><td>Total Pets Available</td><td class="kpiGood" data-kpi="availablePig">${availablePig.toLocaleString()}</td></tr>
-              <tr><td>Total Profit</td><td class="${profitClass}" data-kpi="profit">${fmt(profitVal)}</td></tr>
+              <tr><td>Total Sales</td><td class="${profitClass}" data-kpi="profit">${fmt(profitVal)}</td></tr>
             </table>
           </div>
 

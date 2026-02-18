@@ -1591,12 +1591,15 @@ function ensurePagerBar(vaultId){
     </div>
 
     <div class="tblPagerRight">
-      <select data-per="${vaultId}">
-        <option value="10">10 / page</option>
-        <option value="20">20 / page</option>
-        <option value="50">50 / page</option>
-        <option value="100">100 / page</option>
-      </select>
+<div class="customSelect" data-per="${vaultId}">
+  <div class="cs-selected">10 / page</div>
+  <div class="cs-options">
+    <div data-value="10">10 / page</div>
+    <div data-value="20">20 / page</div>
+    <div data-value="50">50 / page</div>
+    <div data-value="100">100 / page</div>
+  </div>
+</div>
     </div>
   `;
 
@@ -3394,4 +3397,43 @@ document.addEventListener("DOMContentLoaded", initThemeToggle);
 window.addEventListener("storage", (e)=>{
   if(e.key !== THEME_KEY) return;
   applyTheme(loadTheme());
+});
+document.addEventListener("click", (e)=>{
+  const select = e.target.closest(".customSelect");
+
+  // tutup semua dropdown kalau klik luar
+  if(!select){
+    document.querySelectorAll(".customSelect").forEach(s=>{
+      s.classList.remove("open");
+    });
+    return;
+  }
+
+  // toggle open
+  if(e.target.closest(".cs-selected")){
+    select.classList.toggle("open");
+    return;
+  }
+
+  // pilih option
+  const option = e.target.closest(".cs-options div");
+  if(option){
+    const value = option.dataset.value;
+    const vid = select.dataset.per;
+
+    const p = getPaging(vid);
+    p.per = Number(value);
+    p.page = 1;
+
+    select.querySelector(".cs-selected").textContent = option.textContent;
+
+    select.querySelectorAll(".cs-options div").forEach(o=>{
+      o.classList.remove("active");
+    });
+    option.classList.add("active");
+
+    select.classList.remove("open");
+
+    rerenderVaultTbody(vid);
+  }
 });

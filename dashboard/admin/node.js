@@ -1606,6 +1606,26 @@ function ensurePagerBar(vaultId){
   tblWrap.insertAdjacentElement("afterend", bar);
   return bar;
 }
+function buildPageItems(current, total){
+  if(total <= 7){
+    return Array.from({length: total}, (_,i)=> i+1);
+  }
+
+  const items = [];
+  items.push(1);
+
+  const left  = Math.max(2, current - 1);
+  const right = Math.min(total - 1, current + 1);
+
+  if(left > 2) items.push("...");
+
+  for(let p = left; p <= right; p++) items.push(p);
+
+  if(right < total - 1) items.push("...");
+
+  items.push(total);
+  return items;
+}
 
 function renderPagerButtons(vaultId, total, totalPages){
   const bar = ensurePagerBar(vaultId);
@@ -1621,39 +1641,108 @@ function renderPagerButtons(vaultId, total, totalPages){
     info.textContent = `${start}-${end} of ${total} items`;
   }
 
-  // pages buttons
-  const pagesWrap = bar.querySelector(`[data-pages="${vaultId}"]`);
-  if(pagesWrap){
-    const maxBtn = 7; // limit supaya tak panjang
-    let start = Math.max(1, p.page - 3);
-    let end   = Math.min(totalPages, start + (maxBtn - 1));
-    start = Math.max(1, end - (maxBtn - 1));
+  // ===== prev/next buttons =====
+  const btnPrev = bar.querySelector(`[data-prev="${vaultId}"]`);
+  const btnNext = bar.querySelector(`[data-next="${vaultId}"]`);
 
-    pagesWrap.innerHTML = "";
-    for(let i=start; i<=end; i++){
-      const b = document.createElement("button");
-      b.type = "button";
-      b.className = "pbtn" + (i === p.page ? " active" : "");
-      b.textContent = String(i);
-      b.dataset.page = String(i);
-      b.dataset.vid = vaultId;
-      pagesWrap.appendChild(b);
-    }
+  if(btnPrev && btnPrev.dataset._bound !== "1"){
+    btnPrev.dataset._bound = "1";
+    btnPrev.addEventListener("click", ()=>{
+      const pp = getPaging(vaultId);
+      if(pp.page > 1){
+        pp.page -= 1;
+        rerenderVaultTbody(vaultId);
+      }
+    });
+  }
+  if(btnNext && btnNext.dataset._bound !== "1"){
+    btnNext.dataset._bound = "1";
+    btnNext.addEventListener("click", ()=>{
+      const pp = getPaging(vaultId);
+      const tp = Math.max(1, Math.ceil((total||0) / pp.per));
+      if(pp.page < tp){
+        pp.page += 1;
+        rerenderVaultTbody(vaultId);
+      }
+    });
   }
 
-  // dropdown sync
-  const sel = bar.querySelector(`[data-per="${vaultId}"]`);
-  if(sel && sel.dataset._bound !== "1"){
-    sel.value = String(p.per);
-    sel.dataset._bound = "1";
+  // disable state
+  if(btnPrev) btnPrev.disabled = (p.page <= 1);
+  if(btnNext) btnNext.disabled = (p.page >= totalPages);
 
-    sel.addEventListener("change", ()=>{
-      p.per = Number(sel.value || 10) || 10;
-      p.page = 1;
-      rerenderVaultTbody(vaultId);
+  // ===== pages buttons + dots =====
+  const pagesWrap = bar.querySelector(`[data-pages="${vaultId}"]`);
+  if(pagesWrap){
+    pagesWrap.innerHTML = "";
+
+    const items = buildPageItems(p.page, totalPages);
+
+    items.forEach(it=>{
+      if(it === "..."){
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "pbtn";
+        dot.textContent = "...";
+        dot.disabled = true;
+        dot.style.opacity = ".6";
+        pagesWrap.appendChild(dot);
+        return;
+      }
+
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "pbtn" + (it === p.page ? " active" : "");
+      b.textContent = String(it);
+      b.addEventListener("click", ()=>{
+        const pp = getPaging(vaultId);
+        pp.page = it;
+        rerenderVaultTbody(vaultId);
+      });
+      pagesWrap.appendChild(b);
     });
-  }else if(sel){
-    sel.value = String(p.per);
+  }
+
+  // ===== per-page customSelect sync + bind =====
+  const cs = bar.querySelector(`.customSelect[data-per="${vaultId}"]`);
+  if(cs){
+    const selected = cs.querySelector(".cs-selected");
+    const optsWrap = cs.querySelector(".cs-options");
+    if(selected && optsWrap){
+      // sync label ikut p.per
+      selected.textContent = `${p.per} / page`;
+
+      // bind sekali sahaja
+      if(cs.dataset._bound !== "1"){
+        cs.dataset._bound = "1";
+
+        // toggle open
+        selected.addEventListener("click", (e)=>{
+          e.stopPropagation();
+          cs.classList.toggle("open");
+        });
+
+        // click option
+        optsWrap.addEventListener("click", (e)=>{
+          const opt = e.target.closest("[data-value]");
+          if(!opt) return;
+
+          const val = Number(opt.dataset.value || 10) || 10;
+          const pp = getPaging(vaultId);
+          pp.per = val;
+          pp.page = 1;
+
+          selected.textContent = `${val} / page`;
+          cs.classList.remove("open");
+          rerenderVaultTbody(vaultId);
+        });
+
+        // close bila click luar
+        document.addEventListener("click", ()=>{
+          cs.classList.remove("open");
+        });
+      }
+    }
   }
 }
 function rerenderVaultTbody(vaultId){

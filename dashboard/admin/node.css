@@ -1645,7 +1645,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
 
 .cs-selected::after{
   content:"▼";
-  font-size:10px;
+  font-size:8px;
   opacity:.7;
   display:inline-block;           /* penting supaya transform jalan */
   transition: transform .18s ease; /* smooth */

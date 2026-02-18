@@ -1698,72 +1698,41 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   top: auto !important;
   bottom: calc(100% + 6px) !important;
 }
-/* ===== PAGER MOBILE: 1 BARIS TANPA SCROLL ===== */
+/* ===== PAGER MOBILE: NO WRAP + SWIPE HORIZONTAL ===== */
 @media (max-width: 560px){
   .tblPager{
-    flex-wrap: nowrap !important;        /* 1 baris */
-    gap:6px;
-    overflow: hidden !important;         /* ❌ no scroll */
-    align-items: center;
+    flex-wrap: nowrap !important;    /* ❌ jangan turun baris */
+    gap:8px;
+    overflow-x: auto;               /* ✅ boleh swipe kiri/kanan */
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;          /* Firefox hide scrollbar */
   }
+  .tblPager::-webkit-scrollbar{ display:none; } /* Chrome hide scrollbar */
 
   .tblPagerLeft{
+    flex-wrap: nowrap !important;   /* ❌ jangan wrap */
+    white-space: nowrap;
+  }
+
+  .tblPagerPages{
     flex-wrap: nowrap !important;
-    min-width: 0;                        /* penting untuk ellipsis */
-    gap:6px;
-    flex: 1 1 auto;                      /* kiri boleh shrink */
+    white-space: nowrap;
   }
 
-  .tblPagerRight{
-    flex: 0 0 auto;                      /* kanan jangan shrink */
-  }
-
-  /* INFO TEXT jadi pendek (ellipsis) */
+  /* (optional) info text jadi pendek & tak makan ruang */
   .tblPagerLeft .hint{
-    flex: 1 1 auto;
-    min-width: 0;
-    max-width: 110px;                    /* adjust ikut suka */
+    max-width: 110px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 12px;
-    opacity: .8;
   }
 
-  /* pages jangan wrap */
-  .tblPagerPages{
-    display:flex;
-    flex-wrap: nowrap !important;
-    gap:4px;
-    min-width: 0;
+  /* per-page dropdown jangan pecah */
+  .tblPagerRight{
+    flex: 0 0 auto;
   }
-
-  /* kecilkan button supaya muat */
-  .tblPager .pbtn{
-    min-width: 28px;
-    height: 28px;
-    padding: 0 6px;
-    font-size: 12px;
-    border-radius: 6px;
-  }
-
-  /* kecilkan dropdown per page */
   .customSelect{
-    width: 88px;                         /* asal 100px */
-    font-size: 12px;
+    flex: 0 0 auto;
   }
-  .cs-selected{
-    height: 28px;
-    padding: 0 9px;
-    border-radius: 6px;
-  }
-  .cs-options div{
-    padding: 7px 9px;
-    font-size: 12px;
-  }
-}
-
-/* kalau phone sangat kecil, buang hint terus */
-@media (max-width: 420px){
-  .tblPagerLeft .hint{ display:none; }
 }

@@ -2525,13 +2525,16 @@ function calcBuy(){
   const qty   = intVal("buyQty");
   const price = moneyVal("buyPrice");
   const autoTotal = (qty > 0 && price > 0) ? (qty * price) : 0;
+
   if(!buyTotalManual){
     $("buyTotal").value = autoTotal ? moneyFormat(String(autoTotal)) : "";
   }
-
-  const total = moneyVal("buyTotal");
+  const total  = moneyVal("buyTotal");
   const enough = total <= currentBalance;
-  $("buyTotal").style.borderColor = enough ? "rgba(255,255,255,.12)" : "rgba(239,68,68,.65)";
+  const el = $("buyTotal");
+  el.classList.toggle("isBad", !enough);
+  el.classList.toggle("isOk", enough);
+
   $("buyBalanceHint").textContent = enough
     ? `Balance: ${fmt(currentBalance - total)}`
     : `Insufficient balance: ${fmt(total)} (Balance: ${fmt(currentBalance)})`;

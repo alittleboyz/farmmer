@@ -1622,3 +1622,58 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   color:var(--txt);
   font-size:13px;
 }
+/* ===== CUSTOM SELECT ===== */
+.customSelect{
+  position:relative;
+  width:120px;
+  font-size:13px;
+  cursor:pointer;
+  user-select:none;
+}
+
+.cs-selected{
+  padding:8px 10px;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.06);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.cs-selected::after{
+  content:"▼";
+  font-size:10px;
+  opacity:.7;
+}
+
+.cs-options{
+  position:absolute;
+  top:110%;
+  left:0;
+  right:0;
+  background:#141c2b;   /* <-- tukar warna background sini */
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:8px;
+  display:none;
+  overflow:hidden;
+  z-index:1000;
+}
+
+.customSelect.open .cs-options{
+  display:block;
+}
+
+.cs-options div{
+  padding:8px 10px;
+  transition:.15s;
+}
+
+.cs-options div:hover{
+  background:#1e2a44;  /* <-- tukar warna hover sini */
+}
+
+.cs-options div.active{
+  background:var(--btn);
+  color:#fff;
+}

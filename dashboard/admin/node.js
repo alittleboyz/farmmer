@@ -1607,30 +1607,28 @@ function ensurePagerBar(vaultId){
   return bar;
 }
 function buildPageItems(current, total){
-  // Kau nak bila dah ada 4 page ke atas -> mula guna "..."
-  // (kalau total 1-3, tunjuk semua)
-  if(total <= 3){
+  // total kecil: tunjuk semua
+  if(total <= 7){
     return Array.from({length: total}, (_,i)=> i+1);
   }
 
-  // Kalau total kecil (4-7), kau nak jadi: 1 2 3 ... last
-  if(total <= 7){
-    return [1, 2, 3, "...", total];
-  }
+  const items = [];
+  const window = 2; // kiri/kanan 2 => akan jadi ... 3 4 5 6 7 ...
 
-  // Total besar:
-  // - dekat awal: 1 2 3 ... last
-  if(current <= 3){
-    return [1, 2, 3, "...", total];
-  }
+  const left  = Math.max(2, current - window);
+  const right = Math.min(total - 1, current + window);
 
-  // - dekat akhir: 1 ... last-2 last-1 last
-  if(current >= total - 2){
-    return [1, "...", total-2, total-1, total];
-  }
+  items.push(1);
 
-  // - tengah: 1 ... current-1 current current+1 ... last
-  return [1, "...", current-1, current, current+1, "...", total];
+  if(left > 2) items.push("...");
+
+  for(let i=left; i<=right; i++) items.push(i);
+
+  if(right < total - 1) items.push("...");
+
+  items.push(total);
+
+  return items;
 }
 
 function renderPagerButtons(vaultId, total, totalPages){

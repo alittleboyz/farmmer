@@ -1628,8 +1628,8 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
 .cs-selected{
   padding:8px 10px;
   border-radius:6px;
-  border:1px solid rgba(255,255,255,.15);
-  background:rgba(255,255,255,.06);
+  border:1px solid var(--borderTable);
+  background:var(--inputBg);
   display:flex;
   justify-content:space-between;
   align-items:center;

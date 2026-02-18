@@ -1645,8 +1645,14 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   content:"▼";
   font-size:10px;
   opacity:.7;
+  display:inline-block;           /* penting supaya transform jalan */
+  transition: transform .18s ease; /* smooth */
+  transform-origin: 50% 55%;
 }
-
+/* bila dropdown open -> arrow jadi ▲ (rotate) */
+.customSelect.open .cs-selected::after{
+  transform: rotate(180deg);
+}
 .cs-options{
   position:absolute;
   top:110%;

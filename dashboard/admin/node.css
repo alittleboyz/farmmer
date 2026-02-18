@@ -1593,14 +1593,15 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
 }
 
 .tblPager .pbtn{
-  padding:6px 10px;
-  min-width:34px;
-  font-size:12px;
+  padding:0px 6px;
+  font-size:14px;
   border-radius:6px;
   border:1px solid rgba(255,255,255,.12);
   background:rgba(255,255,255,.06);
   cursor:pointer;
   transition:.2s;
+  min-width:32px;
+  height:32px;
 }
 
 .tblPager .pbtn:hover{
@@ -1626,7 +1627,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
 .customSelect{
   position:relative;
   width:90px;
-  font-size:12px;
+  font-size:14px;
   cursor:pointer;
   user-select:none;
 }

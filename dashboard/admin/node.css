@@ -1560,3 +1560,65 @@ input.isOk:hover, select.isOk:hover, textarea.isOk:hover{
 input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   border-color: rgba(239,68,68,.85) !important;
 }
+/* ===== TABLE PAGER ===== */
+.tblPager{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:12px;
+  padding:10px 12px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:10px;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.tblPagerLeft{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.tblPagerRight{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.tblPagerPages{
+  display:flex;
+  gap:6px;
+}
+
+.tblPager .pbtn{
+  padding:6px 10px;
+  min-width:34px;
+  font-size:13px;
+  border-radius:6px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  cursor:pointer;
+  transition:.2s;
+}
+
+.tblPager .pbtn:hover{
+  background:rgba(255,255,255,.12);
+}
+
+.tblPager .pbtn.active{
+  background:var(--btn);
+  border-color:var(--btn);
+  color:#fff;
+  font-weight:600;
+}
+
+.tblPager select{
+  padding:6px 10px;
+  border-radius:6px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  color:var(--txt);
+  font-size:13px;
+}

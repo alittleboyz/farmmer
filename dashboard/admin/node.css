@@ -1569,6 +1569,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   background:transparent;
   flex-wrap:wrap;
   gap:10px;
+  transition: all 0.2s;
 }
 
 .tblPagerLeft{
@@ -1599,6 +1600,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   transition:.2s;
   min-width:32px;
   height:32px;
+  transition: all 0.2s;
 }
 
 .tblPager .pbtn.active{
@@ -1615,6 +1617,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   background:rgba(255,255,255,.06);
   color:var(--txt);
   font-size:13px;
+  transition: all 0.2s;
 }
 /* ===== CUSTOM SELECT ===== */
 .customSelect{
@@ -1635,6 +1638,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   align-items:center;
   height:32px;
   outline:none;
+  transition: all 0.2s;
 }
 .cs-selected:focus{border-color:#1668dc; color:#1668dc;}
 .cs-selected:hover{border-color:#3c89e8; color:#3c89e8;}
@@ -1646,6 +1650,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   display:inline-block;           /* penting supaya transform jalan */
   transition: transform .18s ease; /* smooth */
   transform-origin: 50% 55%;
+  transition: all 0.2s;
 }
 /* bila dropdown open -> arrow jadi ▲ (rotate) */
 .customSelect.open .cs-selected::after{
@@ -1662,6 +1667,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   display:none;
   overflow:hidden;
   z-index:1000;
+  transition: all 0.2s;
 }
 
 .customSelect.open .cs-options{

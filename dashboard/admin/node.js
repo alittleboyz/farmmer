@@ -686,7 +686,20 @@ let drawerLogoutBtn = null;
 
 let drawerBound = false;
 let __scrollY = 0;
+// ===== PAGINATION (per vault) =====
+const vaultPaging = {}; // { [vaultId]: { page, per } }
 
+function getPaging(vaultId){
+  if(!vaultPaging[vaultId]){
+    vaultPaging[vaultId] = { page: 1, per: 10 };
+  }
+  return vaultPaging[vaultId];
+}
+
+function resetPaging(vaultId){
+  const p = getPaging(vaultId);
+  p.page = 1;
+}
 function syncDrawer(){
   const balEl = document.getElementById("balanceText");
   if(drawerWallet && balEl) drawerWallet.textContent = balEl.textContent.trim();
@@ -1556,6 +1569,90 @@ function renderVaultList(targetId, data, bucket){
     });
   }
 }
+function ensurePagerBar(vaultId){
+  const card = document.querySelector(`.card[data-vid="${vaultId}"]`);
+  if(!card) return null;
+
+  let bar = card.querySelector(".tblPager");
+  if(bar) return bar;
+
+  const tblWrap = card.querySelector(".tblWrap");
+  if(!tblWrap) return null;
+
+  bar = document.createElement("div");
+  bar.className = "tblPager";
+
+  bar.innerHTML = `
+    <div class="tblPagerLeft">
+      <span class="hint" data-info="${vaultId}"></span>
+      <button class="pbtn" type="button" data-prev="${vaultId}">‹</button>
+      <div class="tblPagerPages" data-pages="${vaultId}"></div>
+      <button class="pbtn" type="button" data-next="${vaultId}">›</button>
+    </div>
+
+    <div class="tblPagerRight">
+      <select data-per="${vaultId}">
+        <option value="10">10 / page</option>
+        <option value="20">20 / page</option>
+        <option value="50">50 / page</option>
+        <option value="100">100 / page</option>
+      </select>
+    </div>
+  `;
+
+  tblWrap.insertAdjacentElement("afterend", bar);
+  return bar;
+}
+
+function renderPagerButtons(vaultId, total, totalPages){
+  const bar = ensurePagerBar(vaultId);
+  if(!bar) return;
+
+  const p = getPaging(vaultId);
+
+  // info text
+  const info = bar.querySelector(`[data-info="${vaultId}"]`);
+  if(info){
+    const start = total ? ((p.page - 1) * p.per + 1) : 0;
+    const end   = Math.min(total, (p.page * p.per));
+    info.textContent = `${start}-${end} of ${total} items`;
+  }
+
+  // pages buttons
+  const pagesWrap = bar.querySelector(`[data-pages="${vaultId}"]`);
+  if(pagesWrap){
+    const maxBtn = 7; // limit supaya tak panjang
+    let start = Math.max(1, p.page - 3);
+    let end   = Math.min(totalPages, start + (maxBtn - 1));
+    start = Math.max(1, end - (maxBtn - 1));
+
+    pagesWrap.innerHTML = "";
+    for(let i=start; i<=end; i++){
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "pbtn" + (i === p.page ? " active" : "");
+      b.textContent = String(i);
+      b.dataset.page = String(i);
+      b.dataset.vid = vaultId;
+      pagesWrap.appendChild(b);
+    }
+  }
+
+  // dropdown sync
+  const sel = bar.querySelector(`[data-per="${vaultId}"]`);
+  if(sel && sel.dataset._bound !== "1"){
+    sel.value = String(p.per);
+    sel.dataset._bound = "1";
+
+    sel.addEventListener("change", ()=>{
+      p.per = Number(sel.value || 10) || 10;
+      p.page = 1;
+      rerenderVaultTbody(vaultId);
+    });
+  }else if(sel){
+    sel.value = String(p.per);
+  }
+}
 function rerenderVaultTbody(vaultId){
   const cache = vaultTxCache[vaultId];
   const tbody = document.querySelector(`[data-tbody="${vaultId}"]`);
@@ -1605,12 +1702,30 @@ if(q){
   // ✅ IMPORTANT: KPI kena update walaupun table kosong
   updateVaultKpiFromFiltered(vaultId);
 
-  if(use.length===0){
-    tbody.innerHTML = `<tr><td colspan="7" class="hint">No transaction in this date range.</td></tr>`;
-    return;
-  }
+// ===== PAGINATION APPLY =====
+const p = getPaging(vaultId);
+const total = use.length;
+const totalPages = Math.max(1, Math.ceil(total / p.per));
+if(p.page > totalPages) p.page = totalPages;
 
-  tbody.innerHTML = use.map(([txId,t]) => txRowHTML(vaultId, txId, t, bucket)).join("");
+// table kosong (lepas filter)
+if(total === 0){
+  renderPagerButtons(vaultId, 0, 1);
+  tbody.innerHTML = `<tr><td colspan="7" class="hint">No transaction in this date range.</td></tr>`;
+  return;
+}
+
+// slice rows ikut page
+const startIdx = (p.page - 1) * p.per;
+const pageRows = use.slice(startIdx, startIdx + p.per);
+
+// render pager UI
+renderPagerButtons(vaultId, total, totalPages);
+
+// render rows
+tbody.innerHTML = pageRows
+  .map(([txId,t]) => txRowHTML(vaultId, txId, t, bucket))
+  .join("");
 }
 function bindTxSearchClear(vaultId){
   const input = document.querySelector(`input[data-txsearch="${vaultId}"]`);
@@ -1649,6 +1764,7 @@ function initVaultDateRangeUI(vaultId){
     sel.value = vaultTypeFilters[vaultId] || "all";
     sel.onchange = ()=>{
       vaultTypeFilters[vaultId] = sel.value || "all";
+      resetPaging(vaultId);
       rerenderVaultTbody(vaultId);
     };
   }
@@ -1658,6 +1774,7 @@ if(s){
   s.value = vaultTxSearchFilters[vaultId] || "";
   s.oninput = ()=>{
     vaultTxSearchFilters[vaultId] = s.value || "";
+    resetPaging(vaultId);
     rerenderVaultTbody(vaultId);
   };
    bindTxSearchClear(vaultId);
@@ -1707,6 +1824,7 @@ if(s){
 
         input.value = `${ymd(startMs)} → ${ymd(endMs)}`;
         clearActivePreset(vaultId);
+        resetPaging(vaultId);
         rerenderVaultTbody(vaultId);
       }
     },
@@ -1724,6 +1842,7 @@ if(s){
 
         input.value = `${ymd(startMs)} → ${ymd(endMs)}`;
         clearActivePreset(vaultId);
+        resetPaging(vaultId);
         rerenderVaultTbody(vaultId);
       }
     }
@@ -2823,6 +2942,38 @@ document.addEventListener("click", (e)=>{
   }
 
   setActivePreset(vaultId, key);
+});
+document.addEventListener("click", (e)=>{
+  const prev = e.target.closest("[data-prev]");
+  const next = e.target.closest("[data-next]");
+  const page = e.target.closest("[data-page][data-vid]");
+
+  if(prev){
+    const vid = prev.dataset.prev;
+    const p = getPaging(vid);
+    if(p.page > 1){
+      p.page--;
+      rerenderVaultTbody(vid);
+    }
+    return;
+  }
+
+  if(next){
+    const vid = next.dataset.next;
+    const p = getPaging(vid);
+    p.page++;
+    rerenderVaultTbody(vid);
+    return;
+  }
+
+  if(page){
+    const vid = page.dataset.vid;
+    const n = Number(page.dataset.page || 1) || 1;
+    const p = getPaging(vid);
+    p.page = n;
+    rerenderVaultTbody(vid);
+    return;
+  }
 });
   // ===== AUTH BOOT =====
 onAuthStateChanged(auth, async (user)=>{

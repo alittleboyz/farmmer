@@ -1677,3 +1677,11 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   background:var(--btn);
   color:#fff;
 }
+/* ✅ Only yang ada data-drop="up" buka ke atas */
+.customSelect[data-drop="up"]{
+  position: relative;
+}
+.customSelect[data-drop="up"] .cs-options{
+  top: auto !important;
+  bottom: calc(100% + 6px) !important;
+}

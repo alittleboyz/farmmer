@@ -1698,3 +1698,41 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   top: auto !important;
   bottom: calc(100% + 6px) !important;
 }
+/* ===== PAGER MOBILE: NO WRAP + SWIPE HORIZONTAL ===== */
+@media (max-width: 560px){
+  .tblPager{
+    flex-wrap: nowrap !important;    /* ❌ jangan turun baris */
+    gap:8px;
+    overflow-x: auto;               /* ✅ boleh swipe kiri/kanan */
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;          /* Firefox hide scrollbar */
+  }
+  .tblPager::-webkit-scrollbar{ display:none; } /* Chrome hide scrollbar */
+
+  .tblPagerLeft{
+    flex-wrap: nowrap !important;   /* ❌ jangan wrap */
+    white-space: nowrap;
+  }
+
+  .tblPagerPages{
+    flex-wrap: nowrap !important;
+    white-space: nowrap;
+  }
+
+  /* (optional) info text jadi pendek & tak makan ruang */
+  .tblPagerLeft .hint{
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* per-page dropdown jangan pecah */
+  .tblPagerRight{
+    flex: 0 0 auto;
+  }
+  .customSelect{
+    flex: 0 0 auto;
+  }
+}

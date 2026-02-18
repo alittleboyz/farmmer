@@ -1490,3 +1490,65 @@ input[type="number"]{
 .miSvg{
   display:block;
 }
+/* 1) buang default outline putih */
+button:focus,
+a:focus,
+input:focus,
+select:focus,
+textarea:focus,
+.tab:focus,
+.pill:focus,
+.btn:focus,
+.btn2:focus,
+.btn3:focus,
+.btn-modal:focus,
+.btn-user:focus,
+.btn-view:focus,
+.btn-edit:focus,
+.btn-delete:focus,
+.pbtn:focus,
+.iconBtn:focus,
+.cs__btn:focus,
+.userMenuItem:focus,
+.langOpt:focus{
+  outline: none !important;
+}
+
+/* 2) bila TAB (keyboard), bagi ring biru */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+.tab:focus-visible,
+.pill:focus-visible,
+.btn:focus-visible,
+.btn2:focus-visible,
+.btn3:focus-visible,
+.btn-modal:focus-visible,
+.btn-user:focus-visible,
+.btn-view:focus-visible,
+.btn-edit:focus-visible,
+.btn-delete:focus-visible,
+.pbtn:focus-visible,
+.iconBtn:focus-visible,
+.cs__btn:focus-visible,
+.userMenuItem:focus-visible,
+.langOpt:focus-visible{
+  outline: none !important;
+  border-color: var(--borderActive) !important;
+}
+
+/* 3) khas untuk elemen yang border dia #303030 (pill/tab) */
+.pill:focus-visible,
+.tab:focus-visible{
+  border-color: var(--borderActive) !important;
+}
+.isOk{
+  border-color: var(--borderTable) !important;
+}
+
+/* bila tak cukup: border merah */
+.isBad{
+  border-color:red !important;
+}

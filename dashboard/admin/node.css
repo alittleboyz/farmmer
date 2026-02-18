@@ -347,7 +347,7 @@ body.drawerOpen{
       transition: all 0.2s;
     }
     input:focus,select:focus,textarea:focus{border-color:#1668dc;}
-    input:hover,select:hover,textarea:hover{border-color:#3c89e8;}
+    input:hover,select:hover,textarea:hover{border-color:#3c89e8 !important;}
     textarea{min-height:84px; resize:vertical}
     .modalFoot{
       display:flex; justify-content:flex-end; gap:10px;
@@ -1537,7 +1537,7 @@ textarea:focus-visible,
 .langOpt:focus-visible{
   outline: none !important;
   border-color: var(--borderActive) !important;
-  box-shadow: 0 0 0 3px rgba(22,104,220,.45) !important;
+  box-shadow: 0 0 0 2px rgba(22,104,220,.45) !important;
 }
 
 /* 3) khas untuk elemen yang border dia #303030 (pill/tab) */
@@ -1551,5 +1551,12 @@ textarea:focus-visible,
 
 /* bila tak cukup: border merah */
 .isBad{
-  border-color:red !important;
+  border-color:rgba(239,68,68,.85) !important;
+}
+/* kalau input tengah OK/BAD, hover kekal ikut state (jangan tukar) */
+input.isOk:hover, select.isOk:hover, textarea.isOk:hover{
+  border-color: var(--borderActive) !important;
+}
+input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
+  border-color: rgba(239,68,68,.85) !important;
 }

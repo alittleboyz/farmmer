@@ -1673,7 +1673,8 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
 }
 
 .cs-options div:hover{
-  background:#1e2a44;  /* <-- tukar warna hover sini */
+  background: var(--bgDropdownhover);
+  color:#3c89e8;
 }
 
 .cs-options div.active{

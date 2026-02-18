@@ -2541,11 +2541,14 @@ function calcBuy(){
   if(!buyTotalManual){
     $("buyTotal").value = autoTotal ? moneyFormat(String(autoTotal)) : "";
   }
-  const total  = moneyVal("buyTotal");
-  const enough = total <= currentBalance;
-  const el = $("buyTotal");
-  el.classList.toggle("isBad", !enough);
-  el.classList.toggle("isOk", enough);
+const total  = moneyVal("buyTotal");
+const enough = total <= currentBalance;
+
+const el = $("buyTotal");
+const hasValue = total > 0;
+
+el.classList.toggle("isBad", hasValue && !enough);
+el.classList.toggle("isOk",  hasValue && enough);
 
   $("buyBalanceHint").textContent = enough
     ? `Balance: ${fmt(currentBalance - total)}`

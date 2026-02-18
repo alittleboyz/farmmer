@@ -2150,40 +2150,49 @@ bindLoadingClick("nvCreate", onNvCreate);
 
 if(act==="sell"){
   ctxVaultId = vid;
+
   const vSnap = await get(ref(db, `vaults/open/${vid}`));
-  $("sellVaultTitle").textContent = vSnap.exists()? `Vault: ${vSnap.val().title}` : "Vault";
+  $("sellVaultTitle").textContent = vSnap.exists() ? `Vault: ${vSnap.val().title}` : "Vault";
 
   const s = (vSnap.exists() ? (vSnap.val().summary || {}) : {});
-const babyQty  = Number(s.babyPig?.qty || 0);
-const missQty  = Number(s.missing?.qty || 0);
-const soldEkor = Number(s.totalEkor || 0);
+  const babyQty  = Number(s.babyPig?.qty || 0);
+  const missQty  = Number(s.missing?.qty || 0);
+  const soldEkor = Number(s.totalEkor || 0);
 
-ctxMissingPig = missQty;
-ctxAvailablePig = Math.max(0, babyQty - missQty - soldEkor);
-// ✅ block kalau stok 0
-const sellSaveBtn = $("sellSave");
-if(sellSaveBtn) sellSaveBtn.disabled = (ctxAvailablePig <= 0);
+  ctxMissingPig = missQty;
+  ctxAvailablePig = Math.max(0, babyQty - missQty - soldEkor);
 
-if(ctxAvailablePig <= 0){
-  $("sellEkorHint").textContent = "Available Quantity: 0";
-  toast("quantity not available", "error");
-  return; // ✅ stop sini, modal tak buka
-}
+  // ✅ block kalau stok 0
+  const sellSaveBtn = $("sellSave");
+  if(sellSaveBtn) sellSaveBtn.disabled = (ctxAvailablePig <= 0);
 
-$("sellMissing").value = String(ctxMissingPig);
-$("sellEkorHint").textContent = `Available Quantity: ${ctxAvailablePig}`;
-
-  $("sellPriceKg").value=""; $("sellKg").value="";
-  $("sellEkor").value=""; $("sellTotal").value="";
-  $("sellNote").value="";
-
-  // reset border
-  $("sellEkor").style.borderColor = "rgba(255,255,255,.12)";
-  if(!(await assertCanOperateOpenVault(vid))){
-  toast("No access: this vault is not yours.");
-  return;
+  if(ctxAvailablePig <= 0){
+    $("sellEkorHint").textContent = "Available Quantity: 0";
+    toast("quantity not available", "error");
+    return;
   }
+
+  $("sellMissing").value = String(ctxMissingPig);
+  $("sellEkorHint").textContent = `Available Quantity: ${ctxAvailablePig}`;
+
+  $("sellPriceKg").value = "";
+  $("sellKg").value = "";
+  $("sellEkor").value = "";
+  $("sellTotal").value = "";
+  $("sellNote").value = "";
+
+  // ✅ reset validation state (ikut CSS)
+  $("sellEkor").classList.remove("isBad","isOk");
+
+  if(!(await assertCanOperateOpenVault(vid))){
+    toast("No access: this vault is not yours.");
+    return;
+  }
+
   openModal("mSell");
+
+  // optional: supaya hint & border selaras bila modal buka
+  validateSellEkor();
 }
 
 if(act==="close"){
@@ -2254,33 +2263,36 @@ if(!yes) return;
     calcMissing();
   }
 
-  if(t.kind==="sell"){
-    $("sellVaultTitle").textContent = `Edit Sell • Vault: ${vaultId}`;
+if(t.kind==="sell"){
+  $("sellVaultTitle").textContent = `Edit Sell • Vault: ${vaultId}`;
 
-    // update context available (biar limit ekor masih ikut summary)
-    const vSnap = await get(ref(db, `vaults/open/${vaultId}`));
-    const s = (vSnap.exists() ? (vSnap.val().summary || {}) : {});
-    const babyQty  = Number(s.babyPig?.qty || 0);
-    const missQty  = Number(s.missing?.qty || 0);
-    const soldEkor = Number(s.totalEkor || 0);
-    ctxMissingPig = missQty;
-    const oldEkor = Number(t.ekor || 0);
-    ctxAvailablePig = Math.max(0, babyQty - missQty - soldEkor + oldEkor);
+  const vSnap = await get(ref(db, `vaults/open/${vaultId}`));
+  const s = (vSnap.exists() ? (vSnap.val().summary || {}) : {});
+  const babyQty  = Number(s.babyPig?.qty || 0);
+  const missQty  = Number(s.missing?.qty || 0);
+  const soldEkor = Number(s.totalEkor || 0);
 
-    $("sellMissing").value = String(ctxMissingPig);
-    $("sellEkorHint").textContent = `Available Quantity: ${ctxAvailablePig}`;
+  ctxMissingPig = missQty;
 
-    $("sellPriceKg").value = String(t.priceKg ?? "");
-    $("sellKg").value = String(t.kg ?? "");
-    $("sellEkor").value = String(t.ekor ?? "");
-    $("sellTotal").value = String(t.total ?? "");
-    $("sellNote").value = String(t.note||"");
+  const oldEkor = Number(t.ekor || 0);
+  ctxAvailablePig = Math.max(0, babyQty - missQty - soldEkor + oldEkor);
 
-    $("sellEkor").style.borderColor = "rgba(255,255,255,.12)";
-    openModal("mSell");
-    calcSell();
-    validateSellEkor();
-  }
+  $("sellMissing").value = String(ctxMissingPig);
+  $("sellEkorHint").textContent = `Available Quantity: ${ctxAvailablePig}`;
+
+  $("sellPriceKg").value = String(t.priceKg ?? "");
+  $("sellKg").value      = String(t.kg ?? "");
+  $("sellEkor").value    = String(t.ekor ?? "");
+  $("sellTotal").value   = String(t.total ?? "");
+  $("sellNote").value    = String(t.note || "");
+
+  // ✅ reset dulu supaya tak “carry” merah dari sebelum ni
+  $("sellEkor").classList.remove("isBad","isOk");
+
+  openModal("mSell");
+  calcSell();
+  validateSellEkor(); // function ini akan set isOk/isBad ikut value
+}
 
   return;
 }
@@ -2756,16 +2768,21 @@ async function onSellSave(){
 bindLoadingClick("sellSave", onSellSave);
 // VALIDATE EKOR INPUT
 function validateSellEkor(){
-    // ✅ kalau stok 0, terus bagi merah & jangan bagi ok
+  const el = $("sellEkor");
+
   if(ctxAvailablePig <= 0){
     $("sellEkorHint").textContent = "Available Quantity: 0";
-    $("sellEkor").style.borderColor = "rgba(239,68,68,.85)";
+    el.classList.remove("isOk");
+    el.classList.add("isBad");
     return false;
   }
-  const ekor = intVal("sellEkor");
-  const ok = ekor <= ctxAvailablePig;
 
-  $("sellEkor").style.borderColor = ok ? "rgba(255,255,255,.12)" : "rgba(239,68,68,.85)";
+  const ekor = intVal("sellEkor");
+  const ok = ekor > 0 && ekor <= ctxAvailablePig;
+
+  el.classList.toggle("isBad", !ok);
+  el.classList.toggle("isOk", ok);
+
   $("sellEkorHint").textContent = ok
     ? `Available Quantity: ${ctxAvailablePig}`
     : `Maximal Available: ${ctxAvailablePig} Not Available ${ekor}`;

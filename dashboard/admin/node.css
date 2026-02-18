@@ -1668,6 +1668,8 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
 .cs-options div{
   padding:8px 10px;
   transition:.15s;
+  background:var(--inputBg);
+  color:var(--colorInput);
 }
 
 .cs-options div:hover{

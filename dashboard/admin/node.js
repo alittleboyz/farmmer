@@ -2933,7 +2933,7 @@ document.addEventListener("click", (e)=>{
   if(!r) return;
 
   vaultFilters[vaultId] = r;
-
+  resetPaging(vaultId);
   const fp = vaultPickers[vaultId];
   if(fp){
     fp.setDate([new Date(r.startMs), new Date(r.endMs)], true); // auto trigger render

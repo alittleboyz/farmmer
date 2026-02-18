@@ -1591,7 +1591,7 @@ function ensurePagerBar(vaultId){
     </div>
 
     <div class="tblPagerRight">
-<div class="customSelect" data-per="${vaultId}">
+<div class="customSelect" data-per="${vaultId}" data-drop="up">
   <div class="cs-selected">10 / page</div>
   <div class="cs-options">
     <div data-value="10">10 / page</div>

@@ -1574,7 +1574,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
 .tblPagerLeft{
   display:flex;
   align-items:center;
-  gap:3px;
+  gap:6px;
   flex-wrap:wrap;
 }
 
@@ -1586,7 +1586,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
 
 .tblPagerPages{
   display:flex;
-  gap:3px;
+  gap:6px;
 }
 
 .tblPager .pbtn{

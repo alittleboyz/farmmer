@@ -1634,8 +1634,11 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   justify-content:space-between;
   align-items:center;
   height:32px;
+  outline:none;
 }
-
+.cs-selected:focus{border-color:#1668dc; color:#1668dc;}
+.cs-selected:hover{border-color:#3c89e8; color:#3c89e8;}
+.cs-selected:active{border-color:#1554ad; color:#1554ad;}
 .cs-selected::after{
   content:"▼";
   font-size:7px;

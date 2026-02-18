@@ -1537,6 +1537,7 @@ textarea:focus-visible,
 .langOpt:focus-visible{
   outline: none !important;
   border-color: var(--borderActive) !important;
+  box-shadow: 0 0 0 3px rgba(22,104,220,.45) !important;
 }
 
 /* 3) khas untuk elemen yang border dia #303030 (pill/tab) */

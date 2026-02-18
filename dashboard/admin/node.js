@@ -2770,15 +2770,24 @@ bindLoadingClick("sellSave", onSellSave);
 function validateSellEkor(){
   const el = $("sellEkor");
 
+  // stok 0 memang bad
   if(ctxAvailablePig <= 0){
     $("sellEkorHint").textContent = "Available Quantity: 0";
-    el.classList.remove("isOk");
     el.classList.add("isBad");
+    el.classList.remove("isOk");
     return false;
   }
 
   const ekor = intVal("sellEkor");
-  const ok = ekor > 0 && ekor <= ctxAvailablePig;
+
+  // ✅ kalau kosong / 0, jangan merah lagi (neutral)
+  if(!ekor || ekor <= 0){
+    el.classList.remove("isBad","isOk");
+    $("sellEkorHint").textContent = `Available Quantity: ${ctxAvailablePig}`;
+    return false; // belum valid, tapi tak merah
+  }
+
+  const ok = ekor <= ctxAvailablePig;
 
   el.classList.toggle("isBad", !ok);
   el.classList.toggle("isOk", ok);

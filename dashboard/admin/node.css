@@ -336,7 +336,7 @@ body.drawerOpen{
     .x:active{transform:translateY(1px);color:var(--xActive);}
     .modalBody{padding:12px 14px 14px}
     .row{display:grid; grid-template-columns:1fr 1fr; gap:10px}
-    @media (max-width:700px){ .row{grid-template-columns:1fr} }
+    @media (max-width:700px){html:not(.forceDesktop) .row{grid-template-columns:1fr} }
     label{display:block; margin:10px 0 6px; color:color:rgba(255,255,255,.85); font-weight:400; font-size:14px}
     input,select,textarea{
       width:100%; padding:0px 15px; border-radius:6px;height:32px;
@@ -676,7 +676,7 @@ input[type="number"]{
   font-size:14px;
 }
 @media (max-width: 900px){
-  .kpiSplit{ grid-template-columns: 1fr; } /* phone: kanan turun bawah */
+  html:not(.forceDesktop).kpiSplit{ grid-template-columns: 1fr; } /* phone: kanan turun bawah */
 }
 
 .kpiTableCard{
@@ -785,7 +785,7 @@ input[type="number"]{
 }
 /* ===== MOBILE ===== */
 @media (max-width: 720px){
-  .rangeLeft{
+  html:not(.forceDesktop).rangeLeft{
     flex-wrap:wrap;          /*  boleh turun baris */
     align-items:stretch;
   }
@@ -839,9 +839,9 @@ input[type="number"]{
 }
 .pbtn:hover{color:#3c89e8}.pbtn:active{color:#1554ad}
 .pbtn.active{color:#1668dc;}
-@media (max-width:520px){.rangeRight{justify-content:flex-start}.pbtn{font-size:12px;padding:0px 5px}}
+@media (max-width:520px){html:not(.forceDesktop).rangeRight{justify-content:flex-start}.pbtn{font-size:12px;padding:0px 5px}}
   @media (max-width: 520px){
-  .flatpickr-calendar{
+  html:not(.forceDesktop).flatpickr-calendar{
     left: 50% !important;
     right: auto !important;
     transform: translateX(-50%) !important;
@@ -882,7 +882,7 @@ input[type="number"]{
 .txTimeRow .btn{ white-space:nowrap; }
 
 @media (max-width:520px){
-  .txTimeRow{ flex-direction:column; align-items:stretch; }
+  html:not(.forceDesktop).txTimeRow{ flex-direction:column; align-items:stretch; }
   .txTimeRow .btn{ width:100%; }
 }
 .vaultFooter{
@@ -909,7 +909,7 @@ input[type="number"]{
 
 /* responsive phone: jadi stack */
 @media (max-width:560px){
-  .vaultFooter{
+  html:not(.forceDesktop).vaultFooter{
     flex-direction:column;
     align-items:stretch;
   }
@@ -959,22 +959,22 @@ input[type="number"]{
   color:var(--colorInput);
 }
 @media (max-width:600px){
-  .vaultSearchBox{
+  html:not(.forceDesktop).vaultSearchBox{
     max-width:100%;
   }
 }
 @media (max-width:700px){
-  header{
+  html:not(.forceDesktop) header{
     flex-wrap: nowrap;        /* jangan wrap */
     gap:8px;
   }
-  .vaultSearchWrap{
+  html:not(.forceDesktop).vaultSearchWrap{
     flex: 1 1 auto;           /*  search boleh shrink */
     min-width: 0;
     margin-right:auto;
   }
   .vaultSearchBox{ max-width:100%; }
-  .right{
+  html:not(.forceDesktop).right{
     flex: 0 0 auto;
     flex-wrap: nowrap;        /*  icon tak turun */
     margin-left:auto;
@@ -1090,12 +1090,11 @@ input[type="number"]{
   color: rgba(255,255,255,.85);
 }
 
-
 /* RESPONSIVE: bila screen kecil/tablet -> pindah wallet ke drawer */
 @media (max-width: 900px){
-  .rightDrawerBtn{ display:inline-flex !important; }
-  #btnBalance{ display:none !important; }  /* hide wallet header */
-  #userDrop{ display:none !important; }    /* hide user dropdown header */
+  html:not(.forceDesktop) .rightDrawerBtn{ display:inline-flex !important; }
+  html:not(.forceDesktop) #btnBalance{ display:none !important; }
+  html:not(.forceDesktop) #userDrop{ display:none !important; }
 }
 
 /* ===== PATCH FIX ===== */
@@ -1258,13 +1257,13 @@ input[type="number"]{
 
 /* ====== Mobile style: jadikan bottom-sheet ====== */
 @media (max-width: 520px){
-  .modalBack{
+   html:not(.forceDesktop).modalBack{
     align-items: flex-end;     /* turun bawah */
     justify-content: center;
     padding: 10px;
     padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
   }
-  .modal{
+  html:not(.forceDesktop).modal{
     width: 100%;
     border-radius: 18px 18px 0 0;
     max-height: calc(var(--vvh, 100vh) - 12px);
@@ -1701,7 +1700,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
 }
 /* ===== PAGER MOBILE: NO WRAP + SWIPE HORIZONTAL ===== */
 @media (max-width: 560px){
-  .tblPager{
+  html:not(.forceDesktop).tblPager{
     flex-wrap: nowrap !important;    /* ❌ jangan turun baris */
     gap:8px;
     overflow-x: auto;               /* ✅ boleh swipe kiri/kanan */
@@ -1820,3 +1819,24 @@ html.forceDesktop .desktopModeBtn .dmState{
   border-color: var(--btn);
   color: var(--btn);
 }
+/* ============================
+   FORCE DESKTOP OVERRIDE
+   bila html.forceDesktop -> padam responsive mobile
+   ============================ */
+html.forceDesktop .rightDrawerBtn{ display:none !important; }
+html.forceDesktop #btnBalance{ display:inline-flex !important; }
+html.forceDesktop #userDrop{ display:block !important; } /* kalau #userDrop ialah container dropdown */
+
+html.forceDesktop header{
+  flex-wrap: nowrap !important;
+}
+
+/* kalau ada layout yang jadi stack kat mobile, paksa balik desktop */
+html.forceDesktop .rangeLeft{ flex-wrap: nowrap !important; align-items:center !important; }
+html.forceDesktop .vaultFooter{ flex-direction: row !important; align-items:flex-end !important; }
+html.forceDesktop .vaultFooterRight{ justify-content:flex-end !important; }
+html.forceDesktop .txTimeRow{ flex-direction: row !important; align-items:center !important; }
+
+/* modal: jangan jadi bottom sheet bila desktop mode */
+html.forceDesktop .modalBack{ align-items:center !important; }
+html.forceDesktop .modal{ border-radius:12px !important; width:min(720px,100%) !important; }

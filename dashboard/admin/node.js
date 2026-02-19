@@ -1630,7 +1630,144 @@ function buildPageItems(current, total){
 
   return items;
 }
+// ===== CUSTOM SELECT PORTAL (fix dropdown clip on mobile/overflow) =====
+let __openCS = null;
 
+function closeCustomSelect(){
+  if(!__openCS) return;
+
+  const { cs, menu, placeholder, onDocDown, onResize, onScroll } = __openCS;
+
+  cs.classList.remove("open");
+
+  // balikkan menu ke tempat asal
+  if(placeholder && placeholder.parentNode){
+    placeholder.parentNode.replaceChild(menu, placeholder);
+  }
+
+  // reset style fixed
+  menu.style.position = "";
+  menu.style.left = "";
+  menu.style.top = "";
+  menu.style.width = "";
+  menu.style.zIndex = "";
+
+  // remove listeners
+  document.removeEventListener("pointerdown", onDocDown, true);
+  window.removeEventListener("resize", onResize);
+  window.removeEventListener("scroll", onScroll, true);
+
+  __openCS = null;
+}
+
+function openCustomSelect(cs){
+  const selected = cs.querySelector(".cs-selected");
+  const menu = cs.querySelector(".cs-options");
+  if(!selected || !menu) return;
+
+  // kalau open yang sama -> tutup
+  if(__openCS?.cs === cs){
+    closeCustomSelect();
+    return;
+  }
+
+  // tutup yang lain dulu
+  closeCustomSelect();
+
+  cs.classList.add("open");
+
+  // buat placeholder supaya kita boleh balikkan menu ke tempat asal
+  const placeholder = document.createElement("span");
+  placeholder.style.display = "none";
+  cs.replaceChild(placeholder, menu);
+  document.body.appendChild(menu);
+
+  // jadikan menu fixed supaya tak kena clip
+  const rect = selected.getBoundingClientRect();
+  const menuW = rect.width;
+
+  menu.style.position = "fixed";
+  menu.style.left = rect.left + "px";
+  // default buka ke atas kalau ada data-drop="up"
+  const openUp = cs.dataset.drop === "up";
+
+  // ukur tinggi menu (sementara)
+  menu.style.display = "block";
+  const h = menu.getBoundingClientRect().height;
+
+  let top;
+  if(openUp){
+    top = rect.top - h - 6;
+  }else{
+    top = rect.bottom + 6;
+  }
+
+  // clamp supaya tak keluar screen
+  const pad = 8;
+  top = Math.max(pad, Math.min(top, window.innerHeight - h - pad));
+
+  menu.style.top = top + "px";
+  menu.style.width = menuW + "px";
+  menu.style.zIndex = "9999999";
+
+  // function untuk reposition bila scroll/resize
+  const reposition = ()=>{
+    if(!__openCS) return;
+    const r = selected.getBoundingClientRect();
+    const hh = menu.getBoundingClientRect().height;
+    let t = (openUp ? (r.top - hh - 6) : (r.bottom + 6));
+    t = Math.max(pad, Math.min(t, window.innerHeight - hh - pad));
+    menu.style.left = r.left + "px";
+    menu.style.top = t + "px";
+    menu.style.width = r.width + "px";
+  };
+
+  const onDocDown = (e)=>{
+    // click luar -> close
+    if(cs.contains(e.target) || menu.contains(e.target)) return;
+    closeCustomSelect();
+  };
+  const onResize = ()=> reposition();
+  const onScroll = ()=> reposition();
+
+  document.addEventListener("pointerdown", onDocDown, true);
+  window.addEventListener("resize", onResize);
+  window.addEventListener("scroll", onScroll, true);
+
+  __openCS = { cs, menu, placeholder, onDocDown, onResize, onScroll };
+}
+
+function bindCustomSelect(cs, vaultId){
+  if(!cs || cs.dataset._bound === "1") return;
+  cs.dataset._bound = "1";
+
+  const selected = cs.querySelector(".cs-selected");
+  const optsWrap = cs.querySelector(".cs-options");
+  if(!selected || !optsWrap) return;
+
+  // guna pointerdown (lagi ngam untuk phone)
+  selected.addEventListener("pointerdown", (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    openCustomSelect(cs);
+  });
+
+  // pilih option
+  optsWrap.addEventListener("pointerdown", (e)=>{
+    const opt = e.target.closest("[data-value]");
+    if(!opt) return;
+    e.preventDefault();
+
+    const val = Number(opt.dataset.value || 10) || 10;
+    const p = getPaging(vaultId);
+    p.per = val;
+    p.page = 1;
+
+    selected.textContent = `${val} / page`;
+    closeCustomSelect();
+    rerenderVaultTbody(vaultId);
+  });
+}
 function renderPagerButtons(vaultId, total, totalPages){
   const bar = ensurePagerBar(vaultId);
   if(!bar) return;
@@ -1659,6 +1796,7 @@ function renderPagerButtons(vaultId, total, totalPages){
       }
     });
   }
+
   if(btnNext && btnNext.dataset._bound !== "1"){
     btnNext.dataset._bound = "1";
     btnNext.addEventListener("click", ()=>{
@@ -1707,46 +1845,18 @@ function renderPagerButtons(vaultId, total, totalPages){
     });
   }
 
-  // ===== per-page customSelect sync + bind =====
+  // ===== per-page customSelect (PORTAL FIX for mobile/overflow) =====
   const cs = bar.querySelector(`.customSelect[data-per="${vaultId}"]`);
   if(cs){
     const selected = cs.querySelector(".cs-selected");
-    const optsWrap = cs.querySelector(".cs-options");
-    if(selected && optsWrap){
+    if(selected){
       // sync label ikut p.per
       selected.textContent = `${p.per} / page`;
-
-      // bind sekali sahaja
-      if(cs.dataset._bound !== "1"){
-        cs.dataset._bound = "1";
-
-        // toggle open
-        selected.addEventListener("click", (e)=>{
-          e.stopPropagation();
-          cs.classList.toggle("open");
-        });
-
-        // click option
-        optsWrap.addEventListener("click", (e)=>{
-          const opt = e.target.closest("[data-value]");
-          if(!opt) return;
-
-          const val = Number(opt.dataset.value || 10) || 10;
-          const pp = getPaging(vaultId);
-          pp.per = val;
-          pp.page = 1;
-
-          selected.textContent = `${val} / page`;
-          cs.classList.remove("open");
-          rerenderVaultTbody(vaultId);
-        });
-
-        // close bila click luar
-        document.addEventListener("click", ()=>{
-          cs.classList.remove("open");
-        });
-      }
     }
+
+    // ✅ bind sekali sahaja (guna pointerdown + position:fixed portal)
+    // NOTE: bindCustomSelect mesti wujud (helper function)
+    bindCustomSelect(cs, vaultId);
   }
 }
 function rerenderVaultTbody(vaultId){

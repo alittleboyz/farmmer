@@ -1679,7 +1679,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   transition:.15s;
   background:var(--inputBg);
   color:var(--colorInput);
-  border-bottom:var(--borderBottom);
+  border-bottom: 1px solid var(--borderBottom);
 }
 
 .cs-options div:hover{

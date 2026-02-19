@@ -1745,14 +1745,14 @@ function bindCustomSelect(cs, vaultId){
   const optsWrap = cs.querySelector(".cs-options");
   if(!selected || !optsWrap) return;
 
-  // ✅ Toggle open/close bila tekan button yang sama
+  // ✅ Toggle (1 tap open, 1 tap close)
   selected.addEventListener("pointerdown", (e)=>{
     e.preventDefault();
     e.stopPropagation();
 
-    // toggle
-    if(cs.classList.contains("open")){
-      closeCustomSelect(cs);
+    // kalau yang tengah open ialah cs ini -> close
+    if(__openCS?.cs === cs){
+      closeCustomSelect();
     }else{
       openCustomSelect(cs);
     }
@@ -1767,31 +1767,19 @@ function bindCustomSelect(cs, vaultId){
     e.stopPropagation();
 
     const val = Number(opt.dataset.value || 10) || 10;
+
     const p = getPaging(vaultId);
     p.per = val;
     p.page = 1;
 
+    // update label
     selected.textContent = `${val} / page`;
 
-    // ✅ penting: pass cs
-    closeCustomSelect(cs);
+    // ✅ close portal (guna __openCS)
+    closeCustomSelect();
 
     rerenderVaultTbody(vaultId);
   }, { passive:false });
-
-  // ✅ klik luar untuk tutup (CAPTURE = true supaya tak kacau stopPropagation)
-  if(!cs._docCloseBound){
-    cs._docCloseBound = true;
-
-    document.addEventListener("pointerdown", (e)=>{
-      if(!cs.classList.contains("open")) return;
-
-      // kalau click dalam select (button/menu) jangan tutup
-      if(cs.contains(e.target)) return;
-
-      closeCustomSelect(cs);
-    }, true);
-  }
 }
 function renderPagerButtons(vaultId, total, totalPages){
   const bar = ensurePagerBar(vaultId);

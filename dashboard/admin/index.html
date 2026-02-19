@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <link rel="icon" type="image/png" href="https://i.imgur.com/j0Y5Fti.png">
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta id="vpMeta" name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <title>Admin Dashboard</title>
   <link rel="stylesheet" href="../daterange/flatpick.css">
   <meta name="description" content="This site personally build farming link page.">
@@ -71,6 +71,7 @@
     <div class="userMenu" id="userMenu" role="menu">
 <!-- ✅ THEME TOGGLE (desktop dropdown) -->
 <div class="userMenuItem themeRow" role="menuitem">
+  <div id="desktopModeSlotDropdown"></div>
   <span class="miText" id="themeLabelDesktop">Dark Mode</span>
 
   <label class="switch" aria-label="Toggle theme">
@@ -138,6 +139,7 @@
   <div class="rightDrawerBody">
 <!-- ✅ THEME TOGGLE (mobile drawer - TOP) -->
 <div class="btn-modal drawerThemeRow" id="drawerThemeRow">
+  <div id="desktopModeSlotDrawer"></div>
   <span class="drawerText" id="themeLabelDrawer">Dark Mode</span>
 
   <label class="switch" aria-label="Toggle theme">

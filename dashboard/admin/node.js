@@ -1745,18 +1745,26 @@ function bindCustomSelect(cs, vaultId){
   const optsWrap = cs.querySelector(".cs-options");
   if(!selected || !optsWrap) return;
 
-  // guna pointerdown (lagi ngam untuk phone)
+  // ✅ Toggle open/close bila tekan button yang sama
   selected.addEventListener("pointerdown", (e)=>{
     e.preventDefault();
     e.stopPropagation();
-    openCustomSelect(cs);
-  });
 
-  // pilih option
+    // toggle
+    if(cs.classList.contains("open")){
+      closeCustomSelect(cs);
+    }else{
+      openCustomSelect(cs);
+    }
+  }, { passive:false });
+
+  // ✅ pilih option
   optsWrap.addEventListener("pointerdown", (e)=>{
     const opt = e.target.closest("[data-value]");
     if(!opt) return;
+
     e.preventDefault();
+    e.stopPropagation();
 
     const val = Number(opt.dataset.value || 10) || 10;
     const p = getPaging(vaultId);
@@ -1764,9 +1772,26 @@ function bindCustomSelect(cs, vaultId){
     p.page = 1;
 
     selected.textContent = `${val} / page`;
-    closeCustomSelect();
+
+    // ✅ penting: pass cs
+    closeCustomSelect(cs);
+
     rerenderVaultTbody(vaultId);
-  });
+  }, { passive:false });
+
+  // ✅ klik luar untuk tutup (CAPTURE = true supaya tak kacau stopPropagation)
+  if(!cs._docCloseBound){
+    cs._docCloseBound = true;
+
+    document.addEventListener("pointerdown", (e)=>{
+      if(!cs.classList.contains("open")) return;
+
+      // kalau click dalam select (button/menu) jangan tutup
+      if(cs.contains(e.target)) return;
+
+      closeCustomSelect(cs);
+    }, true);
+  }
 }
 function renderPagerButtons(vaultId, total, totalPages){
   const bar = ensurePagerBar(vaultId);

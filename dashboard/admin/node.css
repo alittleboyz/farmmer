@@ -1661,13 +1661,13 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   top:110%;
   left:0;
   right:0;
-  background:#141c2b;   /* <-- tukar warna background sini */
+  background:#141c2b;
   border:1px solid rgba(255,255,255,.1);
   border-radius:8px;
   display:none;
   overflow:hidden;
   z-index:1000;
-  transition: all 0.2s;
+  transition: opacity .14s ease, transform .14s ease;
 }
 
 .customSelect.open .cs-options{
@@ -1757,4 +1757,28 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
 .cs-options{
   transform: translateZ(0);
   will-change: top,left;
+}
+/* bila JS buat dia fixed/portal */
+.cs-options.is-fixed{
+  position: fixed !important;
+  top: var(--csTop, 0px) !important;
+  left: var(--csLeft, 0px) !important;
+  width: var(--csW, 120px) !important;
+
+  /* ✅ penting: jangan ikut top:110% dari rule asal */
+  right: auto !important;
+  bottom: auto !important;
+
+  z-index: 9999999 !important;
+
+  /* ✅ start hidden, supaya tak nampak "dari bawah" */
+  opacity: 0;
+  transform: translateY(8px);  /* default open-up: akan di-override JS */
+  display: block !important;   /* sebab fixed mode memang paksa show */
+}
+
+/* bila open, JS akan add class "cs-pop" */
+.cs-options.is-fixed.cs-pop{
+  opacity: 1;
+  transform: translateY(0);
 }

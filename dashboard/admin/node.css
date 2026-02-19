@@ -1095,9 +1095,9 @@ input[type="number"]{
 
 /* RESPONSIVE: bila screen kecil/tablet -> pindah wallet ke drawer */
 @media (max-width: 900px){
-  html:not(.forceDesktop) .rightDrawerBtn{ display:inline-flex !important; }
-  html:not(.forceDesktop) #btnBalance{ display:none !important; }
-  html:not(.forceDesktop) #userDrop{ display:none !important; }
+  .rightDrawerBtn{ display:inline-flex !important; }
+   #btnBalance{ display:none !important; }
+   #userDrop{ display:none !important; }
 }
 /* ===== PATCH FIX ===== */
 .drawerOverlay{ z-index: 9000 !important; }

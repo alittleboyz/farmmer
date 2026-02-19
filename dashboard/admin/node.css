@@ -1643,17 +1643,17 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
 .cs-selected:focus{border-color:#1668dc; color:#1668dc;}
 .cs-selected:hover{border-color:#3c89e8; color:#3c89e8;}
 .cs-selected:active{border-color:#1554ad; color:#1554ad;}
-.cs-selected::after{
+.customSelect .cs-selected::after{
   content:"▼";
   font-size:7px;
   opacity:.7;
-  display:inline-block;           /* penting supaya transform jalan */
-  transition: transform .18s ease; /* smooth */
+  display:inline-block;
+  margin-left:8px;
+  transition: transform .18s ease;
   transform-origin: 50% 55%;
-  transition: all 0.2s;
 }
-/* bila dropdown open -> arrow jadi ▲ (rotate) */
-.customSelect.open .cs-selected::after{
+/* rotate bila aria-expanded true */
+.customSelect .cs-selected[aria-expanded="true"]::after{
   transform: rotate(180deg);
 }
 .cs-options{

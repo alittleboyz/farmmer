@@ -1736,23 +1736,25 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
     flex: 0 0 auto;
   }
 }
-/* ===== FIX: dropdown pager tak kena potong / tak hilang ===== */
+/* pager boleh scroll, tapi dropdown menu keluar atas semua */
 .tblPager{
   position: relative;
-  z-index: 50;
-  overflow: visible !important;   /* penting untuk dropdown */
+  overflow-y: visible !important;
 }
 
-.tblPagerLeft,
-.tblPagerRight{
-  position: relative;
-  overflow: visible !important;
+/* bila menu jadi fixed (JS akan tambah class ni) */
+.cs-options.is-fixed{
+  position: fixed !important;
+  top: var(--csTop, 0px) !important;
+  left: var(--csLeft, 0px) !important;
+  width: var(--csW, 120px) !important;
+  bottom: auto !important;
+  right: auto !important;
+  z-index: 9999999 !important;
 }
 
-.customSelect{ z-index: 200; }
-.cs-options{ z-index: 999999 !important; }
-
-/* PUNCA PALING BESAR: card overflow hidden potong dropdown */
-@media (max-width: 700px){
-  .card{ overflow: visible !important; }
+/* bagi smooth + elak “zoom” feeling */
+.cs-options{
+  transform: translateZ(0);
+  will-change: top,left;
 }

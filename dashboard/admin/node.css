@@ -1736,3 +1736,29 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
     flex: 0 0 auto;
   }
 }
+/* ===== FIX: dropdown pager tak kena potong / tak behind ===== */
+.tblPager{
+  position: relative;
+  z-index: 30;
+  overflow: visible !important;
+}
+
+.tblPagerRight{
+  position: relative;
+  z-index: 40;
+  overflow: visible !important;
+}
+
+.customSelect{
+  position: relative;
+  z-index: 50;
+}
+
+.cs-options{
+  z-index: 999999 !important;
+}
+
+/* Punca besar: .card overflow:hidden potong dropdown */
+@media (max-width: 700px){
+  .card{ overflow: visible !important; }
+}

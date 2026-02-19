@@ -3162,38 +3162,6 @@ document.addEventListener("click", (e)=>{
 
   setActivePreset(vaultId, key);
 });
-document.addEventListener("click", (e)=>{
-  const prev = e.target.closest("[data-prev]");
-  const next = e.target.closest("[data-next]");
-  const page = e.target.closest("[data-page][data-vid]");
-
-  if(prev){
-    const vid = prev.dataset.prev;
-    const p = getPaging(vid);
-    if(p.page > 1){
-      p.page--;
-      rerenderVaultTbody(vid);
-    }
-    return;
-  }
-
-  if(next){
-    const vid = next.dataset.next;
-    const p = getPaging(vid);
-    p.page++;
-    rerenderVaultTbody(vid);
-    return;
-  }
-
-  if(page){
-    const vid = page.dataset.vid;
-    const n = Number(page.dataset.page || 1) || 1;
-    const p = getPaging(vid);
-    p.page = n;
-    rerenderVaultTbody(vid);
-    return;
-  }
-});
   // ===== AUTH BOOT =====
 onAuthStateChanged(auth, async (user)=>{
   if(!user){

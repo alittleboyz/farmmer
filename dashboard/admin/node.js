@@ -3662,21 +3662,25 @@ document.addEventListener("click", (e)=>{
   const vp = document.getElementById("vpMeta") || document.querySelector('meta[name="viewport"]');
 
   function setDesktop(on){
-    if(!vp) return;
+    // ✅ class ni paling penting untuk override CSS @media
+    document.documentElement.classList.toggle("forceDesktop", !!on);
 
-    if(on){
-      // ✅ paksa desktop canvas (phone jadi “desktop”)
-      vp.setAttribute("content", "width=1100,initial-scale=0.75,maximum-scale=1,viewport-fit=cover");
-      document.documentElement.classList.add("forceDesktop");
-    }else{
-      // ✅ balik responsive normal
-      vp.setAttribute("content", "width=device-width,initial-scale=1,viewport-fit=cover");
-      document.documentElement.classList.remove("forceDesktop");
+    // ✅ meta viewport (kadang phone tak apply tanpa reload, tapi kita set jugak)
+    if(vp){
+      if(on){
+        vp.setAttribute("content", "width=1100,initial-scale=0.75,maximum-scale=1,viewport-fit=cover");
+      }else{
+        vp.setAttribute("content", "width=device-width,initial-scale=1,viewport-fit=cover");
+      }
     }
 
-    // update label
+    // ✅ update label (kalau ada)
     const st = document.getElementById("dmState");
     if(st) st.textContent = on ? "DESKTOP" : "MEDIA";
+  }
+
+  function isOn(){
+    return localStorage.getItem(KEY) === "1";
   }
 
   function buildBtn(){
@@ -3686,7 +3690,7 @@ document.addEventListener("click", (e)=>{
     btn = document.createElement("button");
     btn.type = "button";
     btn.id = "btnDesktopMode";
-    btn.className = "desktopModeBtn userMenuItem"; // ikut style kau
+    btn.className = "desktopModeBtn userMenuItem";
     btn.innerHTML = `
       <span class="miIcon" aria-hidden="true">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
@@ -3698,9 +3702,12 @@ document.addEventListener("click", (e)=>{
     `;
 
     btn.addEventListener("click", ()=>{
-      const on = localStorage.getItem(KEY) === "1";
-      localStorage.setItem(KEY, on ? "0" : "1");
-      setDesktop(!on);
+      const next = !isOn();
+      localStorage.setItem(KEY, next ? "1" : "0");
+      setDesktop(next);
+
+      // ✅ IMPORTANT: banyak phone hanya apply viewport betul-betul lepas reload
+      location.reload();
     });
 
     return btn;
@@ -3711,23 +3718,25 @@ document.addEventListener("click", (e)=>{
     const slotDrop = document.getElementById("desktopModeSlotDropdown");
     const slotDrawer = document.getElementById("desktopModeSlotDrawer");
 
-    const isMobile = window.matchMedia("(max-width: 900px)").matches; // ikut breakpoint kau
+    // ✅ ikut breakpoint kau (drawer guna mobile)
+    const isMobile = window.matchMedia("(max-width: 900px)").matches;
 
     if(isMobile && slotDrawer){
-      slotDrawer.innerHTML = "";
-      slotDrawer.appendChild(btn);
+      slotDrawer.replaceChildren(btn);
     }else if(!isMobile && slotDrop){
-      slotDrop.innerHTML = "";
-      slotDrop.appendChild(btn);
+      slotDrop.replaceChildren(btn);
     }
+
+    // ✅ lepas pindah, refresh label ikut state semasa
+    setDesktop(isOn());
   }
 
   function init(){
-    placeBtn();
+    // apply saved state awal-awal
+    setDesktop(isOn());
 
-    // apply saved state
-    const on = localStorage.getItem(KEY) === "1";
-    setDesktop(on);
+    // place button ikut mode
+    placeBtn();
 
     // bila resize/rotate, pindah button
     window.addEventListener("resize", placeBtn, {passive:true});

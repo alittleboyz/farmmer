@@ -1667,6 +1667,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   display:none;
   overflow:hidden;
   z-index:1000;
+  border-bottom:var(--borderBottom);
   transition: opacity .14s ease, transform .14s ease;
 }
 

@@ -1736,29 +1736,23 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
     flex: 0 0 auto;
   }
 }
-/* ===== FIX: dropdown pager tak kena potong / tak behind ===== */
+/* ===== FIX: dropdown pager tak kena potong / tak hilang ===== */
 .tblPager{
   position: relative;
-  z-index: 30;
-  overflow: visible !important;
+  z-index: 50;
+  overflow: visible !important;   /* penting untuk dropdown */
 }
 
+.tblPagerLeft,
 .tblPagerRight{
   position: relative;
-  z-index: 40;
   overflow: visible !important;
 }
 
-.customSelect{
-  position: relative;
-  z-index: 50;
-}
+.customSelect{ z-index: 200; }
+.cs-options{ z-index: 999999 !important; }
 
-.cs-options{
-  z-index: 999999 !important;
-}
-
-/* Punca besar: .card overflow:hidden potong dropdown */
+/* PUNCA PALING BESAR: card overflow hidden potong dropdown */
 @media (max-width: 700px){
   .card{ overflow: visible !important; }
 }

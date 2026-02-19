@@ -3653,3 +3653,89 @@ document.addEventListener("click", (e)=>{
     rerenderVaultTbody(vid);
   }
 });
+// ===============================
+//  DESKTOP MODE TOGGLE (Dropdown + Drawer)
+// ===============================
+(function(){
+  const KEY = "farmDesktopMode.v1";
+
+  const vp = document.getElementById("vpMeta") || document.querySelector('meta[name="viewport"]');
+
+  function setDesktop(on){
+    if(!vp) return;
+
+    if(on){
+      // ✅ paksa desktop canvas (phone jadi “desktop”)
+      vp.setAttribute("content", "width=1100,initial-scale=0.75,maximum-scale=1,viewport-fit=cover");
+      document.documentElement.classList.add("forceDesktop");
+    }else{
+      // ✅ balik responsive normal
+      vp.setAttribute("content", "width=device-width,initial-scale=1,viewport-fit=cover");
+      document.documentElement.classList.remove("forceDesktop");
+    }
+
+    // update label
+    const st = document.getElementById("dmState");
+    if(st) st.textContent = on ? "DESKTOP" : "MEDIA";
+  }
+
+  function buildBtn(){
+    let btn = document.getElementById("btnDesktopMode");
+    if(btn) return btn;
+
+    btn = document.createElement("button");
+    btn.type = "button";
+    btn.id = "btnDesktopMode";
+    btn.className = "desktopModeBtn userMenuItem"; // ikut style kau
+    btn.innerHTML = `
+      <span class="miIcon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+          <path d="M24 8.2c0-.318-.126-.623-.351-.849-.226-.225-.531-.351-.849-.351h-6.6c-.318 0-.623.126-.849.351-.225.226-.351.531-.351.849v13.6c0 .318.126.623.351.849.226.225.531.351.849.351h6.6c.318 0 .623-.126.849-.351.225-.226.351-.531.351-.849v-13.6zm-11 14.8h-8l2.599-3h5.401v3zm6.5-1c-.553 0-1-.448-1-1s.447-1 1-1c.552 0 .999.448.999 1s-.447 1-.999 1zm3.5-3v-9.024h-7v9.024h7zm-2-14h-2v-2h-17v13h11v2h-13v-17h21v4zm-.5 4c.276 0 .5-.224.5-.5s-.224-.5-.5-.5h-2c-.276 0-.5.224-.5.5s.224.5.5.5h2z"/>
+        </svg>
+      </span>
+      <span class="miText">Mode Desktop</span>
+      <span class="dmState" id="dmState">MEDIA</span>
+    `;
+
+    btn.addEventListener("click", ()=>{
+      const on = localStorage.getItem(KEY) === "1";
+      localStorage.setItem(KEY, on ? "0" : "1");
+      setDesktop(!on);
+    });
+
+    return btn;
+  }
+
+  function placeBtn(){
+    const btn = buildBtn();
+    const slotDrop = document.getElementById("desktopModeSlotDropdown");
+    const slotDrawer = document.getElementById("desktopModeSlotDrawer");
+
+    const isMobile = window.matchMedia("(max-width: 900px)").matches; // ikut breakpoint kau
+
+    if(isMobile && slotDrawer){
+      slotDrawer.innerHTML = "";
+      slotDrawer.appendChild(btn);
+    }else if(!isMobile && slotDrop){
+      slotDrop.innerHTML = "";
+      slotDrop.appendChild(btn);
+    }
+  }
+
+  function init(){
+    placeBtn();
+
+    // apply saved state
+    const on = localStorage.getItem(KEY) === "1";
+    setDesktop(on);
+
+    // bila resize/rotate, pindah button
+    window.addEventListener("resize", placeBtn, {passive:true});
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", init);
+  }else{
+    init();
+  }
+})();

@@ -1630,7 +1630,7 @@ function buildPageItems(current, total){
 
   return items;
 }
-// ===== CUSTOM SELECT PORTAL (fix dropdown clip on mobile/overflow) =====
+// ===== CUSTOM SELECT PORTAL (UPGRADED) =====
 let __openCS = null;
 
 function closeCustomSelect(){
@@ -1644,6 +1644,9 @@ function closeCustomSelect(){
 
   cs.classList.remove("open");
 
+  // ✅ remove pop animation class
+  menu.classList.remove("cs-pop");
+
   // balikkan menu ke tempat asal
   if(placeholder && placeholder.parentNode){
     placeholder.parentNode.replaceChild(menu, placeholder);
@@ -1655,7 +1658,9 @@ function closeCustomSelect(){
   menu.style.top = "";
   menu.style.width = "";
   menu.style.zIndex = "";
-  menu.style.display = "";     // ✅ penting
+  menu.style.display = "";
+  menu.style.opacity = "";
+  menu.style.transform = "";
 
   // remove listeners
   document.removeEventListener("pointerdown", onDocDown, true);
@@ -1664,6 +1669,7 @@ function closeCustomSelect(){
 
   __openCS = null;
 }
+
 function openCustomSelect(cs){
   const selected = cs.querySelector(".cs-selected");
   const menu = cs.querySelector(".cs-options");
@@ -1679,9 +1685,7 @@ function openCustomSelect(cs){
   closeCustomSelect();
 
   cs.classList.add("open");
-
-  // ✅ arrow rotate on terus (tak perlu 2 kali click)
-  selected.setAttribute("aria-expanded", "true");
+  selected.setAttribute("aria-expanded", "true"); // ✅ arrow rotate on terus
 
   // buat placeholder supaya kita boleh balikkan menu ke tempat asal
   const placeholder = document.createElement("span");
@@ -1689,41 +1693,66 @@ function openCustomSelect(cs){
   cs.replaceChild(placeholder, menu);
   document.body.appendChild(menu);
 
-  // jadikan menu fixed supaya tak kena clip
-  const rect = selected.getBoundingClientRect();
   const openUp = cs.dataset.drop === "up";
 
-  // ✅ show menu sementara untuk ukur height
+  // ✅ tampilkan dulu utk measure height (tapi hidden anim state)
   menu.style.display = "block";
+  menu.classList.remove("cs-pop");
 
+  // ✅ lock width first (supaya tak berubah masa measure)
+  const rect = selected.getBoundingClientRect();
+  menu.style.position = "fixed";
+  menu.style.left = rect.left + "px";
+  menu.style.width = rect.width + "px";
+  menu.style.zIndex = "9999999";
+
+  // measure height
   const h = menu.getBoundingClientRect().height;
   const pad = 8;
 
   let top = openUp ? (rect.top - h - 6) : (rect.bottom + 6);
   top = Math.max(pad, Math.min(top, window.innerHeight - h - pad));
-
-  menu.style.position = "fixed";
-  menu.style.left = rect.left + "px";
   menu.style.top = top + "px";
-  menu.style.width = rect.width + "px";
-  menu.style.zIndex = "9999999";
 
+  // ✅ IMPORTANT: buat dia "pop dari tombol"
+  // start state dekat tombol (opacity 0 + offset kecil)
+  menu.style.opacity = "0";
+  menu.style.transform = openUp ? "translateY(8px)" : "translateY(-8px)";
+
+  requestAnimationFrame(()=>{
+    // animate to final state (css handle)
+    menu.classList.add("cs-pop");
+    menu.style.opacity = "";
+    menu.style.transform = "";
+  });
+
+  // reposition bila scroll/resize
   const reposition = ()=>{
     if(!__openCS) return;
-    const r = selected.getBoundingClientRect();
-    const hh = menu.getBoundingClientRect().height;
 
+    const r = selected.getBoundingClientRect();
+    menu.style.left = r.left + "px";
+    menu.style.width = r.width + "px";
+
+    const hh = menu.getBoundingClientRect().height;
     let t = openUp ? (r.top - hh - 6) : (r.bottom + 6);
     t = Math.max(pad, Math.min(t, window.innerHeight - hh - pad));
-
-    menu.style.left = r.left + "px";
     menu.style.top = t + "px";
-    menu.style.width = r.width + "px";
   };
 
+  // ✅ pointerdown capture: click luar = close
   const onDocDown = (e)=>{
-    // click luar -> close
+    // click dalam cs atau menu -> biar (option click akan handle sendiri)
     if(cs.contains(e.target) || menu.contains(e.target)) return;
+    closeCustomSelect();
+  };
+
+  // ✅ option click: pilih value, then close (arrow terus off)
+  const onMenuClick = (e)=>{
+    const opt = e.target.closest("[data-value], .cs-option, li, button");
+    if(!opt) return;
+    // kalau kau ada handler pilih value kat tempat lain, biar jalan,
+    // lepas tu close dropdown
     closeCustomSelect();
   };
 
@@ -1733,6 +1762,9 @@ function openCustomSelect(cs){
   document.addEventListener("pointerdown", onDocDown, true);
   window.addEventListener("resize", onResize);
   window.addEventListener("scroll", onScroll, true);
+
+  // ✅ attach sekali (tak kacau structure asal)
+  menu.addEventListener("click", onMenuClick, { once:true });
 
   __openCS = { cs, menu, placeholder, onDocDown, onResize, onScroll };
 }

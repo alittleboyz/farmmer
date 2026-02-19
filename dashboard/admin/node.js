@@ -1638,6 +1638,10 @@ function closeCustomSelect(){
 
   const { cs, menu, placeholder, onDocDown, onResize, onScroll } = __openCS;
 
+  // ✅ arrow rotate off
+  const selected = cs.querySelector(".cs-selected");
+  if(selected) selected.setAttribute("aria-expanded", "false");
+
   cs.classList.remove("open");
 
   // balikkan menu ke tempat asal
@@ -1645,12 +1649,13 @@ function closeCustomSelect(){
     placeholder.parentNode.replaceChild(menu, placeholder);
   }
 
-  // reset style fixed
+  // ✅ reset style fixed + display
   menu.style.position = "";
   menu.style.left = "";
   menu.style.top = "";
   menu.style.width = "";
   menu.style.zIndex = "";
+  menu.style.display = "";     // ✅ penting
 
   // remove listeners
   document.removeEventListener("pointerdown", onDocDown, true);
@@ -1659,7 +1664,6 @@ function closeCustomSelect(){
 
   __openCS = null;
 }
-
 function openCustomSelect(cs){
   const selected = cs.querySelector(".cs-selected");
   const menu = cs.querySelector(".cs-options");
@@ -1676,6 +1680,9 @@ function openCustomSelect(cs){
 
   cs.classList.add("open");
 
+  // ✅ arrow rotate on terus (tak perlu 2 kali click)
+  selected.setAttribute("aria-expanded", "true");
+
   // buat placeholder supaya kita boleh balikkan menu ke tempat asal
   const placeholder = document.createElement("span");
   placeholder.style.display = "none";
@@ -1684,39 +1691,31 @@ function openCustomSelect(cs){
 
   // jadikan menu fixed supaya tak kena clip
   const rect = selected.getBoundingClientRect();
-  const menuW = rect.width;
+  const openUp = cs.dataset.drop === "up";
+
+  // ✅ show menu sementara untuk ukur height
+  menu.style.display = "block";
+
+  const h = menu.getBoundingClientRect().height;
+  const pad = 8;
+
+  let top = openUp ? (rect.top - h - 6) : (rect.bottom + 6);
+  top = Math.max(pad, Math.min(top, window.innerHeight - h - pad));
 
   menu.style.position = "fixed";
   menu.style.left = rect.left + "px";
-  // default buka ke atas kalau ada data-drop="up"
-  const openUp = cs.dataset.drop === "up";
-
-  // ukur tinggi menu (sementara)
-  menu.style.display = "block";
-  const h = menu.getBoundingClientRect().height;
-
-  let top;
-  if(openUp){
-    top = rect.top - h - 6;
-  }else{
-    top = rect.bottom + 6;
-  }
-
-  // clamp supaya tak keluar screen
-  const pad = 8;
-  top = Math.max(pad, Math.min(top, window.innerHeight - h - pad));
-
   menu.style.top = top + "px";
-  menu.style.width = menuW + "px";
+  menu.style.width = rect.width + "px";
   menu.style.zIndex = "9999999";
 
-  // function untuk reposition bila scroll/resize
   const reposition = ()=>{
     if(!__openCS) return;
     const r = selected.getBoundingClientRect();
     const hh = menu.getBoundingClientRect().height;
-    let t = (openUp ? (r.top - hh - 6) : (r.bottom + 6));
+
+    let t = openUp ? (r.top - hh - 6) : (r.bottom + 6);
     t = Math.max(pad, Math.min(t, window.innerHeight - hh - pad));
+
     menu.style.left = r.left + "px";
     menu.style.top = t + "px";
     menu.style.width = r.width + "px";
@@ -1727,6 +1726,7 @@ function openCustomSelect(cs){
     if(cs.contains(e.target) || menu.contains(e.target)) return;
     closeCustomSelect();
   };
+
   const onResize = ()=> reposition();
   const onScroll = ()=> reposition();
 

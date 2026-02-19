@@ -1622,7 +1622,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
 /* ===== CUSTOM SELECT ===== */
 .customSelect{
   position:relative;
-  width:100px;
+  width:110px;
   font-size:14px;
   cursor:pointer;
   user-select:none;

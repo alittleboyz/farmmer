@@ -3654,7 +3654,7 @@ document.addEventListener("click", (e)=>{
   }
 });
 // ===============================
-//  DESKTOP MODE TOGGLE (Dropdown + Drawer)
+//  DESKTOP MODE TOGGLE (Dropdown + Drawer) - FIXED
 // ===============================
 (function(){
   const KEY = "farmDesktopMode.v1";
@@ -3662,21 +3662,22 @@ document.addEventListener("click", (e)=>{
   const vp = document.getElementById("vpMeta") || document.querySelector('meta[name="viewport"]');
 
   function setDesktop(on){
-    // ✅ class ni paling penting untuk override CSS @media
+    // ✅ toggle class (untuk override CSS @media)
     document.documentElement.classList.toggle("forceDesktop", !!on);
 
-    // ✅ meta viewport (kadang phone tak apply tanpa reload, tapi kita set jugak)
+    // ✅ viewport desktop sebenar (layout PC, phone auto jadi kecil)
     if(vp){
-      if(on){
-        vp.setAttribute("content", "width=1100,initial-scale=0.75,maximum-scale=1,viewport-fit=cover");
-      }else{
-        vp.setAttribute("content", "width=device-width,initial-scale=1,viewport-fit=cover");
-      }
+      vp.setAttribute(
+        "content",
+        on
+          ? "width=1200, initial-scale=1, viewport-fit=cover"
+          : "width=device-width, initial-scale=1, viewport-fit=cover"
+      );
     }
 
-    // ✅ update label (kalau ada)
+    // ✅ update label
     const st = document.getElementById("dmState");
-    if(st) st.textContent = on ? "DESKTOP" : "MEDIA";
+    if(st) st.textContent = on ? "ON" : "OFF";
   }
 
   function isOn(){
@@ -3690,15 +3691,15 @@ document.addEventListener("click", (e)=>{
     btn = document.createElement("button");
     btn.type = "button";
     btn.id = "btnDesktopMode";
-    btn.className = "desktopModeBtn userMenuItem";
+    btn.className = "desktopModeBtn"; // ❌ buang userMenuItem supaya tak clash grid
     btn.innerHTML = `
       <span class="miIcon" aria-hidden="true">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-          <path d="M24 8.2c0-.318-.126-.623-.351-.849-.226-.225-.531-.351-.849-.351h-6.6c-.318 0-.623.126-.849.351-.225.226-.351.531-.351.849v13.6c0 .318.126.623.351.849.226.225.531.351.849.351h6.6c.318 0 .623-.126.849-.351.225-.226.351-.531.351-.849v-13.6zm-11 14.8h-8l2.599-3h5.401v3zm6.5-1c-.553 0-1-.448-1-1s.447-1 1-1c.552 0 .999.448.999 1s-.447 1-.999 1zm3.5-3v-9.024h-7v9.024h7zm-2-14h-2v-2h-17v13h11v2h-13v-17h21v4zm-.5 4c.276 0 .5-.224.5-.5s-.224-.5-.5-.5h-2c-.276 0-.5.224-.5.5s.224.5.5.5h2z"/>
+          <path d="M4 5h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-6v2h2v2H8v-2h2v-2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zm0 2v9h16V7H4z"/>
         </svg>
       </span>
       <span class="miText">Mode Desktop</span>
-      <span class="dmState" id="dmState">MEDIA</span>
+      <span class="dmState" id="dmState">OFF</span>
     `;
 
     btn.addEventListener("click", ()=>{
@@ -3706,7 +3707,7 @@ document.addEventListener("click", (e)=>{
       localStorage.setItem(KEY, next ? "1" : "0");
       setDesktop(next);
 
-      // ✅ IMPORTANT: banyak phone hanya apply viewport betul-betul lepas reload
+      // ✅ viewport biasanya apply betul lepas reload
       location.reload();
     });
 
@@ -3715,30 +3716,25 @@ document.addEventListener("click", (e)=>{
 
   function placeBtn(){
     const btn = buildBtn();
-    const slotDrop = document.getElementById("desktopModeSlotDropdown");
-    const slotDrawer = document.getElementById("desktopModeSlotDrawer");
 
-    // ✅ ikut breakpoint kau (drawer guna mobile)
+    // ✅ pastikan ID slot sama macam HTML kau
+    const slotDesktop = document.getElementById("desktopModeSlotDesktop");
+    const slotDrawer  = document.getElementById("desktopModeSlotDrawer");
+
     const isMobile = window.matchMedia("(max-width: 900px)").matches;
 
     if(isMobile && slotDrawer){
       slotDrawer.replaceChildren(btn);
-    }else if(!isMobile && slotDrop){
-      slotDrop.replaceChildren(btn);
+    }else if(!isMobile && slotDesktop){
+      slotDesktop.replaceChildren(btn);
     }
 
-    // ✅ lepas pindah, refresh label ikut state semasa
     setDesktop(isOn());
   }
 
   function init(){
-    // apply saved state awal-awal
     setDesktop(isOn());
-
-    // place button ikut mode
     placeBtn();
-
-    // bila resize/rotate, pindah button
     window.addEventListener("resize", placeBtn, {passive:true});
   }
 

@@ -3530,3 +3530,97 @@ document.addEventListener("click", (e)=>{
     rerenderVaultTbody(vid);
   }
 });
+function openFixedSelect(cs){
+  const selected = cs.querySelector(".cs-selected");
+  const menu = cs.querySelector(".cs-options");
+  if(!selected || !menu) return;
+
+  // toggle
+  const willOpen = !cs.classList.contains("open");
+  document.querySelectorAll(".customSelect.open").forEach(x=>{
+    x.classList.remove("open");
+    const m = x.querySelector(".cs-options");
+    if(m) m.classList.remove("is-fixed");
+  });
+  if(!willOpen) return;
+
+  cs.classList.add("open");
+
+  // kira posisi button
+  const r = selected.getBoundingClientRect();
+  const mh = menu.offsetHeight || 180;
+
+  // default buka bawah
+  let top = r.bottom + 6;
+  let left = r.left;
+  let width = r.width;
+
+  // kalau bawah tak cukup ruang, buka atas
+  if(top + mh > window.innerHeight - 8){
+    top = r.top - mh - 6;
+  }
+
+  // clamp kiri/kanan
+  if(left + width > window.innerWidth - 8){
+    left = window.innerWidth - width - 8;
+  }
+  if(left < 8) left = 8;
+
+  // set CSS variables utk fixed positioning
+  menu.classList.add("is-fixed");
+  menu.style.setProperty("--csTop", `${Math.round(top)}px`);
+  menu.style.setProperty("--csLeft", `${Math.round(left)}px`);
+  menu.style.setProperty("--csW", `${Math.round(width)}px`);
+}
+
+function closeAllSelect(){
+  document.querySelectorAll(".customSelect.open").forEach(cs=>{
+    cs.classList.remove("open");
+    const menu = cs.querySelector(".cs-options");
+    if(menu) menu.classList.remove("is-fixed");
+  });
+}
+
+function bindAllCustomSelects(){
+  document.querySelectorAll(".customSelect").forEach(cs=>{
+    if(cs.dataset.bound === "1") return;
+    cs.dataset.bound = "1";
+
+    const selected = cs.querySelector(".cs-selected");
+    const optsWrap = cs.querySelector(".cs-options");
+    if(!selected || !optsWrap) return;
+
+    // open
+    selected.addEventListener("pointerdown", (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      openFixedSelect(cs);
+    });
+
+    // pilih option
+    optsWrap.addEventListener("pointerdown", (e)=>{
+      e.stopPropagation();
+      const opt = e.target.closest("[data-value]");
+      if(!opt) return;
+
+      // contoh update label
+      selected.textContent = opt.textContent.trim();
+
+      // kalau kau nak trigger logic per-page:
+      const vid = cs.dataset.per;
+      if(vid){
+        const pp = getPaging(vid);
+        pp.per = Number(opt.dataset.value || 10) || 10;
+        pp.page = 1;
+        rerenderVaultTbody(vid);
+      }
+
+      closeAllSelect();
+    });
+  });
+
+  // close bila click luar / scroll / resize
+  document.addEventListener("pointerdown", closeAllSelect, { passive:true });
+  window.addEventListener("scroll", closeAllSelect, { passive:true });
+  window.addEventListener("resize", closeAllSelect);
+}

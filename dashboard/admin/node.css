@@ -1783,3 +1783,40 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   opacity: 1;
   transform: translateY(0);
 }
+/* ===== DESKTOP MODE BUTTON (same style as menu item) ===== */
+.desktopModeBtn{
+  width:100%;
+  border:1px solid var(--borderTable);
+  background: var(--inputBg);
+  color: var(--colorInput);
+  border-radius: 6px;
+  padding: 0px 15px;
+  cursor:pointer;
+  display:grid;
+  grid-template-columns: 24px 1fr auto; /* icon | text | state */
+  align-items:center;
+  gap:10px;
+  height:32px;
+  font-size:14px;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.desktopModeBtn:hover{ border-color:#3c89e8; color:#3c89e8; }
+.desktopModeBtn:active{ border-color:#1554ad; color:#1554ad; }
+
+.desktopModeBtn .dmState{
+  justify-self:end;
+  font-weight:800;
+  opacity:.85;
+  font-size:12px;
+  padding:2px 8px;
+  border-radius:999px;
+  border:1px solid var(--borderTable);
+  background: var(--btnCard);
+}
+
+/* optional: bila ON nampak biru */
+html.forceDesktop .desktopModeBtn .dmState{
+  border-color: var(--btn);
+  color: var(--btn);
+}

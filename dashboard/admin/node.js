@@ -553,11 +553,27 @@ function clearVaultDateRange(vaultId){
   vaultFilters[vaultId] = "showAll";
 
   const input = document.querySelector(`.dateRangeInput[data-range="${vaultId}"]`);
-  if(input) input.value = "Show All";
-
   const fp = vaultPickers[vaultId];
+
   if(fp){
-    try{ fp.clear(); }catch(_){}
+    try{
+      fp.clear(false); // jangan trigger perubahan tambahan
+      fp.selectedDates = [];
+      fp.latestSelectedDateObj = null;
+    }catch(_){}
+  }
+
+  if(input){
+    input.value = "Show All";
+
+    // paksa text kekal, sebab kadang flatpickr clear balik
+    requestAnimationFrame(()=>{
+      input.value = "Show All";
+    });
+
+    setTimeout(()=>{
+      input.value = "Show All";
+    }, 0);
   }
 
   clearActivePreset(vaultId);
@@ -2113,6 +2129,9 @@ onClose: (dates)=>{
 
     if(f === "showAll"){
       input.value = "Show All";
+      requestAnimationFrame(()=>{
+        input.value = "Show All";
+      });
     }else if(f){
       input.value = `${ymd(f.startMs)} → ${ymd(f.endMs)}`;
     }else{

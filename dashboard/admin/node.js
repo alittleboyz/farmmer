@@ -549,6 +549,21 @@ function clearActivePreset(vaultId){
   if(!g) return;
   g.querySelectorAll(".pbtn").forEach(b=> b.classList.remove("active"));
 }
+function clearVaultDateRange(vaultId){
+  vaultFilters[vaultId] = null;
+
+  const input = document.querySelector(`.dateRangeInput[data-range="${vaultId}"]`);
+  if(input) input.value = "";
+
+  const fp = vaultPickers[vaultId];
+  if(fp){
+    try{ fp.clear(); }catch(_){}
+  }
+
+  clearActivePreset(vaultId);
+  resetPaging(vaultId);
+  rerenderVaultTbody(vaultId);
+}
 function ymd(ms){
   const d = new Date(ms);
   const pad = (n)=> String(n).padStart(2,"0");
@@ -1296,6 +1311,7 @@ ${!isHistory ? `
     <button class="pbtn" data-preset="lastWeek"  data-vid="${vaultId}">Last Week</button>
     <button class="pbtn" data-preset="thisMonth" data-vid="${vaultId}">This Month</button>
     <button class="pbtn" data-preset="lastMonth" data-vid="${vaultId}">Last Month</button>
+    <button class="pbtn" data-preset="showAll"   data-vid="${vaultId}">Show All</button>
   </div>
 </div>
 
@@ -2031,8 +2047,7 @@ if(s){
    bindTxSearchClear(vaultId);
 }
   // === DATE RANGE ===
-  const def = vaultFilters[vaultId] || presetRangeMs("thisMonth");
-  vaultFilters[vaultId] = def;
+const def = vaultFilters[vaultId] || null;
 
   const existing = vaultPickers[vaultId];
   if(existing){
@@ -2040,32 +2055,35 @@ if(s){
       try{ existing.destroy(); }catch(_){}
       delete vaultPickers[vaultId];
     }else{
-      input.value = `${ymd(def.startMs)} → ${ymd(def.endMs)}`;
+      input.value = def ? `${ymd(def.startMs)} → ${ymd(def.endMs)}` : "";
       return;
     }
   }
 
-  input.value = `${ymd(def.startMs)} → ${ymd(def.endMs)}`;
+  input.value = def ? `${ymd(def.startMs)} → ${ymd(def.endMs)}` : "";
 
-  vaultPickers[vaultId] = flatpickr(input, {
-    mode: "range",
-    dateFormat: "Y-m-d",
-    showMonths: 2,
-    closeOnSelect: false,
-    defaultDate: [new Date(def.startMs), new Date(def.endMs)],
+vaultPickers[vaultId] = flatpickr(input, {
+  mode: "range",
+  dateFormat: "Y-m-d",
+  showMonths: 2,
+  closeOnSelect: false,
+  defaultDate: def ? [new Date(def.startMs), new Date(def.endMs)] : null,
 
-    onReady: ()=> {
-      input.value = `${ymd(def.startMs)} → ${ymd(def.endMs)}`;
-      clearActivePreset(vaultId);
-      setTimeout(()=>{ input.value = `${ymd(def.startMs)} → ${ymd(def.endMs)}`; }, 0);
-    },
+onReady: ()=> {
+  if(def){
+    input.value = `${ymd(def.startMs)} → ${ymd(def.endMs)}`;
+  }else{
+    input.value = "";
+  }
+  clearActivePreset(vaultId);
+},
 
-    onOpen: ()=> {
-      const f = vaultFilters[vaultId] || def;
-      if(!input.value.trim()){
-        input.value = `${ymd(f.startMs)} → ${ymd(f.endMs)}`;
-      }
-    },
+onOpen: ()=> {
+  const f = vaultFilters[vaultId];
+  if(f && !input.value.trim()){
+    input.value = `${ymd(f.startMs)} → ${ymd(f.endMs)}`;
+  }
+},
 
     onChange: (dates)=>{
       if(dates.length === 2){
@@ -2080,12 +2098,12 @@ if(s){
       }
     },
 
-    onClose: (dates)=>{
-      if(dates.length === 0){
-        const f = vaultFilters[vaultId] || def;
-        input.value = `${ymd(f.startMs)} → ${ymd(f.endMs)}`;
-        return;
-      }
+onClose: (dates)=>{
+  if(dates.length === 0){
+    const f = vaultFilters[vaultId];
+    input.value = f ? `${ymd(f.startMs)} → ${ymd(f.endMs)}` : "";
+    return;
+  }
       if(dates.length === 1){
         const startMs = startOfDayMs(dates[0]);
         const endMs   = endOfDayMs(dates[0]);
@@ -3180,15 +3198,27 @@ document.addEventListener("click", (e)=>{
   const vaultId = btn.dataset.vid;
   const key = btn.dataset.preset;
 
+  // ✅ SHOW ALL
+  if(key === "showAll"){
+    clearVaultDateRange(vaultId);
+    setActivePreset(vaultId, key);
+    return;
+  }
+
   const r = presetRangeMs(key);
   if(!r) return;
 
   vaultFilters[vaultId] = r;
   resetPaging(vaultId);
+
   const fp = vaultPickers[vaultId];
   if(fp){
-    fp.setDate([new Date(r.startMs), new Date(r.endMs)], true); // auto trigger render
+    fp.setDate([new Date(r.startMs), new Date(r.endMs)], true);
   }else{
+    const input = document.querySelector(`.dateRangeInput[data-range="${vaultId}"]`);
+    if(input){
+      input.value = `${ymd(r.startMs)} → ${ymd(r.endMs)}`;
+    }
     rerenderVaultTbody(vaultId);
   }
 

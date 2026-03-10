@@ -550,7 +550,7 @@ function clearActivePreset(vaultId){
   g.querySelectorAll(".pbtn").forEach(b=> b.classList.remove("active"));
 }
 function clearVaultDateRange(vaultId){
-  vaultFilters[vaultId] = null;
+  vaultFilters[vaultId] = "showAll";
 
   const input = document.querySelector(`.dateRangeInput[data-range="${vaultId}"]`);
   if(input) input.value = "Show All";
@@ -1926,12 +1926,12 @@ function rerenderVaultTbody(vaultId){
   if(!tbody || !cache) return;
 
   const { bucket, rows } = cache;
-  const f = vaultFilters[vaultId];
+ const f = vaultFilters[vaultId];
 
 let use = rows;
 
 // date range filter
-if(f){
+if(f && f !== "showAll"){
   use = use.filter(([txId,t])=>{
     const ms = Number(t?.atMs||0);
     return ms >= f.startMs && ms <= f.endMs;
@@ -2047,9 +2047,10 @@ if(s){
    bindTxSearchClear(vaultId);
 }
   // === DATE RANGE ===
-const def = Object.prototype.hasOwnProperty.call(vaultFilters, vaultId)
-  ? vaultFilters[vaultId]
-  : presetRangeMs("thisMonth");
+if(!Object.prototype.hasOwnProperty.call(vaultFilters, vaultId)){
+  vaultFilters[vaultId] = presetRangeMs("thisMonth");
+}
+const def = vaultFilters[vaultId];
 
   const existing = vaultPickers[vaultId];
 if(existing){
@@ -2057,22 +2058,22 @@ if(existing){
     try{ existing.destroy(); }catch(_){}
     delete vaultPickers[vaultId];
   }else{
-    input.value = def === null ? "Show All" : `${ymd(def.startMs)} → ${ymd(def.endMs)}`;
+    input.value = def === "showAll" ? "Show All" : `${ymd(def.startMs)} → ${ymd(def.endMs)}`;
     return;
   }
 }
 
- input.value = def === null ? "Show All" : `${ymd(def.startMs)} → ${ymd(def.endMs)}`;
+ input.value = def === "showAll" ? "Show All" : `${ymd(def.startMs)} → ${ymd(def.endMs)}`;
 
 vaultPickers[vaultId] = flatpickr(input, {
   mode: "range",
   dateFormat: "Y-m-d",
   showMonths: 2,
   closeOnSelect: false,
-  defaultDate: def ? [new Date(def.startMs), new Date(def.endMs)] : null,
+  defaultDate: (def && def !== "showAll") ? [new Date(def.startMs), new Date(def.endMs)] : null,
 
 onReady: ()=> {
-  if(def === null){
+  if(def === "showAll"){
     input.value = "Show All";
   }else{
     input.value = `${ymd(def.startMs)} → ${ymd(def.endMs)}`;
@@ -2083,7 +2084,7 @@ onReady: ()=> {
 onOpen: ()=> {
   const f = vaultFilters[vaultId];
 
-  if(f === null){
+  if(f === "showAll"){
     input.value = "Show All";
     return;
   }
@@ -2110,10 +2111,12 @@ onClose: (dates)=>{
   if(dates.length === 0){
     const f = vaultFilters[vaultId];
 
-    if(f === null){
+    if(f === "showAll"){
       input.value = "Show All";
-    }else{
+    }else if(f){
       input.value = `${ymd(f.startMs)} → ${ymd(f.endMs)}`;
+    }else{
+      input.value = "";
     }
     return;
   }
@@ -2139,16 +2142,16 @@ function updateVaultKpiFromFiltered(vaultId){
   if(!cache) return;
 
   const { rows } = cache; // rows = [[txId, txObj], ...]
-  const f = vaultFilters[vaultId];
+const f = vaultFilters[vaultId];
 
-  // apply filter
-  let use = rows;
-  if(f){
-    use = rows.filter(([_,t])=>{
-      const ms = Number(t?.atMs||0);
-      return ms >= f.startMs && ms <= f.endMs;
-    });
-  }
+// apply filter
+let use = rows;
+if(f && f !== "showAll"){
+  use = rows.filter(([_,t])=>{
+    const ms = Number(t?.atMs||0);
+    return ms >= f.startMs && ms <= f.endMs;
+  });
+}
 
   // compute KPI from filtered tx
   let buyCost = 0;

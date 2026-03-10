@@ -3492,6 +3492,7 @@ const TEXT_EN_TO_ID = {
 "Last Week": "Minggu Lalu",
 "This Month": "Bulan Ini",
 "Last Month": "Bulan Lalu",
+"Show All": "Lihat Semua",
 "This Year": "Tahun Ini",
 "Last Year": "Tahun Lalu",
 "All": "Semua",

@@ -553,7 +553,7 @@ function clearVaultDateRange(vaultId){
   vaultFilters[vaultId] = null;
 
   const input = document.querySelector(`.dateRangeInput[data-range="${vaultId}"]`);
-  if(input) input.value = "";
+  if(input) input.value = "Show All";
 
   const fp = vaultPickers[vaultId];
   if(fp){
@@ -2047,20 +2047,22 @@ if(s){
    bindTxSearchClear(vaultId);
 }
   // === DATE RANGE ===
-const def = vaultFilters[vaultId] || null;
+const def = Object.prototype.hasOwnProperty.call(vaultFilters, vaultId)
+  ? vaultFilters[vaultId]
+  : presetRangeMs("thisMonth");
 
   const existing = vaultPickers[vaultId];
-  if(existing){
-    if(existing.input !== input){
-      try{ existing.destroy(); }catch(_){}
-      delete vaultPickers[vaultId];
-    }else{
-      input.value = def ? `${ymd(def.startMs)} → ${ymd(def.endMs)}` : "";
-      return;
-    }
+if(existing){
+  if(existing.input !== input){
+    try{ existing.destroy(); }catch(_){}
+    delete vaultPickers[vaultId];
+  }else{
+    input.value = def === null ? "Show All" : `${ymd(def.startMs)} → ${ymd(def.endMs)}`;
+    return;
   }
+}
 
-  input.value = def ? `${ymd(def.startMs)} → ${ymd(def.endMs)}` : "";
+ input.value = def === null ? "Show All" : `${ymd(def.startMs)} → ${ymd(def.endMs)}`;
 
 vaultPickers[vaultId] = flatpickr(input, {
   mode: "range",
@@ -2070,16 +2072,22 @@ vaultPickers[vaultId] = flatpickr(input, {
   defaultDate: def ? [new Date(def.startMs), new Date(def.endMs)] : null,
 
 onReady: ()=> {
-  if(def){
-    input.value = `${ymd(def.startMs)} → ${ymd(def.endMs)}`;
+  if(def === null){
+    input.value = "Show All";
   }else{
-    input.value = "";
+    input.value = `${ymd(def.startMs)} → ${ymd(def.endMs)}`;
   }
   clearActivePreset(vaultId);
 },
 
 onOpen: ()=> {
   const f = vaultFilters[vaultId];
+
+  if(f === null){
+    input.value = "Show All";
+    return;
+  }
+
   if(f && !input.value.trim()){
     input.value = `${ymd(f.startMs)} → ${ymd(f.endMs)}`;
   }
@@ -2101,7 +2109,12 @@ onOpen: ()=> {
 onClose: (dates)=>{
   if(dates.length === 0){
     const f = vaultFilters[vaultId];
-    input.value = f ? `${ymd(f.startMs)} → ${ymd(f.endMs)}` : "";
+
+    if(f === null){
+      input.value = "Show All";
+    }else{
+      input.value = `${ymd(f.startMs)} → ${ymd(f.endMs)}`;
+    }
     return;
   }
       if(dates.length === 1){

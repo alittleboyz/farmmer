@@ -1369,14 +1369,15 @@ ${!isHistory ? `
       <tr><td colspan="7" class="hint">Loading...</td></tr>
     </tbody>
 
-    <tfoot>
-      <tr class="vaultTotalRow">
-        <td colspan="3" class="vaultTotalLabel">Total</td>
-        <td class="num" data-total-priceqty="${vaultId}">0.00</td>
-        <td class="num" data-total-amount="${vaultId}">0.00</td>
-        <td colspan="2"></td>
-      </tr>
-    </tfoot>
+<tfoot>
+  <tr class="vaultTotalRow">
+    <td colspan="2" class="vaultTotalLabel">Total</td>
+    <td class="num" data-total-qty="${vaultId}">0</td>
+    <td class="num" data-total-priceqty="${vaultId}">0.00</td>
+    <td class="num" data-total-amount="${vaultId}">0.00</td>
+    <td colspan="2"></td>
+  </tr>
+</tfoot>
   </table>
 </div>
 
@@ -2283,50 +2284,60 @@ function renderPagerButtons(vaultId, total, totalPages){
   }
 }
 function updateVaultTableTotals(vaultId, rows){
+  const qtyEl = document.querySelector(`[data-total-qty="${vaultId}"]`);
   const priceQtyEl = document.querySelector(`[data-total-priceqty="${vaultId}"]`);
   const totalAmtEl = document.querySelector(`[data-total-amount="${vaultId}"]`);
 
-  if(!priceQtyEl || !totalAmtEl) return;
+  if(!qtyEl || !priceQtyEl || !totalAmtEl) return;
 
+  let totalQty = 0;
   let totalPriceQty = 0;
   let totalAmount = 0;
 
   for(const [txId, t] of (rows || [])){
     if(!t) continue;
 
+    let qty = 0;
     let unitPrice = 0;
     let amount = 0;
 
-    // Price Quantity column ikut logic table bro
     if(t.kind === "buy"){
+      qty = Number(t.qty || 0);
       unitPrice = Number(t.price || 0);
       amount = Number(t.total || 0);
     }
     else if(t.kind === "missing"){
+      qty = Number(t.qty || 0);
       unitPrice = Number(t.price || 0);
       amount = -Math.abs(Number(t.total || t.amount || 0));
     }
     else if(t.kind === "sell"){
+      qty = Number(t.ekor || 0);
       unitPrice = Number(t.priceKg || 0);
       amount = Number(t.total || 0);
     }
     else if(t.kind === "cash"){
+      qty = 0;
       unitPrice = 0;
       amount = (t.direction === "out")
         ? -Math.abs(Number(t.amount || t.total || 0))
         : Math.abs(Number(t.amount || t.total || 0));
     }
 
+    totalQty += qty;
     totalPriceQty += unitPrice;
     totalAmount += amount;
   }
 
+  qtyEl.textContent = Number(totalQty).toLocaleString("en-US");
   priceQtyEl.textContent = fmt(totalPriceQty);
   totalAmtEl.textContent = fmt(totalAmount);
 
+  qtyEl.classList.remove("amtNeg");
   priceQtyEl.classList.remove("amtNeg");
   totalAmtEl.classList.remove("amtNeg");
 
+  if(totalQty < 0) qtyEl.classList.add("amtNeg");
   if(totalPriceQty < 0) priceQtyEl.classList.add("amtNeg");
   if(totalAmount < 0) totalAmtEl.classList.add("amtNeg");
 }

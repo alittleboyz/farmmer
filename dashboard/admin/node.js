@@ -1371,7 +1371,7 @@ ${!isHistory ? `
 
 <tfoot>
   <tr class="vaultTotalRow">
-    <td colspan="2" class="vaultTotalLabel">Total</td>
+    <td colspan="2" class="vaultTotalLabel">Total Summary</td>
     <td class="num" data-total-qty="${vaultId}">0</td>
     <td class="num" data-total-priceqty="${vaultId}">0.00</td>
     <td class="num" data-total-amount="${vaultId}">0.00</td>

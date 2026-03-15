@@ -1965,8 +1965,8 @@ html.forceDesktop .desktopModeBtn .dmState{
 
 .tblWrap table tfoot td {
   padding: 12px 10px;
-  font-weight: 700;
-  color: #ffd76a;
+  color: #008000;
+  background: var(--inputBg);
 }
 
 .vaultTotalLabel {

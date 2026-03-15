@@ -723,7 +723,10 @@ const historyVaultPaging = {
   page: 1,
   per: 10
 };
-
+const openVaultPaging = {
+  page: 1,
+  per: 10
+};
 function getPaging(vaultId){
   if(!vaultPaging[vaultId]){
     vaultPaging[vaultId] = { page: 1, per: 10 };
@@ -1580,10 +1583,17 @@ entries.sort((a,b)=> (Number(b[1]?.createdAtMs||0) - Number(a[1]?.createdAtMs||0
 
 if(entries.length===0){
   el.innerHTML = `<div class="card"><div class="cardBody"><div class="hint">No vault yet.</div></div></div>`;
+
   if(bucket === "history"){
     const pager = document.getElementById("historyVaultPager");
     if(pager) pager.style.display = "none";
   }
+
+  if(bucket === "open"){
+    const pager = document.getElementById("openVaultPager");
+    if(pager) pager.style.display = "none";
+  }
+
   return;
 }
 
@@ -1599,11 +1609,34 @@ if(bucket === "history"){
 
   el.innerHTML = pageEntries.map(([id,v]) => vaultCardHTML(id,v,bucket)).join("");
   renderHistoryVaultPager(total);
-}else{
+
+  const openPager = document.getElementById("openVaultPager");
+  if(openPager) openPager.style.display = "none";
+}
+else if(bucket === "open"){
+  const p = openVaultPaging;
+  const total = entries.length;
+  const totalPages = Math.max(1, Math.ceil(total / p.per));
+
+  if(p.page > totalPages) p.page = totalPages;
+
+  const startIdx = (p.page - 1) * p.per;
+  const pageEntries = entries.slice(startIdx, startIdx + p.per);
+
+  el.innerHTML = pageEntries.map(([id,v]) => vaultCardHTML(id,v,bucket)).join("");
+  renderOpenVaultPager(total);
+
+  const histPager = document.getElementById("historyVaultPager");
+  if(histPager) histPager.style.display = "none";
+}
+else{
   el.innerHTML = entries.map(([id,v]) => vaultCardHTML(id,v,bucket)).join("");
 
-  const pager = document.getElementById("historyVaultPager");
-  if(pager) pager.style.display = "none";
+  const histPager = document.getElementById("historyVaultPager");
+  if(histPager) histPager.style.display = "none";
+
+  const openPager = document.getElementById("openVaultPager");
+  if(openPager) openPager.style.display = "none";
 }
   
   for(const [id] of entries){
@@ -1799,6 +1832,139 @@ function renderHistoryVaultPager(totalItems){
   }
 
   const cs = document.getElementById("histPerPage");
+  if(cs){
+    const selected = cs.querySelector(".cs-selected");
+    const optsWrap = cs.querySelector(".cs-options");
+
+    if(selected && optsWrap && cs.dataset.bound !== "1"){
+      cs.dataset.bound = "1";
+
+      selected.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if(__openCS?.cs === cs) closeCustomSelect();
+        else openCustomSelect(cs);
+      }, { passive:false });
+
+      optsWrap.addEventListener("pointerdown", (e) => {
+        const opt = e.target.closest("[data-value]");
+        if(!opt) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        p.per = Number(opt.dataset.value || 10) || 10;
+        p.page = 1;
+
+        selected.textContent = `${p.per} / page`;
+        closeCustomSelect();
+        rerenderVaultLists();
+      }, { passive:false });
+    }
+  }
+
+  pager.style.display = totalItems > 0 ? "flex" : "none";
+}
+function ensureOpenPager(){
+  const wrap = document.getElementById("viewOpen");
+  if(!wrap) return null;
+
+  let pager = document.getElementById("openVaultPager");
+  if(pager) return pager;
+
+  pager = document.createElement("div");
+  pager.id = "openVaultPager";
+  pager.className = "tblPager";
+  pager.style.marginTop = "12px";
+
+  wrap.insertAdjacentElement("afterend", pager);
+  return pager;
+}
+
+function renderOpenVaultPager(totalItems){
+  const pager = ensureOpenPager();
+  if(!pager) return;
+
+  const p = openVaultPaging;
+  const totalPages = Math.max(1, Math.ceil(totalItems / p.per));
+
+  if(p.page > totalPages) p.page = totalPages;
+
+  pager.innerHTML = `
+    <div class="tblPagerLeft">
+      <span class="hint">Page ${p.page} of ${totalPages} • ${totalItems} vault</span>
+      <button class="pbtn" type="button" id="openPrev">‹</button>
+      <div class="tblPagerPages" id="openPages"></div>
+      <button class="pbtn" type="button" id="openNext">›</button>
+    </div>
+
+    <div class="tblPagerRight">
+      <div class="customSelect" id="openPerPage" data-drop="up">
+        <div class="cs-selected">${p.per} / page</div>
+        <div class="cs-options">
+          <div data-value="10">10 / page</div>
+          <div data-value="20">20 / page</div>
+          <div data-value="50">50 / page</div>
+          <div data-value="100">100 / page</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const prevBtn = document.getElementById("openPrev");
+  const nextBtn = document.getElementById("openNext");
+  const pagesWrap = document.getElementById("openPages");
+
+  if(prevBtn){
+    prevBtn.disabled = p.page <= 1;
+    prevBtn.onclick = () => {
+      if(p.page > 1){
+        p.page--;
+        rerenderVaultLists();
+      }
+    };
+  }
+
+  if(nextBtn){
+    nextBtn.disabled = p.page >= totalPages;
+    nextBtn.onclick = () => {
+      if(p.page < totalPages){
+        p.page++;
+        rerenderVaultLists();
+      }
+    };
+  }
+
+  if(pagesWrap){
+    pagesWrap.innerHTML = "";
+
+    const items = buildPageItems(p.page, totalPages);
+
+    items.forEach(it => {
+      if(it === "..."){
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "pbtn";
+        dot.textContent = "...";
+        dot.disabled = true;
+        dot.style.opacity = ".6";
+        pagesWrap.appendChild(dot);
+        return;
+      }
+
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "pbtn" + (it === p.page ? " active" : "");
+      b.textContent = String(it);
+      b.onclick = () => {
+        p.page = it;
+        rerenderVaultLists();
+      };
+      pagesWrap.appendChild(b);
+    });
+  }
+
+  const cs = document.getElementById("openPerPage");
   if(cs){
     const selected = cs.querySelector(".cs-selected");
     const optsWrap = cs.querySelector(".cs-options");
@@ -3510,6 +3676,7 @@ if(searchInput){
   searchInput.addEventListener("input", e=>{
     vaultSearchTerm = e.target.value.trim();
     historyVaultPaging.page = 1;
+    openVaultPaging.page = 1;
     rerenderVaultLists();
   });
 }

@@ -1821,3 +1821,19 @@ html.forceDesktop .desktopModeBtn .dmState{
   border-color: var(--btn);
   color: var(--btn);
 }
+.tblWrap table tfoot .vaultTotalRow {
+  background: #0f0f0f;
+  border-top: 1px solid rgba(255,255,255,.12);
+}
+
+.tblWrap table tfoot td {
+  padding: 12px 10px;
+  font-weight: 700;
+  color: #ffd76a;
+}
+
+.vaultTotalLabel {
+  text-align: center;
+  color: #fff;
+  letter-spacing: .3px;
+}

@@ -1583,100 +1583,97 @@ function openViewNote(noteText){
   openModal("mViewNote");
 }
 function renderVaultList(targetId, data, bucket){
-const el = $(targetId);
-let entries = Object.entries(data||{});
+  const el = $(targetId);
+  let entries = Object.entries(data || {});
 
-window.__vaultOwner = window.__vaultOwner || {};
-for(const [id,v] of entries){
-  window.__vaultOwner[id] = v?.createdByUid || null;
-}
+  window.__vaultOwner = window.__vaultOwner || {};
+  for(const [id, v] of entries){
+    window.__vaultOwner[id] = v?.createdByUid || null;
+  }
 
-// sort: latest createdAtMs desc
-entries.sort((a,b)=> (Number(b[1]?.createdAtMs||0) - Number(a[1]?.createdAtMs||0)));
+  // sort: latest createdAtMs desc
+  entries.sort((a,b)=> Number(b[1]?.createdAtMs || 0) - Number(a[1]?.createdAtMs || 0));
 
-if(entries.length===0){
-  el.innerHTML = `<div class="card"><div class="cardBody"><div class="hint">No vault yet.</div></div></div>`;
+  if(entries.length === 0){
+    el.innerHTML = `<div class="card"><div class="cardBody"><div class="hint">No vault yet.</div></div></div>`;
 
+    if(bucket === "history"){
+      const pager = document.getElementById("historyVaultPager");
+      if(pager) pager.style.display = "none";
+    }
+
+    if(bucket === "open"){
+      const pager = document.getElementById("openVaultPager");
+      if(pager) pager.style.display = "none";
+    }
+
+    return;
+  }
+
+  // ===== HISTORY PAGINATION =====
   if(bucket === "history"){
-    const pager = document.getElementById("historyVaultPager");
-    if(pager) pager.style.display = "none";
+    const p = historyVaultPaging;
+    const total = entries.length;
+    const totalPages = Math.max(1, Math.ceil(total / p.per));
+
+    if(p.page > totalPages) p.page = totalPages;
+
+    const startIdx = (p.page - 1) * p.per;
+    const pageEntries = entries.slice(startIdx, startIdx + p.per);
+
+    el.innerHTML = pageEntries.map(([id,v]) => vaultCardHTML(id, v, bucket)).join("");
+    renderHistoryVaultPager(total);
   }
 
-  if(bucket === "open"){
-    const pager = document.getElementById("openVaultPager");
-    if(pager) pager.style.display = "none";
+  // ===== OPEN PAGINATION =====
+  else if(bucket === "open"){
+    const p = openVaultPaging;
+    const total = entries.length;
+    const totalPages = Math.max(1, Math.ceil(total / p.per));
+
+    if(p.page > totalPages) p.page = totalPages;
+
+    const startIdx = (p.page - 1) * p.per;
+    const pageEntries = entries.slice(startIdx, startIdx + p.per);
+
+    el.innerHTML = pageEntries.map(([id,v]) => vaultCardHTML(id, v, bucket)).join("");
+    renderOpenVaultPager(total);
   }
 
-  return;
-}
+  // ===== FALLBACK =====
+  else{
+    el.innerHTML = entries.map(([id,v]) => vaultCardHTML(id, v, bucket)).join("");
+  }
 
-if(bucket === "history"){
-  const p = historyVaultPaging;
-  const total = entries.length;
-  const totalPages = Math.max(1, Math.ceil(total / p.per));
+  // init UI + tx listeners hanya untuk card yang sedang dirender
+  const renderedIds = Array.from(el.querySelectorAll(".card[data-vid]"))
+    .map(card => card.dataset.vid)
+    .filter(Boolean);
 
-  if(p.page > totalPages) p.page = totalPages;
-
-  const startIdx = (p.page - 1) * p.per;
-  const pageEntries = entries.slice(startIdx, startIdx + p.per);
-
-  el.innerHTML = pageEntries.map(([id,v]) => vaultCardHTML(id,v,bucket)).join("");
-  renderHistoryVaultPager(total);
-
-  const openPager = document.getElementById("openVaultPager");
-  if(openPager) openPager.style.display = "none";
-}
-else if(bucket === "open"){
-  const p = openVaultPaging;
-  const total = entries.length;
-  const totalPages = Math.max(1, Math.ceil(total / p.per));
-
-  if(p.page > totalPages) p.page = totalPages;
-
-  const startIdx = (p.page - 1) * p.per;
-  const pageEntries = entries.slice(startIdx, startIdx + p.per);
-
-  el.innerHTML = pageEntries.map(([id,v]) => vaultCardHTML(id,v,bucket)).join("");
-  renderOpenVaultPager(total);
-
-  const histPager = document.getElementById("historyVaultPager");
-  if(histPager) histPager.style.display = "none";
-}
-else{
-  el.innerHTML = entries.map(([id,v]) => vaultCardHTML(id,v,bucket)).join("");
-
-  const histPager = document.getElementById("historyVaultPager");
-  if(histPager) histPager.style.display = "none";
-
-  const openPager = document.getElementById("openVaultPager");
-  if(openPager) openPager.style.display = "none";
-}
-  
-  for(const [id] of entries){
+  for(const id of renderedIds){
     initVaultDateRangeUI(id);
   }
-  for(const [id] of entries){
+
+  for(const id of renderedIds){
     const txPath = `vaults/${bucket}/${id}/transactions`;
 
-    // ✅ remove old listener for same vaultId (if exist)
     if(vaultTxUnsubs[id]){
       vaultTxUnsubs[id]();
       delete vaultTxUnsubs[id];
     }
 
-    // ✅ attach new listener + store unsubscribe
     vaultTxUnsubs[id] = onValue(ref(db, txPath), (snap)=>{
-      const txs = snap.exists()? snap.val() : {};
+      const txs = snap.exists() ? snap.val() : {};
       const tbody = document.querySelector(`[data-tbody="${id}"]`);
       if(!tbody) return;
 
       const rows = Object.entries(txs);
-      rows.sort((a,b)=> Number(b[1]?.atMs||0) - Number(a[1]?.atMs||0));
+      rows.sort((a,b)=> Number(b[1]?.atMs || 0) - Number(a[1]?.atMs || 0));
 
-      if(rows.length===0){
-      vaultTxCache[id] = { bucket, rows: [] };
-      rerenderVaultTbody(id);                
-      return;
+      if(rows.length === 0){
+        vaultTxCache[id] = { bucket, rows: [] };
+        rerenderVaultTbody(id);
+        return;
       }
 
       vaultTxCache[id] = { bucket, rows };
@@ -1876,7 +1873,7 @@ function renderHistoryVaultPager(totalItems){
     }
   }
 
-  pager.style.display = (totalItems > 0 && activeView === "history") ? "flex" : "none";
+  pager.style.display = totalItems > 0 ? "flex" : "none";
 }
 function ensureOpenPager(){
   const wrap = document.getElementById("viewOpen");
@@ -2009,7 +2006,7 @@ function renderOpenVaultPager(totalItems){
     }
   }
 
-  pager.style.display = (totalItems > 0 && activeView === "open") ? "flex" : "none";
+  pager.style.display = totalItems > 0 ? "flex" : "none";
 }
 // ===== CUSTOM SELECT PORTAL (UPGRADED) =====
 let __openCS = null;
@@ -2739,6 +2736,9 @@ function filterVaultData(data){
 function rerenderVaultLists(){
   renderVaultList("viewOpen", filterVaultData(openVaultDataCache), "open");
   renderVaultList("viewHistory", filterVaultData(histVaultDataCache), "history");
+  // penting: lepas render dua-dua, baru tentukan pager mana patut nampak
+  setView(activeView);
+
   applyLang(getLang());
 }
 function wireVaultListeners(){

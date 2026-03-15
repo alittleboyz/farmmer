@@ -719,6 +719,10 @@ let drawerBound = false;
 let __scrollY = 0;
 // ===== PAGINATION (per vault) =====
 const vaultPaging = {}; // { [vaultId]: { page, per } }
+const historyVaultPaging = {
+  page: 1,
+  per: 10
+};
 
 function getPaging(vaultId){
   if(!vaultPaging[vaultId]){
@@ -1563,22 +1567,45 @@ function openViewNote(noteText){
   openModal("mViewNote");
 }
 function renderVaultList(targetId, data, bucket){
-  const el = $(targetId);
-  const entries = Object.entries(data||{});
-    window.__vaultOwner = window.__vaultOwner || {};
-  for(const [id,v] of entries){
-    window.__vaultOwner[id] = v?.createdByUid || null;
+const el = $(targetId);
+let entries = Object.entries(data||{});
+
+window.__vaultOwner = window.__vaultOwner || {};
+for(const [id,v] of entries){
+  window.__vaultOwner[id] = v?.createdByUid || null;
+}
+
+// sort: latest createdAtMs desc
+entries.sort((a,b)=> (Number(b[1]?.createdAtMs||0) - Number(a[1]?.createdAtMs||0)));
+
+if(entries.length===0){
+  el.innerHTML = `<div class="card"><div class="cardBody"><div class="hint">No vault yet.</div></div></div>`;
+  if(bucket === "history"){
+    const pager = document.getElementById("historyVaultPager");
+    if(pager) pager.style.display = "none";
   }
+  return;
+}
 
-  // sort: latest createdAtMs desc
-  entries.sort((a,b)=> (Number(b[1]?.createdAtMs||0) - Number(a[1]?.createdAtMs||0)));
+if(bucket === "history"){
+  const p = historyVaultPaging;
+  const total = entries.length;
+  const totalPages = Math.max(1, Math.ceil(total / p.per));
 
-  if(entries.length===0){
-    el.innerHTML = `<div class="card"><div class="cardBody"><div class="hint">No vault yet.</div></div></div>`;
-    return;
-  }
+  if(p.page > totalPages) p.page = totalPages;
 
+  const startIdx = (p.page - 1) * p.per;
+  const pageEntries = entries.slice(startIdx, startIdx + p.per);
+
+  el.innerHTML = pageEntries.map(([id,v]) => vaultCardHTML(id,v,bucket)).join("");
+  renderHistoryVaultPager(total);
+}else{
   el.innerHTML = entries.map(([id,v]) => vaultCardHTML(id,v,bucket)).join("");
+
+  const pager = document.getElementById("historyVaultPager");
+  if(pager) pager.style.display = "none";
+}
+  
   for(const [id] of entries){
     initVaultDateRangeUI(id);
   }
@@ -1671,6 +1698,139 @@ function buildPageItems(current, total){
   items.push(total);
 
   return items;
+}
+function ensureHistoryPager(){
+  const wrap = document.getElementById("viewHistory");
+  if(!wrap) return null;
+
+  let pager = document.getElementById("historyVaultPager");
+  if(pager) return pager;
+
+  pager = document.createElement("div");
+  pager.id = "historyVaultPager";
+  pager.className = "tblPager";
+  pager.style.marginTop = "12px";
+
+  wrap.insertAdjacentElement("afterend", pager);
+  return pager;
+}
+
+function renderHistoryVaultPager(totalItems){
+  const pager = ensureHistoryPager();
+  if(!pager) return;
+
+  const p = historyVaultPaging;
+  const totalPages = Math.max(1, Math.ceil(totalItems / p.per));
+
+  if(p.page > totalPages) p.page = totalPages;
+
+  pager.innerHTML = `
+    <div class="tblPagerLeft">
+      <span class="hint">Page ${p.page} of ${totalPages} • ${totalItems} vault</span>
+      <button class="pbtn" type="button" id="histPrev">‹</button>
+      <div class="tblPagerPages" id="histPages"></div>
+      <button class="pbtn" type="button" id="histNext">›</button>
+    </div>
+
+    <div class="tblPagerRight">
+      <div class="customSelect" id="histPerPage" data-drop="up">
+        <div class="cs-selected">${p.per} / page</div>
+        <div class="cs-options">
+          <div data-value="10">10 / page</div>
+          <div data-value="20">20 / page</div>
+          <div data-value="50">50 / page</div>
+          <div data-value="100">100 / page</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const prevBtn = document.getElementById("histPrev");
+  const nextBtn = document.getElementById("histNext");
+  const pagesWrap = document.getElementById("histPages");
+
+  if(prevBtn){
+    prevBtn.disabled = p.page <= 1;
+    prevBtn.onclick = () => {
+      if(p.page > 1){
+        p.page--;
+        rerenderVaultLists();
+      }
+    };
+  }
+
+  if(nextBtn){
+    nextBtn.disabled = p.page >= totalPages;
+    nextBtn.onclick = () => {
+      if(p.page < totalPages){
+        p.page++;
+        rerenderVaultLists();
+      }
+    };
+  }
+
+  if(pagesWrap){
+    pagesWrap.innerHTML = "";
+
+    const items = buildPageItems(p.page, totalPages);
+
+    items.forEach(it => {
+      if(it === "..."){
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "pbtn";
+        dot.textContent = "...";
+        dot.disabled = true;
+        dot.style.opacity = ".6";
+        pagesWrap.appendChild(dot);
+        return;
+      }
+
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "pbtn" + (it === p.page ? " active" : "");
+      b.textContent = String(it);
+      b.onclick = () => {
+        p.page = it;
+        rerenderVaultLists();
+      };
+      pagesWrap.appendChild(b);
+    });
+  }
+
+  const cs = document.getElementById("histPerPage");
+  if(cs){
+    const selected = cs.querySelector(".cs-selected");
+    const optsWrap = cs.querySelector(".cs-options");
+
+    if(selected && optsWrap && cs.dataset.bound !== "1"){
+      cs.dataset.bound = "1";
+
+      selected.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if(__openCS?.cs === cs) closeCustomSelect();
+        else openCustomSelect(cs);
+      }, { passive:false });
+
+      optsWrap.addEventListener("pointerdown", (e) => {
+        const opt = e.target.closest("[data-value]");
+        if(!opt) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        p.per = Number(opt.dataset.value || 10) || 10;
+        p.page = 1;
+
+        selected.textContent = `${p.per} / page`;
+        closeCustomSelect();
+        rerenderVaultLists();
+      }, { passive:false });
+    }
+  }
+
+  pager.style.display = totalItems > 0 ? "flex" : "none";
 }
 // ===== CUSTOM SELECT PORTAL (UPGRADED) =====
 let __openCS = null;
@@ -3345,10 +3505,11 @@ onAuthStateChanged(auth, async (user)=>{
   wireBalanceListener();
   wireLastLedgerListener();
   wireVaultListeners();
-  const searchInput = document.getElementById("vaultSearch");
-  if(searchInput){
+const searchInput = document.getElementById("vaultSearch");
+if(searchInput){
   searchInput.addEventListener("input", e=>{
     vaultSearchTerm = e.target.value.trim();
+    historyVaultPaging.page = 1;
     rerenderVaultLists();
   });
 }

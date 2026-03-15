@@ -1649,6 +1649,8 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   background: var(--pagebg);
   flex-wrap:wrap;
   gap:10px;
+  padding: 5px 10px;
+  border-radius:6px;
 }
 
 #openVaultPager .tblPagerLeft{

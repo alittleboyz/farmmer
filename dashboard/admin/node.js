@@ -1021,6 +1021,8 @@ if(elBefore){
 }
 async function changeBalance(delta, meta, atMsOverride){
   const now = Number(atMsOverride || Date.now());
+
+  const balanceRef   = ref(db, `finance/balance/${WALLET_ID}`);
   const balAmountRef = ref(db, `finance/balance/${WALLET_ID}/amount`);
 
   // 1) atomic update amount
@@ -1033,7 +1035,12 @@ async function changeBalance(delta, meta, atMsOverride){
 
   const newAmount = Number(txRes.snapshot.val() || 0);
 
-  // 2) update meta + ledger
+  // 2) ambil data balance lama supaya latestNote tak hilang
+  const balSnap = await get(balanceRef);
+  const oldBal = balSnap.exists() ? (balSnap.val() || {}) : {};
+  const oldLatestNote = oldBal.latestNote || null;
+
+  // 3) update meta + ledger
   const ledRef  = push(ref(db, `finance/ledger/${WALLET_ID}`));
   const updates = {};
 
@@ -1045,7 +1052,7 @@ async function changeBalance(delta, meta, atMsOverride){
     byUser: me.username
   };
 
-  // ✅ simpan latest note khas untuk add_point
+  // kalau add_point, simpan note baru
   if(meta?.kind === "add_point"){
     balancePayload.latestNote = {
       note: String(meta?.note || "").trim(),
@@ -1056,6 +1063,10 @@ async function changeBalance(delta, meta, atMsOverride){
       byUid: me.uid,
       byUser: me.username
     };
+  }
+  // kalau bukan add_point, kekalkan note lama
+  else if(oldLatestNote){
+    balancePayload.latestNote = oldLatestNote;
   }
 
   updates[`finance/balance/${WALLET_ID}`] = balancePayload;

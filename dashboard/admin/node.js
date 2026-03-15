@@ -1598,15 +1598,10 @@ async function adjustBalanceForTxDelete({ bucket, vaultId, txId, txObj }) {
 function setWalletLatestNoteUI(noteData){
   latestWalletNoteData = noteData || null;
 
-  const previewEl = $("walletLatestNotePreview");
   const viewBtn = $("btnViewWalletNote");
-
-  if(!previewEl || !viewBtn) return;
+  if(!viewBtn) return;
 
   const note = String(noteData?.note || "").trim();
-
-  // jangan tampil apa-apa teks dekat bawah
-  previewEl.textContent = "";
 
   // kalau tiada note, tombol view disable
   if(!note){

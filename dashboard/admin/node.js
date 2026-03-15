@@ -1595,11 +1595,6 @@ async function adjustBalanceForTxDelete({ bucket, vaultId, txId, txObj }) {
     note: "Delete tx rollback"
   }, atMs);
 }
-function openViewNote(noteText){
-  const txt = String(noteText || "").trim();
-  $("viewNoteText").textContent = txt ? txt : "No note.";
-  openModal("mViewNote");
-}
 function setWalletLatestNoteUI(noteData){
   latestWalletNoteData = noteData || null;
 
@@ -1610,29 +1605,16 @@ function setWalletLatestNoteUI(noteData){
 
   const note = String(noteData?.note || "").trim();
 
+  // jangan tampil apa-apa teks dekat bawah
+  previewEl.textContent = "";
+
+  // kalau tiada note, tombol view disable
   if(!note){
-    previewEl.textContent = "No note yet.";
     viewBtn.disabled = true;
     return;
   }
 
-  const shortText = note.length > 80 ? note.slice(0, 80) + "..." : note;
-
-  let meta = [];
-  if(noteData?.direction){
-    meta.push(`Type: ${String(noteData.direction).toUpperCase()}`);
-  }
-  if(Number(noteData?.amount || 0) > 0){
-    meta.push(`Amount: ${fmt(noteData.amount)}`);
-  }
-  if(noteData?.atMs){
-    meta.push(`Date: ${fmtDT(noteData.atMs)}`);
-  }
-
-  previewEl.textContent = meta.length
-    ? `${shortText}\n${meta.join(" | ")}`
-    : shortText;
-
+  // kalau ada note, tombol view aktif
   viewBtn.disabled = false;
 }
 

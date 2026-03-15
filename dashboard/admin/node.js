@@ -1331,24 +1331,34 @@ ${!isHistory ? `
   </div>
 </div>
 
-        <div class="tblWrap">
-          <table>
-            <thead>
-              <tr>
-                <th style="width:120px">Type</th>
-                <th>Transaction</th>
-                <th style="width:120px">Quantity</th>
-                <th style="width:150px">Price Quantity</th>
-                <th style="width:150px">Total Amount</th>
-                <th style="width:180px">Date & Time</th>
-                <th style="width:180px">Actions</th>
-              </tr>
-            </thead>
-            <tbody data-tbody="${vaultId}">
-              <tr><td colspan="7" class="hint">Loading...</td></tr>
-            </tbody>
-          </table>
-        </div>
+<div class="tblWrap">
+  <table>
+    <thead>
+      <tr>
+        <th style="width:120px">Type</th>
+        <th>Transaction</th>
+        <th style="width:120px">Quantity</th>
+        <th style="width:150px">Price Quantity</th>
+        <th style="width:150px">Total Amount</th>
+        <th style="width:180px">Date & Time</th>
+        <th style="width:180px">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody data-tbody="${vaultId}">
+      <tr><td colspan="7" class="hint">Loading...</td></tr>
+    </tbody>
+
+    <tfoot>
+      <tr class="vaultTotalRow">
+        <td colspan="3" class="vaultTotalLabel">Total</td>
+        <td class="num" data-total-priceqty="${vaultId}">0.00</td>
+        <td class="num" data-total-amount="${vaultId}">0.00</td>
+        <td colspan="2"></td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
 
 ${(v.note || v.createdBy) ? `<div class="hr"></div>` : ``}
 
@@ -1936,6 +1946,54 @@ function renderPagerButtons(vaultId, total, totalPages){
     bindCustomSelect(cs, vaultId);
   }
 }
+function updateVaultTableTotals(vaultId, rows){
+  const priceQtyEl = document.querySelector(`[data-total-priceqty="${vaultId}"]`);
+  const totalAmtEl = document.querySelector(`[data-total-amount="${vaultId}"]`);
+
+  if(!priceQtyEl || !totalAmtEl) return;
+
+  let totalPriceQty = 0;
+  let totalAmount = 0;
+
+  for(const [txId, t] of (rows || [])){
+    if(!t) continue;
+
+    let unitPrice = 0;
+    let amount = 0;
+
+    // Price Quantity column ikut logic table bro
+    if(t.kind === "buy"){
+      unitPrice = Number(t.price || 0);
+      amount = Number(t.total || 0);
+    }
+    else if(t.kind === "missing"){
+      unitPrice = Number(t.price || 0);
+      amount = -Math.abs(Number(t.total || t.amount || 0));
+    }
+    else if(t.kind === "sell"){
+      unitPrice = Number(t.priceKg || 0);
+      amount = Number(t.total || 0);
+    }
+    else if(t.kind === "cash"){
+      unitPrice = 0;
+      amount = (t.direction === "out")
+        ? -Math.abs(Number(t.amount || t.total || 0))
+        : Math.abs(Number(t.amount || t.total || 0));
+    }
+
+    totalPriceQty += unitPrice;
+    totalAmount += amount;
+  }
+
+  priceQtyEl.textContent = fmt(totalPriceQty);
+  totalAmtEl.textContent = fmt(totalAmount);
+
+  priceQtyEl.classList.remove("amtNeg");
+  totalAmtEl.classList.remove("amtNeg");
+
+  if(totalPriceQty < 0) priceQtyEl.classList.add("amtNeg");
+  if(totalAmount < 0) totalAmtEl.classList.add("amtNeg");
+}
 function rerenderVaultTbody(vaultId){
   const cache = vaultTxCache[vaultId];
   const tbody = document.querySelector(`[data-tbody="${vaultId}"]`);
@@ -1990,11 +2048,11 @@ const p = getPaging(vaultId);
 const total = use.length;
 const totalPages = Math.max(1, Math.ceil(total / p.per));
 if(p.page > totalPages) p.page = totalPages;
-
 // table kosong (lepas filter)
 if(total === 0){
   renderPagerButtons(vaultId, 0, 1);
   tbody.innerHTML = `<tr><td colspan="7" class="hint">No transaction in this date range.</td></tr>`;
+  updateVaultTableTotals(vaultId, []);
   return;
 }
 
@@ -2009,6 +2067,7 @@ renderPagerButtons(vaultId, total, totalPages);
 tbody.innerHTML = pageRows
   .map(([txId,t]) => txRowHTML(vaultId, txId, t, bucket))
   .join("");
+  updateVaultTableTotals(vaultId, use);
 }
 function bindTxSearchClear(vaultId){
   const input = document.querySelector(`input[data-txsearch="${vaultId}"]`);

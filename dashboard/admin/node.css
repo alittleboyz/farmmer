@@ -1572,7 +1572,75 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   gap:10px;
   transition: all 0.2s;
 }
+#historyVaultPager{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:12px;
+  background:transparent;
+  flex-wrap:wrap;
+  gap:10px;
+}
 
+#historyVaultPager .tblPagerLeft{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+}
+
+#historyVaultPager .tblPagerRight{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+#historyVaultPager .tblPagerPages{
+  display:flex;
+  gap:6px;
+}
+
+#historyVaultPager .hint{
+  color:var(--colorInput);
+  font-size:12px;
+  line-height:1.4;
+}
+
+@media (max-width: 560px){
+  #historyVaultPager{
+    flex-wrap: nowrap !important;
+    gap:8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  #historyVaultPager::-webkit-scrollbar{
+    display:none;
+  }
+
+  #historyVaultPager .tblPagerLeft{
+    flex-wrap: nowrap !important;
+    white-space: nowrap;
+  }
+
+  #historyVaultPager .tblPagerPages{
+    flex-wrap: nowrap !important;
+    white-space: nowrap;
+  }
+
+  #historyVaultPager .hint{
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #historyVaultPager .tblPagerRight{
+    flex: 0 0 auto;
+  }
+}
 .tblPagerLeft{
   display:flex;
   align-items:center;

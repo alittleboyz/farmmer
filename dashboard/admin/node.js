@@ -1625,14 +1625,6 @@ function openWalletLatestNote(){
   }
   openViewNote(note);
 }
-function openWalletLatestNote(){
-  const note = String(latestWalletNoteData?.note || "").trim();
-  if(!note){
-    openViewNote("");
-    return;
-  }
-  openViewNote(note);
-}
 function renderVaultList(targetId, data, bucket){
   const el = $(targetId);
   let entries = Object.entries(data || {});

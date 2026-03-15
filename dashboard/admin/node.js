@@ -690,6 +690,7 @@ function attachKg(el){
   let currentBalance = 0;
   const WALLET_ID = "main";
   let buyTotalManual = false;
+  let latestWalletNoteData = null;
 
   // UI state
   let activeView = "open";
@@ -934,20 +935,19 @@ function wireBalanceListener(){
 
   onValue(ref(db, balPath), (snap)=>{
     const v = snap.val() || {};
-    currentBalance = Number(v.amount||0);
+    currentBalance = Number(v.amount || 0);
 
     const txt = fmt(currentBalance);
     const isNeg = currentBalance < 0;
 
-    const elSmall  = $("balanceText");   // header top
-    const elBig    = $("balanceBig");    // modal
-    const elDrawer = $("drawerWallet");  //  sidebar drawer
+    const elSmall  = $("balanceText");
+    const elBig    = $("balanceBig");
+    const elDrawer = $("drawerWallet");
 
     if(elSmall)  elSmall.textContent  = txt;
     if(elBig)    elBig.textContent    = txt;
     if(elDrawer) elDrawer.textContent = txt;
 
-    // ✅ apply class good/bad untuk semua sekali
     [elSmall, elBig, elDrawer].forEach(el=>{
       if(!el) return;
       el.classList.remove("good","bad");
@@ -956,6 +956,9 @@ function wireBalanceListener(){
 
     const upd = $("balanceUpdated");
     if(upd) upd.textContent = v.updatedAtMs ? fmtDT(v.updatedAtMs) : "-";
+
+    // ✅ latest add point note
+    setWalletLatestNoteUI(v.latestNote || null);
   });
 }
 function wireLastLedgerListener(){
@@ -1019,7 +1022,6 @@ if(elBefore){
 async function changeBalance(delta, meta, atMsOverride){
   const now = Number(atMsOverride || Date.now());
   const balAmountRef = ref(db, `finance/balance/${WALLET_ID}/amount`);
-  const balMetaRef   = ref(db, `finance/balance/${WALLET_ID}`);
 
   // 1) atomic update amount
   const txRes = await runTransaction(balAmountRef, (cur)=>{
@@ -1031,11 +1033,11 @@ async function changeBalance(delta, meta, atMsOverride){
 
   const newAmount = Number(txRes.snapshot.val() || 0);
 
-  // 2) update meta + ledger (non-atomic ok, sebab amount dah selamat)
+  // 2) update meta + ledger
   const ledRef  = push(ref(db, `finance/ledger/${WALLET_ID}`));
   const updates = {};
 
-  updates[`finance/balance/${WALLET_ID}`] = {
+  const balancePayload = {
     amount: newAmount,
     updatedAt: serverTimestamp(),
     updatedAtMs: now,
@@ -1043,8 +1045,23 @@ async function changeBalance(delta, meta, atMsOverride){
     byUser: me.username
   };
 
+  // ✅ simpan latest note khas untuk add_point
+  if(meta?.kind === "add_point"){
+    balancePayload.latestNote = {
+      note: String(meta?.note || "").trim(),
+      amount: Number(meta?.amount || 0),
+      delta: Number(delta || 0),
+      direction: String(meta?.direction || ""),
+      atMs: now,
+      byUid: me.uid,
+      byUser: me.username
+    };
+  }
+
+  updates[`finance/balance/${WALLET_ID}`] = balancePayload;
+
   updates[`finance/ledger/${WALLET_ID}/${ledRef.key}`] = {
-    ...(meta||{}),
+    ...(meta || {}),
     delta,
     balanceAfter: newAmount,
     at: serverTimestamp(),
@@ -1582,6 +1599,50 @@ function openViewNote(noteText){
   const txt = String(noteText || "").trim();
   $("viewNoteText").textContent = txt ? txt : "No note.";
   openModal("mViewNote");
+}
+function setWalletLatestNoteUI(noteData){
+  latestWalletNoteData = noteData || null;
+
+  const previewEl = $("walletLatestNotePreview");
+  const viewBtn = $("btnViewWalletNote");
+
+  if(!previewEl || !viewBtn) return;
+
+  const note = String(noteData?.note || "").trim();
+
+  if(!note){
+    previewEl.textContent = "No note yet.";
+    viewBtn.disabled = true;
+    return;
+  }
+
+  const shortText = note.length > 80 ? note.slice(0, 80) + "..." : note;
+
+  let meta = [];
+  if(noteData?.direction){
+    meta.push(`Type: ${String(noteData.direction).toUpperCase()}`);
+  }
+  if(Number(noteData?.amount || 0) > 0){
+    meta.push(`Amount: ${fmt(noteData.amount)}`);
+  }
+  if(noteData?.atMs){
+    meta.push(`Date: ${fmtDT(noteData.atMs)}`);
+  }
+
+  previewEl.textContent = meta.length
+    ? `${shortText}\n${meta.join(" | ")}`
+    : shortText;
+
+  viewBtn.disabled = false;
+}
+
+function openWalletLatestNote(){
+  const note = String(latestWalletNoteData?.note || "").trim();
+  if(!note){
+    openViewNote("");
+    return;
+  }
+  openViewNote(note);
 }
 function renderVaultList(targetId, data, bucket){
   const el = $(targetId);
@@ -2771,6 +2832,7 @@ function wireVaultListeners(){
 }
   // ===== EVENTS =====
  $("btnBalance").addEventListener("click", openWalletFromAnywhere);
+$("btnViewWalletNote")?.addEventListener("click", openWalletLatestNote);
 // ===== USER DROPDOWN TOGGLE =====
 const userDrop = $("userDrop");
 const userBtn  = $("btnUser");

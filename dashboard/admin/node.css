@@ -1965,12 +1965,13 @@ html.forceDesktop .desktopModeBtn .dmState{
 
 .tblWrap table tfoot td {
   padding: 12px 10px;
+  font-weight: 600;
   color: #008000;
   background: var(--inputBg);
 }
 
 .vaultTotalLabel {
   text-align: center;
-  color: #fff;
+  color: var(--colorInput)!important;
   letter-spacing: .3px;
 }

@@ -1646,7 +1646,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   justify-content:space-between;
   align-items:center;
   margin-top:12px;
-  background: var(--pagebg);
+  background: var(--panelBg);
   flex-wrap:wrap;
   gap:10px;
   padding: 5px 10px;

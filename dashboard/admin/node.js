@@ -1603,16 +1603,28 @@ function setWalletLatestNoteUI(noteData){
 
   const note = String(noteData?.note || "").trim();
 
-  // kalau tiada note, tombol view disable
   if(!note){
     viewBtn.disabled = true;
     return;
   }
 
-  // kalau ada note, tombol view aktif
   viewBtn.disabled = false;
 }
 
+function openViewNote(noteText){
+  const txt = String(noteText || "").trim();
+  $("viewNoteText").textContent = txt ? txt : "No note.";
+  openModal("mViewNote");
+}
+
+function openWalletLatestNote(){
+  const note = String(latestWalletNoteData?.note || "").trim();
+  if(!note){
+    openViewNote("");
+    return;
+  }
+  openViewNote(note);
+}
 function openWalletLatestNote(){
   const note = String(latestWalletNoteData?.note || "").trim();
   if(!note){

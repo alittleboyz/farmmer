@@ -1195,13 +1195,26 @@ async function uncloseVault(vaultId){
   await update(ref(db), updates);
 }
   // ===== RENDER =====
-  function setView(v){
-    activeView = v;
-    $("tabOpen").classList.toggle("active", v==="open");
-    $("tabHistory").classList.toggle("active", v==="history");
-    $("viewOpen").classList.toggle("hide", v!=="open");
-    $("viewHistory").classList.toggle("hide", v!=="history");
+function setView(v){
+  activeView = v;
+
+  $("tabOpen").classList.toggle("active", v === "open");
+  $("tabHistory").classList.toggle("active", v === "history");
+
+  $("viewOpen").classList.toggle("hide", v !== "open");
+  $("viewHistory").classList.toggle("hide", v !== "history");
+
+  const openPager = document.getElementById("openVaultPager");
+  const histPager = document.getElementById("historyVaultPager");
+
+  if(openPager){
+    openPager.style.display = (v === "open") ? "flex" : "none";
   }
+
+  if(histPager){
+    histPager.style.display = (v === "history") ? "flex" : "none";
+  }
+}
 
 function vaultCardHTML(vaultId, v, bucket){
   const s = v.summary || { totalCost:0,totalKg:0,totalEkor:0,totalRevenue:0,profit:0 };
@@ -1863,7 +1876,7 @@ function renderHistoryVaultPager(totalItems){
     }
   }
 
-  pager.style.display = totalItems > 0 ? "flex" : "none";
+  pager.style.display = (totalItems > 0 && activeView === "history") ? "flex" : "none";
 }
 function ensureOpenPager(){
   const wrap = document.getElementById("viewOpen");
@@ -1996,7 +2009,7 @@ function renderOpenVaultPager(totalItems){
     }
   }
 
-  pager.style.display = totalItems > 0 ? "flex" : "none";
+  pager.style.display = (totalItems > 0 && activeView === "open") ? "flex" : "none";
 }
 // ===== CUSTOM SELECT PORTAL (UPGRADED) =====
 let __openCS = null;

@@ -2067,7 +2067,7 @@ renderPagerButtons(vaultId, total, totalPages);
 tbody.innerHTML = pageRows
   .map(([txId,t]) => txRowHTML(vaultId, txId, t, bucket))
   .join("");
-  updateVaultTableTotals(vaultId, use);
+  updateVaultTableTotals(vaultId, pageRows);
 }
 function bindTxSearchClear(vaultId){
   const input = document.querySelector(`input[data-txsearch="${vaultId}"]`);

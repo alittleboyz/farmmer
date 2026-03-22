@@ -444,7 +444,22 @@ function renderWalletTotals(ledgerObj){
 
   const rows = Object.values(ledgerObj || {});
   rows.forEach(row => {
-    const amt = Number(row?.amount || 0);
+    if(!row || typeof row !== "object") return;
+
+    // skip deleted
+    if(
+      row.deleted === true ||
+      row.isDeleted === true ||
+      row.removed === true
+    ){
+      return;
+    }
+
+    // ambil ADD POINT sahaja
+    if(row.kind !== "add_point") return;
+
+    const amt = Number(row?.delta ?? row?.amount ?? 0);
+    if(!Number.isFinite(amt)) return;
 
     if (amt > 0) {
       totalIn += amt;
@@ -461,9 +476,11 @@ function renderWalletTotals(ledgerObj){
 
   if (elIn) elIn.textContent = fmt(totalIn);
   if (elOut) elOut.textContent = fmt(totalOut);
+
   if (elResult) {
     elResult.textContent = fmt(totalResult);
-    elResult.style.color = totalResult < 0 ? "red" : "#00c853";
+    elResult.classList.remove("good","bad");
+    elResult.classList.add(totalResult < 0 ? "bad" : "good");
   }
 }
 // TX TIME (admin lock/unlock)
@@ -991,37 +1008,10 @@ function wireBalanceListener(){
     setWalletLatestNoteUI(v.latestNote || null);
   });
 
-  // ===== total masuk / keluar / hasil =====
+  // ===== total modal masuk / keluar / hasil =====
   onValue(ref(db, ledgerPath), (snap)=>{
     const ledger = snap.val() || {};
-
-    let totalIn = 0;
-    let totalOut = 0;
-
-    Object.values(ledger).forEach(row=>{
-      const amt = Number(row?.amount || 0);
-
-      if(amt > 0){
-        totalIn += amt;
-      }else if(amt < 0){
-        totalOut += Math.abs(amt);
-      }
-    });
-
-    const totalResult = totalIn - totalOut;
-
-    const elIn = $("walletTotalIn");
-    const elOut = $("walletTotalOut");
-    const elResult = $("walletTotalResult");
-
-    if(elIn) elIn.textContent = fmt(totalIn);
-    if(elOut) elOut.textContent = fmt(totalOut);
-
-    if(elResult){
-      elResult.textContent = fmt(totalResult);
-      elResult.classList.remove("good","bad");
-      elResult.classList.add(totalResult < 0 ? "bad" : "good");
-    }
+    renderWalletTotals(ledger);
   });
 }
 function wireLastLedgerListener(){

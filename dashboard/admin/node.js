@@ -445,14 +445,8 @@ function renderWalletTotals(ledgerObj){
   const rows = Object.values(ledgerObj || {});
   rows.forEach(row => {
     if(!row || typeof row !== "object") return;
-
-    // ambil add point sahaja
     if(row.kind !== "add_point") return;
 
-    // debug tengok row sebenar
-    console.log("ADD POINT ROW =", row);
-
-    // skip deleted / reversed / void / inactive
     if(
       row.deleted === true ||
       row.isDeleted === true ||
@@ -1672,6 +1666,16 @@ async function adjustBalanceForTxDelete({ bucket, vaultId, txId, txObj }) {
     txId,
     note: "Delete tx rollback"
   }, atMs);
+}
+async function markWalletLedgerDeleted(ledgerId){
+  if(!ledgerId) return;
+
+  await update(ref(db, `finance/ledger/${WALLET_ID}/${ledgerId}`), {
+    deleted: true,
+    deletedAtMs: Date.now(),
+    deletedByUid: me.uid,
+    deletedByUser: me.username
+  });
 }
 function setWalletLatestNoteUI(noteData){
   latestWalletNoteData = noteData || null;
@@ -3268,31 +3272,40 @@ if(act==="txDel"){
     toast("Limited user: tiada akses delete history.");
     return;
   }
+
   const yes = await confirmBox("Delete transaction?", {
-  title:"Delete",
-  okText:"Delete",
-  cancelText:"Cancel",
-  okClass:"danger"
-});
-if(!yes) return;
+    title:"Delete",
+    okText:"Delete",
+    cancelText:"Cancel",
+    okClass:"danger"
+  });
+  if(!yes) return;
 
   try{
     const txPath = `vaults/${bucket}/${vaultId}/transactions/${txId}`;
 
     // 1) ambil tx dulu utk rollback kira delta (sbb lepas remove dah hilang)
     const txSnap = await get(ref(db, txPath));
-    if(!txSnap.exists()){ toast("TX not found."); return; }
+    if(!txSnap.exists()){
+      toast("TX not found.");
+      return;
+    }
     const t = txSnap.val();
 
-    // 2) REMOVE dulu — kalau permission denied dia akan throw kat sini
+    // 2) REMOVE dulu
     await remove(ref(db, txPath));
 
-    // 3) recompute dulu
+    // 3) recompute summary
     await recomputeVaultSummary(vaultId, bucket);
 
-    // 4) BARU adjust wallet (open sahaja)
+    // 4) rollback wallet untuk tx vault
     if(bucket === "open"){
       await adjustBalanceForTxDelete({ bucket, vaultId, txId, txObj: t });
+    }
+
+    // 5) kalau tx ini ada simpan wallet ledger asal, mark deleted juga
+    if(t?.walletLedgerId){
+      await markWalletLedgerDeleted(t.walletLedgerId);
     }
 
     toast("Deleted.");

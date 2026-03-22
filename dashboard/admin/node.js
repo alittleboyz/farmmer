@@ -446,17 +446,29 @@ function renderWalletTotals(ledgerObj){
   rows.forEach(row => {
     if(!row || typeof row !== "object") return;
 
-    // skip deleted
+    // ambil add point sahaja
+    if(row.kind !== "add_point") return;
+
+    // debug tengok row sebenar
+    console.log("ADD POINT ROW =", row);
+
+    // skip deleted / reversed / void / inactive
     if(
       row.deleted === true ||
       row.isDeleted === true ||
-      row.removed === true
+      row.removed === true ||
+      row.voided === true ||
+      row.reversed === true ||
+      row.reverse === true ||
+      row.cancelled === true ||
+      row.active === false ||
+      row.status === "deleted" ||
+      row.status === "void" ||
+      row.status === "reversed" ||
+      row.status === "cancelled"
     ){
       return;
     }
-
-    // ambil add point sahaja
-    if(row.kind !== "add_point") return;
 
     const direction = String(row.direction || "").toLowerCase();
     const amount = Number(row.amount || 0);

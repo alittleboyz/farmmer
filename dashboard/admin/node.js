@@ -438,59 +438,6 @@ function bindLoadingClick(btnId, handler){
    const sec   = pad(d.getSeconds());
   return `${day}/${month}/${year} ${hour}:${min}:${sec}`;
  };
-function renderWalletTotals(ledgerObj){
-  let totalIn = 0;
-  let totalOut = 0;
-
-  const rows = Object.values(ledgerObj || {});
-  rows.forEach(row => {
-    if(!row || typeof row !== "object") return;
-    if(row.kind !== "add_point") return;
-
-    if(
-      row.deleted === true ||
-      row.isDeleted === true ||
-      row.removed === true ||
-      row.voided === true ||
-      row.reversed === true ||
-      row.reverse === true ||
-      row.cancelled === true ||
-      row.active === false ||
-      row.status === "deleted" ||
-      row.status === "void" ||
-      row.status === "reversed" ||
-      row.status === "cancelled"
-    ){
-      return;
-    }
-
-    const direction = String(row.direction || "").toLowerCase();
-    const amount = Number(row.amount || 0);
-
-    if(!Number.isFinite(amount) || amount <= 0) return;
-
-    if(direction === "in"){
-      totalIn += amount;
-    }else if(direction === "out"){
-      totalOut += amount;
-    }
-  });
-
-  const totalResult = totalIn - totalOut;
-
-  const elIn = $("walletTotalIn");
-  const elOut = $("walletTotalOut");
-  const elResult = $("walletTotalResult");
-
-  if(elIn) elIn.textContent = fmt(totalIn);
-  if(elOut) elOut.textContent = fmt(totalOut);
-
-  if(elResult){
-    elResult.textContent = fmt(totalResult);
-    elResult.classList.remove("good","bad");
-    elResult.classList.add(totalResult < 0 ? "bad" : "good");
-  }
-}
 // TX TIME (admin lock/unlock)
 function toLocalInputValue(ms = Date.now()){
   const d = new Date(ms);
@@ -985,9 +932,7 @@ async function loadRole(uid){
 
 function wireBalanceListener(){
   const balPath = `finance/balance/${WALLET_ID}`;
-  const ledgerPath = `finance/ledger/${WALLET_ID}`;
 
-  // ===== balance utama =====
   onValue(ref(db, balPath), (snap)=>{
     const v = snap.val() || {};
     currentBalance = Number(v.amount || 0);
@@ -1014,12 +959,6 @@ function wireBalanceListener(){
 
     // ✅ latest add point note
     setWalletLatestNoteUI(v.latestNote || null);
-  });
-
-  // ===== total modal masuk / keluar / hasil =====
-  onValue(ref(db, ledgerPath), (snap)=>{
-    const ledger = snap.val() || {};
-    renderWalletTotals(ledger);
   });
 }
 function wireLastLedgerListener(){
@@ -1666,16 +1605,6 @@ async function adjustBalanceForTxDelete({ bucket, vaultId, txId, txObj }) {
     txId,
     note: "Delete tx rollback"
   }, atMs);
-}
-async function markWalletLedgerDeleted(ledgerId){
-  if(!ledgerId) return;
-
-  await update(ref(db, `finance/ledger/${WALLET_ID}/${ledgerId}`), {
-    deleted: true,
-    deletedAtMs: Date.now(),
-    deletedByUid: me.uid,
-    deletedByUser: me.username
-  });
 }
 function setWalletLatestNoteUI(noteData){
   latestWalletNoteData = noteData || null;
@@ -3272,41 +3201,31 @@ if(act==="txDel"){
     toast("Limited user: tiada akses delete history.");
     return;
   }
-
   const yes = await confirmBox("Delete transaction?", {
-    title:"Delete",
-    okText:"Delete",
-    cancelText:"Cancel",
-    okClass:"danger"
-  });
-  if(!yes) return;
+  title:"Delete",
+  okText:"Delete",
+  cancelText:"Cancel",
+  okClass:"danger"
+});
+if(!yes) return;
 
   try{
     const txPath = `vaults/${bucket}/${vaultId}/transactions/${txId}`;
 
     // 1) ambil tx dulu utk rollback kira delta (sbb lepas remove dah hilang)
     const txSnap = await get(ref(db, txPath));
-    if(!txSnap.exists()){
-      toast("TX not found.");
-      return;
-    }
+    if(!txSnap.exists()){ toast("TX not found."); return; }
     const t = txSnap.val();
-    console.log("TX DELETE OBJECT =", t);
 
-    // 2) REMOVE dulu
+    // 2) REMOVE dulu — kalau permission denied dia akan throw kat sini
     await remove(ref(db, txPath));
 
-    // 3) recompute summary
+    // 3) recompute dulu
     await recomputeVaultSummary(vaultId, bucket);
 
-    // 4) rollback wallet untuk tx vault
+    // 4) BARU adjust wallet (open sahaja)
     if(bucket === "open"){
       await adjustBalanceForTxDelete({ bucket, vaultId, txId, txObj: t });
-    }
-
-    // 5) kalau tx ini ada simpan wallet ledger asal, mark deleted juga
-    if(t?.walletLedgerId){
-      await markWalletLedgerDeleted(t.walletLedgerId);
     }
 
     toast("Deleted.");

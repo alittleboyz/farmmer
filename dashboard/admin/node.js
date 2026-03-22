@@ -3291,6 +3291,7 @@ if(act==="txDel"){
       return;
     }
     const t = txSnap.val();
+    console.log("TX DELETE OBJECT =", t);
 
     // 2) REMOVE dulu
     await remove(ref(db, txPath));

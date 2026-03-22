@@ -438,6 +438,34 @@ function bindLoadingClick(btnId, handler){
    const sec   = pad(d.getSeconds());
   return `${day}/${month}/${year} ${hour}:${min}:${sec}`;
  };
+function renderWalletTotals(ledgerObj){
+  let totalIn = 0;
+  let totalOut = 0;
+
+  const rows = Object.values(ledgerObj || {});
+  rows.forEach(row => {
+    const amt = Number(row?.amount || 0);
+
+    if (amt > 0) {
+      totalIn += amt;
+    } else if (amt < 0) {
+      totalOut += Math.abs(amt);
+    }
+  });
+
+  const totalResult = totalIn - totalOut;
+
+  const elIn = document.getElementById("walletTotalIn");
+  const elOut = document.getElementById("walletTotalOut");
+  const elResult = document.getElementById("walletTotalResult");
+
+  if (elIn) elIn.textContent = fmt(totalIn);
+  if (elOut) elOut.textContent = fmt(totalOut);
+  if (elResult) {
+    elResult.textContent = fmt(totalResult);
+    elResult.style.color = totalResult < 0 ? "red" : "#00c853";
+  }
+}
 // TX TIME (admin lock/unlock)
 function toLocalInputValue(ms = Date.now()){
   const d = new Date(ms);
@@ -932,7 +960,9 @@ async function loadRole(uid){
 
 function wireBalanceListener(){
   const balPath = `finance/balance/${WALLET_ID}`;
+  const ledgerPath = `finance/ledger/${WALLET_ID}`;
 
+  // ===== balance utama =====
   onValue(ref(db, balPath), (snap)=>{
     const v = snap.val() || {};
     currentBalance = Number(v.amount || 0);
@@ -959,6 +989,39 @@ function wireBalanceListener(){
 
     // ✅ latest add point note
     setWalletLatestNoteUI(v.latestNote || null);
+  });
+
+  // ===== total masuk / keluar / hasil =====
+  onValue(ref(db, ledgerPath), (snap)=>{
+    const ledger = snap.val() || {};
+
+    let totalIn = 0;
+    let totalOut = 0;
+
+    Object.values(ledger).forEach(row=>{
+      const amt = Number(row?.amount || 0);
+
+      if(amt > 0){
+        totalIn += amt;
+      }else if(amt < 0){
+        totalOut += Math.abs(amt);
+      }
+    });
+
+    const totalResult = totalIn - totalOut;
+
+    const elIn = $("walletTotalIn");
+    const elOut = $("walletTotalOut");
+    const elResult = $("walletTotalResult");
+
+    if(elIn) elIn.textContent = fmt(totalIn);
+    if(elOut) elOut.textContent = fmt(totalOut);
+
+    if(elResult){
+      elResult.textContent = fmt(totalResult);
+      elResult.classList.remove("good","bad");
+      elResult.classList.add(totalResult < 0 ? "bad" : "good");
+    }
   });
 }
 function wireLastLedgerListener(){

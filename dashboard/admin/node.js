@@ -455,29 +455,31 @@ function renderWalletTotals(ledgerObj){
       return;
     }
 
-    // ambil ADD POINT sahaja
+    // ambil add point sahaja
     if(row.kind !== "add_point") return;
 
-    const amt = Number(row?.delta ?? row?.amount ?? 0);
-    if(!Number.isFinite(amt)) return;
+    const direction = String(row.direction || "").toLowerCase();
+    const amount = Number(row.amount || 0);
 
-    if (amt > 0) {
-      totalIn += amt;
-    } else if (amt < 0) {
-      totalOut += Math.abs(amt);
+    if(!Number.isFinite(amount) || amount <= 0) return;
+
+    if(direction === "in"){
+      totalIn += amount;
+    }else if(direction === "out"){
+      totalOut += amount;
     }
   });
 
   const totalResult = totalIn - totalOut;
 
-  const elIn = document.getElementById("walletTotalIn");
-  const elOut = document.getElementById("walletTotalOut");
-  const elResult = document.getElementById("walletTotalResult");
+  const elIn = $("walletTotalIn");
+  const elOut = $("walletTotalOut");
+  const elResult = $("walletTotalResult");
 
-  if (elIn) elIn.textContent = fmt(totalIn);
-  if (elOut) elOut.textContent = fmt(totalOut);
+  if(elIn) elIn.textContent = fmt(totalIn);
+  if(elOut) elOut.textContent = fmt(totalOut);
 
-  if (elResult) {
+  if(elResult){
     elResult.textContent = fmt(totalResult);
     elResult.classList.remove("good","bad");
     elResult.classList.add(totalResult < 0 ? "bad" : "good");

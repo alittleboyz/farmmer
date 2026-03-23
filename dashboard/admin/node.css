@@ -238,7 +238,7 @@ body.drawerOpen{
     border: 1px solid var(--borderColor);
     background: var(--inputBg);
     color: var(--colorInput);
-    border-radius: 999px;
+    border-radius: 6px;
     padding: 0px 15px;
     cursor: pointer;
     height: 32px;

@@ -438,6 +438,19 @@ function bindLoadingClick(btnId, handler){
    const sec   = pad(d.getSeconds());
   return `${day}/${month}/${year} ${hour}:${min}:${sec}`;
  };
+function safeNum(v){
+  if (v == null) return 0;
+  if (typeof v === "number") return Number.isFinite(v) ? v : 0;
+
+  const s = String(v).replace(/,/g, "").trim();
+  const n = Number(s);
+  return Number.isFinite(n) ? n : 0;
+}
+
+const fmt = (n)=> safeNum(n).toLocaleString(undefined,{
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+});
 // TX TIME (admin lock/unlock)
 function toLocalInputValue(ms = Date.now()){
   const d = new Date(ms);
@@ -1265,14 +1278,14 @@ function wireBalanceListener(){
 
   onValue(ref(db, balPath), (snap)=>{
     const v = snap.val() || {};
-    currentBalance = Number(v.amount || 0);
+    currentBalance = safeNum(v.amount);
 
     const txt = fmt(currentBalance);
     const isNeg = currentBalance < 0;
 
-    const elSmall  = $("balanceText");
-    const elBig    = $("balanceBig");
-    const elDrawer = $("drawerWallet");
+    const elSmall   = $("balanceText");
+    const elBig     = $("balanceBig");
+    const elDrawer  = $("drawerWallet");
 
     if(elSmall)  elSmall.textContent  = txt;
     if(elBig)    elBig.textContent    = txt;
@@ -1287,66 +1300,79 @@ function wireBalanceListener(){
     const upd = $("balanceUpdated");
     if(upd) upd.textContent = v.updatedAtMs ? fmtDT(v.updatedAtMs) : "-";
 
-    // ✅ latest add point note
     setWalletLatestNoteUI(v.latestNote || null);
   });
 }
 function wireLastLedgerListener(){
-  const elDelta = $("balanceDelta");
-  const elBefore = $("balanceBefore");
-  const elCurrent = $("balanceBig");
-
-  if(!elDelta) return;
-
   const ledPath = `finance/ledger/${WALLET_ID}`;
   const qy = query(ref(db, ledPath), orderByChild("atMs"), limitToLast(80));
 
   onValue(qy, (snap)=>{
+    const elDelta   = $("balanceDelta");
+    const elBefore  = $("balanceBefore");
+    const elCurrent = $("balanceBig");
+
+    if(!elDelta && !elBefore && !elCurrent) return;
+
     if(!snap.exists()){
-      elDelta.textContent = fmt(0);
-      if(elBefore) elBefore.textContent = fmt(0);
+      if(elDelta){
+        elDelta.textContent = fmt(0);
+        elDelta.classList.remove("good","bad");
+        elDelta.classList.add("good");
+      }
+
+      if(elBefore){
+        elBefore.textContent = fmt(currentBalance);
+        elBefore.classList.remove("good","bad");
+        elBefore.classList.add(currentBalance < 0 ? "bad" : "good");
+      }
       return;
     }
 
     const obj = snap.val() || {};
     const arr = Object.entries(obj).sort((a,b)=>
-      Number(b[1]?.atMs || 0) - Number(a[1]?.atMs || 0)
+      safeNum(b[1]?.atMs) - safeNum(a[1]?.atMs)
     );
 
-    const hit = arr.find(([_, v]) => v?.kind === "add_point");
+    const hit = arr.find(([_, v]) => v && v.kind === "add_point");
 
     if(!hit){
-      elDelta.textContent = fmt(0);
-      if(elBefore) elBefore.textContent = fmt(0);
+      if(elDelta){
+        elDelta.textContent = fmt(0);
+        elDelta.classList.remove("good","bad");
+        elDelta.classList.add("good");
+      }
+
+      if(elBefore){
+        elBefore.textContent = fmt(currentBalance);
+        elBefore.classList.remove("good","bad");
+        elBefore.classList.add(currentBalance < 0 ? "bad" : "good");
+      }
       return;
     }
 
     const last = hit[1] || {};
-    const delta = Number(last.delta ?? 0);
+    const delta = safeNum(last.delta);
 
-    elDelta.textContent = fmt(delta);
+    if(elDelta){
+      elDelta.textContent = fmt(delta);
+      elDelta.classList.remove("good","bad");
+      elDelta.classList.add(delta < 0 ? "bad" : "good");
+    }
 
-    elDelta.classList.remove("good","bad");
-    if(delta < 0) elDelta.classList.add("bad");
-    else elDelta.classList.add("good");
+    const before = currentBalance - delta;
 
-    // ✅ kira last balance
-    const current = Number(
-      (elCurrent?.textContent || "0").replace(/[^0-9.-]/g,"")
-    );
+    if(elBefore){
+      elBefore.textContent = fmt(before);
+      elBefore.classList.remove("good","bad");
+      elBefore.classList.add(before < 0 ? "bad" : "good");
+    }
 
-    const before = current - delta;
-
-if(elBefore){
-  elBefore.textContent = fmt(before);
-  elBefore.classList.remove("good","bad");
-
-  if(before < 0){
-    elBefore.classList.add("bad");
-  }else{
-    elBefore.classList.add("good");
-  }
-}
+    if(elCurrent){
+      elCurrent.textContent = fmt(currentBalance);
+      elCurrent.classList.remove("good","bad");
+      elCurrent.classList.add(currentBalance < 0 ? "bad" : "good");
+    }
   });
 }
 async function changeBalance(delta, meta, atMsOverride){
@@ -1356,13 +1382,13 @@ async function changeBalance(delta, meta, atMsOverride){
   const balAmountRef = ref(db, `finance/balance/${WALLET_ID}/amount`);
 
   const txRes = await runTransaction(balAmountRef, (cur)=>{
-    const n = Number(cur || 0);
-    return n + Number(delta || 0);
-  });
+  const n = safeNum(cur);
+  return n + safeNum(delta);
+});
 
   if(!txRes.committed) throw new Error("Balance update cancelled.");
 
-  const newAmount = Number(txRes.snapshot.val() || 0);
+  const newAmount = safeNum(txRes.snapshot.val());
 
   const balSnap = await get(balanceRef);
   const oldBal = balSnap.exists() ? (balSnap.val() || {}) : {};

@@ -4595,7 +4595,7 @@ const TEXT_EN_TO_ID = {
   "Remark": "Catatan",
   "Total In": "Total Masuk",
   "Total Out": "Total Keluar",
-  "Total Result" "Total Hasil"
+  "Total Result": "Total Hasil"
 };
 
 const TEXT_ID_TO_EN = Object.fromEntries(

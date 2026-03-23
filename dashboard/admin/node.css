@@ -2047,3 +2047,56 @@ html.forceDesktop .desktopModeBtn .dmState{
 .txTableWrap table tbody td:nth-child(4) {
   color: var(--colorInput) !important;
 }
+.walletTableWrap{
+  margin-top: 6px;
+  border: 1px solid var(--borderTable);
+  border-radius: 0;
+  overflow: hidden;
+  background: var(--inputBg);
+}
+
+.walletTable{
+  width: 100%;
+  min-width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  background: var(--inputBg);
+}
+
+.walletTable tr{
+  border-bottom: 1px solid var(--borderTable);
+}
+
+.walletTable tr:last-child{
+  border-bottom: none;
+}
+
+.walletTable td{
+  padding: 12px 14px;
+  background: transparent;
+  color: var(--colorInput);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.walletTable td:first-child{
+  width: 55%;
+  text-align: left;
+  border-right: 1px solid var(--borderTable);
+  font-weight: 400;
+}
+
+.walletTable td:last-child{
+  width: 45%;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+}
+
+.walletTable td.good{
+  color: #008000 !important;
+}
+
+.walletTable td.bad{
+  color: red !important;
+}

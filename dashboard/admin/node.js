@@ -1118,6 +1118,7 @@ function closeDrawer(){
 function openWalletFromAnywhere(){
   try{ closeDrawer(); }catch(_){}
   openModal("mBalance");
+  await renderWalletPointKPI();
 }
 function toggleDrawer(){
   if(drawer && drawer.classList.contains("open")) closeDrawer();

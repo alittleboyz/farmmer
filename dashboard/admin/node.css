@@ -2023,11 +2023,11 @@ html.forceDesktop .desktopModeBtn .dmState{
   margin-top: 12px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
-
-.kpiValue2{
+#balanceUpdated{font-size:12px}
+#walletOutPointTotal{
   color: red;
 }
-.kpiValue{
+#walletAddPointTotal{
   color: #008000;
 }
 .kpiRow2 {

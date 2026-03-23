@@ -2152,7 +2152,7 @@ html.forceDesktop .desktopModeBtn .dmState{
 .txTotalRow td{
   border-top: 1px solid rgba(255,255,255,0.12);
   background: rgba(255,255,255,0.03);
-  color: var(--colorInput);
+  color: #008000;
 }
 
 .txTotalRow td:nth-child(3){
@@ -2168,4 +2168,4 @@ html.forceDesktop .desktopModeBtn .dmState{
 .amtPos{
   color: #008000;
 }
-.sunmary2{text-align:center; font-weight:700;color:var(--colorInput);}
+

@@ -2164,3 +2164,7 @@ html.forceDesktop .desktopModeBtn .dmState{
 .amtNeg{
   color: red !important; /* merah */
 }
+
+.amtPos{
+  color: #008000;
+}

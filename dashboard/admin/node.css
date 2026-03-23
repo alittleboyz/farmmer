@@ -2138,7 +2138,7 @@ html.forceDesktop .desktopModeBtn .dmState{
   height: 70px;
   object-fit: contain;
 }
-
+.page-loader-logo{display:none !important}
 .page-loader-text{
   color: #fff;
   font-size: 15px;

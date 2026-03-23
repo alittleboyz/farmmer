@@ -844,12 +844,12 @@ input[type="number"]{
 .txCard{
   background: var(--panelBg);
   border: 1px solid var(--borderTable);
-  border-radius: 12px;
+  border-radius: 6px;
   overflow: hidden;
+  padding: 14px;
 }
 
 .txHead{
-  padding: 14px;
   border-bottom: 1px solid var(--borderBottom);
   background: var(--panelBg);
 }

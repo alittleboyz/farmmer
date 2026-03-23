@@ -2152,7 +2152,7 @@ html.forceDesktop .desktopModeBtn .dmState{
 .txTotalRow td{
   border-top: 1px solid rgba(255,255,255,0.12);
   background: rgba(255,255,255,0.03);
-  color: (var(--colorInput);
+  color: var(--colorInput);
 }
 
 .txTotalRow td:nth-child(3){

@@ -841,6 +841,48 @@ input[type="number"]{
 }
 .pbtn:hover{color:#3c89e8}.pbtn:active{color:#1554ad}
 .pbtn.active{color:#1668dc;}
+.txCard{
+  background: var(--panelBg);
+  border: 1px solid var(--borderTable);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.txHead{
+  padding: 14px;
+  border-bottom: 1px solid var(--borderBottom);
+  background: var(--panelBg);
+}
+
+.txToolbar{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  margin-top:10px;
+}
+
+.txToolbarLeft,
+.txToolbarRight{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+.txSearch{
+  width:220px;
+}
+
+.txTableWrap{
+  max-height: 520px;
+  overflow:auto;
+}
+
+.txDeleted{
+  opacity:.5;
+}
 @media (max-width:520px){.rangeRight{justify-content:flex-start}.pbtn{font-size:12px;padding:0px 5px}}
   @media (max-width: 520px){
   .flatpickr-calendar{

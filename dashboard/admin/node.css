@@ -2028,10 +2028,10 @@ html.forceDesktop .desktopModeBtn .dmState{
   color: red;
 }
 .kpiValue{
-  color: ##008000;
+  color: #008000;
 }
 .kpiRow2 {
-  color: ##008000;
+  color: #008000;
 }
 @media (max-width: 768px){
   .kpiRow2{

@@ -861,6 +861,7 @@ function wireTransactionTab(){
       ...(t || {})
     }));
     renderTransactionRows();
+    renderWalletPointKPI();
   });
 }
 async function renderWalletPointKPI(){

@@ -2033,6 +2033,9 @@ html.forceDesktop .desktopModeBtn .dmState{
 .kpiRow2 {
  color: var(--muted);
 }
+.kpiLabel{
+  font-size:12px;
+}
 @media (max-width: 768px){
   .kpiRow2{
     grid-template-columns: 1fr;

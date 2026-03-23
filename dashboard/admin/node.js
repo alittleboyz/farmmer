@@ -4593,6 +4593,10 @@ const TEXT_EN_TO_ID = {
   "Price Quantity": "Harga Seunit",
   "Total Price": "Total Harga",
   "Total Amount": "Total Jumlah"
+  "Remarkt": "Catatan"
+  "Total In": "Total Masuk"
+  "Total Out": "Total Keluar"
+  "Total Result" "Total Hasil"
 };
 
 const TEXT_ID_TO_EN = Object.fromEntries(

@@ -4591,10 +4591,10 @@ const TEXT_EN_TO_ID = {
   "Quantity": "Unit",
   "Price Quantity": "Harga Seunit",
   "Total Price": "Total Harga",
-  "Total Amount": "Total Jumlah"
-  "Remark": "Catatan"
-  "Total In": "Total Masuk"
-  "Total Out": "Total Keluar"
+  "Total Amount": "Total Jumlah",
+  "Remark": "Catatan",
+  "Total In": "Total Masuk",
+  "Total Out": "Total Keluar",
   "Total Result" "Total Hasil"
 };
 

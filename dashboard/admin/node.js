@@ -3501,7 +3501,7 @@ bindLoadingClick("nvCreate", onNvCreate);
       ctxVaultId = vid;
       const vSnap = await get(ref(db, `vaults/open/${vid}`));
       $("buyVaultTitle").textContent = vSnap.exists()? `Vault: ${vSnap.val().title}` : "Vault";
-      setSelectAndSync("buyCat", "baby_pig");
+      setSelectAndSync("buyCat", "feed");
       $("buyQty").value=""; $("buyPrice").value=""; $("buyTotal").value="";
       $("buyNote").value="";
       $("buyBalanceHint").textContent = `Current balance: ${fmt(currentBalance)}`;
@@ -3622,7 +3622,7 @@ if(!yes) return;
 
   if(t.kind==="buy"){
     $("buyVaultTitle").textContent = `Edit Buy • Vault: ${vaultId}`;
-    setSelectAndSync("buyCat", t.category || "baby_pig");
+    setSelectAndSync("buyCat", t.category || "feed");
     $("buyQty").value = String(t.qty ?? "");
     $("buyPrice").value = String(t.price ?? "");
     $("buyTotal").value = String(t.total ?? "");

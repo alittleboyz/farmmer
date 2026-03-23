@@ -3606,9 +3606,36 @@ if(act === "finTxDel"){
   });
   if(!yes) return;
 
-  await remove(ref(db, `${TX_ROOT}/${id}`));
+  try{
+    const txSnap = await get(ref(db, `${TX_ROOT}/${id}`));
+    if(!txSnap.exists()){
+      toast("Transaction not found.");
+      return;
+    }
 
-  toast("Deleted.");
+    const t = txSnap.val() || {};
+    const amount = Math.abs(Number(t.amount || 0));
+
+    let reverseDelta = 0;
+    if(t.direction === "in") reverseDelta = -amount;
+    if(t.direction === "out") reverseDelta = amount;
+
+    if(reverseDelta !== 0){
+      await rollbackBalanceOnly(reverseDelta);
+    }
+
+    await remove(ref(db, `${TX_ROOT}/${id}`));
+
+    if(t.ledgerKey){
+      await remove(ref(db, `finance/ledger/${WALLET_ID}/${t.ledgerKey}`));
+    }
+
+    toast("Deleted and balance rolled back.");
+  }catch(err){
+    console.error("finTxDel error =", err);
+    toast(err?.message || "Delete failed", "error");
+  }
+
   return;
 }
 if(act==="histEdit"){

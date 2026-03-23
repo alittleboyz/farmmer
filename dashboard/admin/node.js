@@ -780,7 +780,7 @@ if(!pageRows.length){
     <tr class="${t.deleted ? "txDeleted" : ""}">
       <td><span class="tag ${t.direction === "out" ? "out" : "in"}">${txTypeLabel(t)}</span></td>
       <td>${escapeHtml(String(t.note || "-"))}</td>
-      <td class="num ${Number(t.amount || 0) < 0 ? "amtNeg" : ""}">${fmt(t.amount || 0)}</td>
+      <td class="num ${t.direction === "out" ? "amtNeg" : "amtPos"}">${t.direction === "out"? "-" + fmt(Math.abs(t.amount || 0)): fmt(t.amount || 0)}</td>
       <td class="num">${fmtDT(t.atMs)}</td>
       <td>
         <div style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap">

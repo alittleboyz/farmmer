@@ -2045,3 +2045,6 @@ html.forceDesktop .desktopModeBtn .dmState{
 #btnViewWalletNote {
   display: none !important;
 }
+.txTableWrap table tbody td:nth-child(4) {
+  color: var(--colorInput) !important;
+}

@@ -242,45 +242,40 @@
       <button class="x" data-close="mBalance">✕</button>
     </div>
     <div class="modalBody">
-<div class="kpiRow">
-  <div class="kpi">
-    <div class="k">Availabe Balance</div>
-    <div class="v num" id="balanceBig">0.00</div>
-  </div>
-
-  <div class="kpi">
-    <div class="k">Current Balance</div>
-    <div class="v num" id="balanceBefore">0.00</div>
-  </div>
-
-  <div class="kpi">
-    <div class="k">Update Balance</div>
-    <div class="v num" id="balanceDelta">0.00</div>
-  </div>
-
-  <div class="kpi">
-    <div class="k">Last Update</div>
-    <div class="v num" id="balanceUpdated">-</div>
-  </div>
+<div class="walletTableWrap">
+  <table class="walletTable">
+    <tbody>
+      <tr>
+        <td>Available Balance</td>
+        <td class="num" id="balanceBig">0.00</td>
+      </tr>
+      <tr>
+        <td>Current Balance</td>
+        <td class="num" id="balanceBefore">0.00</td>
+      </tr>
+      <tr>
+        <td>Update Balance</td>
+        <td class="num" id="balanceDelta">0.00</td>
+      </tr>
+      <tr>
+        <td>Last Update</td>
+        <td class="num" id="balanceUpdated">-</td>
+      </tr>
+      <tr>
+        <td>Total In</td>
+        <td class="num" id="walletAddPointTotal">0.00</td>
+      </tr>
+      <tr>
+        <td>Total Out</td>
+        <td class="num" id="walletOutPointTotal">0.00</td>
+      </tr>
+      <tr>
+        <td>Total Result</td>
+        <td class="num" id="walletPointResultTotal">0.00</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
-<!-- TAMBAH DI SINI -->
-<div class="kpiRow kpiRow2">
-  <div class="kpi">
-    <div class="kpiLabel">Total In</div>
-    <div class="kpiValue" id="walletAddPointTotal">0.00</div>
-  </div>
-
-  <div class="kpi">
-    <div class="kpiLabel">Total Out</div>
-    <div class="kpiValue2" id="walletOutPointTotal">0.00</div>
-  </div>
-
-  <div class="kpi">
-    <div class="kpiLabel">Total Result</div>
-    <div class="kpiValue" id="walletPointResultTotal">0.00</div>
-  </div>
-</div>
-    </div>
     <div class="modalFoot">
       <button class="btn ghost" data-close="mBalance">Close</button>
     </div>

@@ -767,26 +767,42 @@ function renderTransactionRows(){
 
   const start = (txTabPaging.page - 1) * txTabPaging.per;
   const pageRows = rows.slice(start, start + txTabPaging.per);
+  const pageTotal = pageRows.reduce((sum, t) => {
+  const amt = Math.abs(Number(t.amount || 0));
+  if(t.direction === "out") return sum - amt;
+  return sum + amt;
+}, 0);
 
-  if(!pageRows.length){
-    tbody.innerHTML = `<tr><td colspan="5" class="hint">No transaction found.</td></tr>`;
-  }else{
-    tbody.innerHTML = pageRows.map(t => `
-      <tr class="${t.deleted ? "txDeleted" : ""}">
-        <td><span class="tag ${t.direction === "out" ? "out" : "in"}">${txTypeLabel(t)}</span></td>
-        <td>${escapeHtml(String(t.note || "-"))}</td>
-        <td class="num ${Number(t.amount || 0) < 0 ? "amtNeg" : ""}">${fmt(t.amount || 0)}</td>
-        <td class="num">${fmtDT(t.atMs)}</td>
-        <td>
-          <div style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap">
-            <button class="btn-view" data-act="finTxView" data-id="${t.id}">View</button>
-            <button class="btn-edit" data-act="finTxEdit" data-id="${t.id}">Edit</button>
-            <button class="btn-delete" data-act="finTxDel" data-id="${t.id}">Delete</button>
-          </div>
-        </td>
-      </tr>
-    `).join("");
-  }
+if(!pageRows.length){
+  tbody.innerHTML = `<tr><td colspan="5" class="hint">No transaction found.</td></tr>`;
+}else{
+  const rowsHtml = pageRows.map(t => `
+    <tr class="${t.deleted ? "txDeleted" : ""}">
+      <td><span class="tag ${t.direction === "out" ? "out" : "in"}">${txTypeLabel(t)}</span></td>
+      <td>${escapeHtml(String(t.note || "-"))}</td>
+      <td class="num ${Number(t.amount || 0) < 0 ? "amtNeg" : ""}">${fmt(t.amount || 0)}</td>
+      <td class="num">${fmtDT(t.atMs)}</td>
+      <td>
+        <div style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap">
+          <button class="btn-view" data-act="finTxView" data-id="${t.id}">View</button>
+          <button class="btn-edit" data-act="finTxEdit" data-id="${t.id}">Edit</button>
+          <button class="btn-delete" data-act="finTxDel" data-id="${t.id}">Delete</button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
+
+  const totalRowHtml = `
+    <tr class="txTotalRow">
+      <td colspan="2" style="text-align:left; font-weight:700;">Total</td>
+      <td class="num" style="font-weight:700;">${fmt(pageTotal)}</td>
+      <td></td>
+      <td></td>
+    </tr>
+  `;
+
+  tbody.innerHTML = rowsHtml + totalRowHtml;
+}
 
   renderTransactionPager(total, totalPages);
 }

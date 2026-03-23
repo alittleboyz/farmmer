@@ -2019,3 +2019,11 @@ html.forceDesktop .desktopModeBtn .dmState{
   color: var(--colorInput)!important;
   letter-spacing: .3px;
 }
+.kpiRow2{
+  margin-top: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.kpiRow2 .kpiValue{
+  color: #00c853;
+}

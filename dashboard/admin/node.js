@@ -613,7 +613,6 @@ function renderTransactionTabShell(){
     <div class="txCard">
       <div class="txHead">
         <div class="title">Transaction</div>
-        <div class="sub">Add Point, Out Point, Cash-In, Cash-Out</div>
 
         <div class="txToolbar">
           <div class="txToolbarLeft">

@@ -1115,7 +1115,7 @@ function closeDrawer(){
   if(overlay) overlay.classList.remove("open");
   unlockScroll();
 }
-function openWalletFromAnywhere(){
+async function openWalletFromAnywhere(){
   try{ closeDrawer(); }catch(_){}
   openModal("mBalance");
   await renderWalletPointKPI();

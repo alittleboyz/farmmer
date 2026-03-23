@@ -2031,7 +2031,7 @@ html.forceDesktop .desktopModeBtn .dmState{
   color: #008000;
 }
 .kpiRow2 {
-  color: #008000;
+ color: var(--muted);
 }
 @media (max-width: 768px){
   .kpiRow2{

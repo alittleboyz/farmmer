@@ -4861,3 +4861,11 @@ document.addEventListener("click", (e)=>{
     init();
   }
 })();
+window.addEventListener("DOMContentLoaded", function () {
+  const loader = document.getElementById("pageLoader");
+  if (!loader) return;
+
+  setTimeout(() => {
+    loader.classList.add("hide");
+  }, 500);
+});

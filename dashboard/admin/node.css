@@ -850,8 +850,8 @@ input[type="number"]{
 }
 
 .txHead{
-  border-bottom: 1px solid var(--borderBottom);
   background: var(--panelBg);
+  padding-bottom: 10px;
 }
 
 .txToolbar{
@@ -873,7 +873,6 @@ input[type="number"]{
 
 .txSearch{
   width:100%;
-  margin-bottom:10px;
 }
 
 .txTableWrap{

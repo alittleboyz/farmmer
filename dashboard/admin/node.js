@@ -425,7 +425,6 @@ function bindLoadingClick(btnId, handler){
   });
 }
 
-  const fmt = (n)=> (Number(n||0)).toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
   const fmtDT = (ms)=>{
    if(!ms) return "-";
    const d = new Date(ms);

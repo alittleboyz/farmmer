@@ -2149,3 +2149,15 @@ html.forceDesktop .desktopModeBtn .dmState{
     transform: rotate(360deg);
   }
 }
+.txTotalRow td{
+  border-top: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.03);
+  color: #fff;
+}
+
+.txTotalRow td:nth-child(3){
+  color: #00c853;
+}
+.txTotalRow .amtNeg{
+  color: red;
+}

@@ -863,6 +863,44 @@ function wireTransactionTab(){
     renderTransactionRows();
   });
 }
+async function renderWalletPointKPI(){
+  try{
+    const snap = await get(ref(db, TX_ROOT));
+    const val = snap.exists() ? snap.val() : {};
+
+    let addPointTotal = 0;
+    let outPointTotal = 0;
+
+    Object.values(val).forEach(t => {
+      if(!t || t.deleted) return;
+      if(t.kind !== "add_point") return;
+
+      const amt = Math.abs(Number(t.amount || 0));
+
+      if(t.direction === "in"){
+        addPointTotal += amt;
+      }else if(t.direction === "out"){
+        outPointTotal += amt;
+      }
+    });
+
+    const resultTotal = addPointTotal - outPointTotal;
+
+    const addEl = $("walletAddPointTotal");
+    const outEl = $("walletOutPointTotal");
+    const resEl = $("walletPointResultTotal");
+
+    if(addEl) addEl.textContent = fmt(addPointTotal);
+    if(outEl) outEl.textContent = fmt(outPointTotal);
+    if(resEl) resEl.textContent = fmt(resultTotal);
+
+    if(resEl){
+      resEl.style.color = resultTotal < 0 ? "#ff3b30" : "#00c853";
+    }
+  }catch(err){
+    console.error("renderWalletPointKPI error =", err);
+  }
+}
 // ===== LIVE MONEY FORMAT: 1000 -> 1,000.00 =====
 function _stripNum(s){
   return String(s ?? "")

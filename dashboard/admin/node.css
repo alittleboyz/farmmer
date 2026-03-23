@@ -2042,3 +2042,6 @@ html.forceDesktop .desktopModeBtn .dmState{
     grid-template-columns: 1fr;
   }
 }
+#btnViewWalletNote {
+  display: none !important;
+}

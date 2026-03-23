@@ -1314,7 +1314,6 @@ async function changeBalance(delta, meta, atMsOverride){
   const balanceRef   = ref(db, `finance/balance/${WALLET_ID}`);
   const balAmountRef = ref(db, `finance/balance/${WALLET_ID}/amount`);
 
-  // 1) atomic update amount
   const txRes = await runTransaction(balAmountRef, (cur)=>{
     const n = Number(cur || 0);
     return n + Number(delta || 0);
@@ -1324,12 +1323,10 @@ async function changeBalance(delta, meta, atMsOverride){
 
   const newAmount = Number(txRes.snapshot.val() || 0);
 
-  // 2) ambil data balance lama supaya latestNote tak hilang
   const balSnap = await get(balanceRef);
   const oldBal = balSnap.exists() ? (balSnap.val() || {}) : {};
   const oldLatestNote = oldBal.latestNote || null;
 
-  // 3) update meta + ledger
   const ledRef  = push(ref(db, `finance/ledger/${WALLET_ID}`));
   const updates = {};
 
@@ -1341,7 +1338,6 @@ async function changeBalance(delta, meta, atMsOverride){
     byUser: me.username
   };
 
-  // kalau add_point, simpan note baru
   if(meta?.kind === "add_point"){
     balancePayload.latestNote = {
       note: String(meta?.note || "").trim(),
@@ -1352,9 +1348,7 @@ async function changeBalance(delta, meta, atMsOverride){
       byUid: me.uid,
       byUser: me.username
     };
-  }
-  // kalau bukan add_point, kekalkan note lama
-  else if(oldLatestNote){
+  }else if(oldLatestNote){
     balancePayload.latestNote = oldLatestNote;
   }
 
@@ -1369,21 +1363,55 @@ async function changeBalance(delta, meta, atMsOverride){
     byUid: me.uid,
     byUser: me.username
   };
-if(meta?.kind === "add_point" || meta?.kind === "cash"){
-  const txRef = push(ref(db, `finance/transactions/${WALLET_ID}`));
 
-  updates[`finance/transactions/${WALLET_ID}/${txRef.key}`] = {
-    ...(meta || {}),
-    amount: Math.abs(Number(meta?.amount || delta || 0)),
-    delta: Number(delta || 0),
-    at: serverTimestamp(),
-    atMs: now,
-    byUid: me.uid,
-    byUser: me.username
-  };
-}
+  if(meta?.kind === "add_point" || meta?.kind === "cash"){
+    const txRef = push(ref(db, `finance/transactions/${WALLET_ID}`));
+
+    updates[`finance/transactions/${WALLET_ID}/${txRef.key}`] = {
+      ...(meta || {}),
+      amount: Math.abs(Number(meta?.amount || delta || 0)),
+      delta: Number(delta || 0),
+      at: serverTimestamp(),
+      atMs: now,
+      byUid: me.uid,
+      byUser: me.username,
+      ledgerKey: ledRef.key
+    };
+  }
+
   await update(ref(db), updates);
 }
+
+// TAMBAH DI SINI BRO
+async function rollbackBalanceOnly(delta){
+  const now = Date.now();
+  const balRef = ref(db, `finance/balance/${WALLET_ID}`);
+  const amountRef = ref(db, `finance/balance/${WALLET_ID}/amount`);
+
+  const txRes = await runTransaction(amountRef, (cur)=>{
+    const n = Number(cur || 0);
+    return n + Number(delta || 0);
+  });
+
+  if(!txRes.committed){
+    throw new Error("Balance rollback cancelled.");
+  }
+
+  const newAmount = Number(txRes.snapshot.val() || 0);
+
+  await update(balRef, {
+    amount: newAmount,
+    updatedAt: serverTimestamp(),
+    updatedAtMs: now,
+    byUid: me.uid,
+    byUser: me.username
+  });
+
+  currentBalance = newAmount;
+  const el = $("walletAmt");
+  if(el) el.textContent = fmt(newAmount);
+}
+
 
   // ===== VAULTS =====
 async function createVault(title, note, createdAtMs){

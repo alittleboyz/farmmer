@@ -795,7 +795,7 @@ if(!pageRows.length){
   const totalRowHtml = `
     <tr class="txTotalRow">
       <td colspan="2" style="text-align:left; font-weight:700;">Total</td>
-      <td class="num" style="font-weight:700;">${fmt(pageTotal)}</td>
+      <td class="num ${pageTotal < 0 ? "amtNeg" : ""} "> ${fmt(pageTotal)}</td>
       <td></td>
       <td></td>
     </tr>

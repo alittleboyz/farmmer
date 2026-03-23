@@ -896,7 +896,7 @@ async function renderWalletPointKPI(){
     if(resEl) resEl.textContent = fmt(resultTotal);
 
     if(resEl){
-      resEl.style.color = resultTotal < 0 ? "#ff3b30" : "#00c853";
+      resEl.style.color = resultTotal < 0 ? "red" : "#008000";
     }
   }catch(err){
     console.error("renderWalletPointKPI error =", err);

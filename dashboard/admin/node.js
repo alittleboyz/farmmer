@@ -4551,7 +4551,7 @@ const TEXT_EN_TO_ID = {
 "Actions": "Tindakan",
 "Date & Time": "Tanggal & Waktu",
   
-  "Open": "Buka",
+  "Vault": "Vault",
   "History": "Riwayat",
   "Add Point": "Tambah Poin",
   "New Vault": "Buat Vault",

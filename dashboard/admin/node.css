@@ -2152,7 +2152,7 @@ html.forceDesktop .desktopModeBtn .dmState{
 .txTotalRow td{
   border-top: 1px solid rgba(255,255,255,0.12);
   background: rgba(255,255,255,0.03);
-  color: #fff;
+  color: #008000;
 }
 
 .txTotalRow td:nth-child(3){
@@ -2160,4 +2160,7 @@ html.forceDesktop .desktopModeBtn .dmState{
 }
 .txTotalRow .amtNeg{
   color: red;
+}
+.amtNeg{
+  color: red !important; /* merah */
 }

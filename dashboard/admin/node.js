@@ -972,7 +972,8 @@ function attachKg(el){
 
   // UI state
   let activeView = "open";
-let activeMainTab = "vault"; 
+let activeMainTab = "vault";
+let finTxEditId = null;
   let ctxVaultId = null; 
   let ctxAvailablePig = 0;
   let ctxMissingPig = 0;
@@ -3267,11 +3268,20 @@ $("btnLogout").addEventListener("click", async ()=>{
   $("tabTransaction")?.addEventListener("click", ()=> setView("transaction"));
   $("tabHistory").addEventListener("click", ()=> setView("history"));
 
-  $("btnAddPoint").addEventListener("click", ()=>{
-    if(!me.isAdmin){ toast("Limited user: tiada akses Add Point."); return; }
-    setSelectAndSync("apType", "in"); $("apAmount").value=""; $("apNote").value="";
-    openModal("mAddPoint");
-  });
+$("btnAddPoint").addEventListener("click", ()=>{
+  if(!me.isAdmin){ toast("Limited user: tiada akses Add Point."); return; }
+
+  finTxEditId = null;
+
+  setSelectAndSync("apType", "in");
+  $("apAmount").value = "";
+  $("apNote").value = "";
+
+  const titleEl = document.querySelector("#mAddPoint .modalTitle, #mAddPoint .title, #mAddPoint h3");
+  if(titleEl) titleEl.textContent = "Add Point";
+
+  openModal("mAddPoint");
+});
 
   $("btnNewVault").addEventListener("click", ()=>{
     $("nvTitle").value=""; $("nvNote").value="";
@@ -3281,6 +3291,7 @@ $("btnLogout").addEventListener("click", async ()=>{
 
 async function onApSave(){
   if(!me.isAdmin) throw new Error("No access.");
+
   const type = ($("apType")?.value || "in");
   const amount = moneyVal("apAmount");
   const note = ($("apNote")?.value || "").trim();
@@ -3288,10 +3299,86 @@ async function onApSave(){
   if(amount <= 0){
     throw new Error("Total Amount mesti > 0");
   }
+
+  // ===== EDIT MODE =====
+  if(finTxEditId){
+    const snap = await get(ref(db, `${TX_ROOT}/${finTxEditId}`));
+    if(!snap.exists()){
+      finTxEditId = null;
+      throw new Error("Transaction not found.");
+    }
+
+    const oldTx = snap.val() || {};
+    const oldAmount = Math.abs(Number(oldTx.amount || 0));
+
+    // rollback nilai lama dulu
+    let rollbackDelta = 0;
+    if(oldTx.direction === "in") rollbackDelta = -oldAmount;
+    if(oldTx.direction === "out") rollbackDelta = oldAmount;
+
+    if(rollbackDelta !== 0){
+      await rollbackBalanceOnly(rollbackDelta);
+    }
+
+    // apply nilai baru
+    const newDelta = (type === "in") ? amount : -amount;
+    if(newDelta !== 0){
+      await rollbackBalanceOnly(newDelta);
+    }
+
+    // update transaction row
+    await update(ref(db, `${TX_ROOT}/${finTxEditId}`), {
+      kind: "add_point",
+      direction: type,
+      amount,
+      note,
+      updatedAt: serverTimestamp(),
+      updatedAtMs: Date.now(),
+      byUid: me.uid,
+      byUser: me.username
+    });
+
+    // update ledger asal kalau ada
+    if(oldTx.ledgerKey){
+      await update(ref(db, `finance/ledger/${WALLET_ID}/${oldTx.ledgerKey}`), {
+        kind: "add_point",
+        direction: type,
+        amount,
+        note,
+        delta: newDelta,
+        updatedAt: serverTimestamp(),
+        updatedAtMs: Date.now(),
+        byUid: me.uid,
+        byUser: me.username
+      });
+    }
+
+    $("apAmount").value = "";
+    $("apNote").value = "";
+    finTxEditId = null;
+
+    const titleEl = document.querySelector("#mAddPoint .modalTitle, #mAddPoint .title, #mAddPoint h3");
+    if(titleEl) titleEl.textContent = "Add Point";
+
+    return "Transaction updated.";
+  }
+
+  // ===== CREATE MODE =====
   const delta = (type === "in") ? amount : -amount;
-  await changeBalance(delta, { kind:"add_point", direction:type, amount, note });
+  await changeBalance(delta, {
+    kind:"add_point",
+    direction:type,
+    amount,
+    note
+  });
+
   $("apAmount").value = "";
   $("apNote").value = "";
+  finTxEditId = null;
+
+  const titleEl = document.querySelector("#mAddPoint .modalTitle, #mAddPoint .title, #mAddPoint h3");
+  if(titleEl) titleEl.textContent = "Add Point";
+
   return "Wallet updated.";
 }
  bindLoadingClick("apSave", onApSave);
@@ -3595,7 +3682,35 @@ if(act === "finTxView"){
   openViewNote(String(t.note || ""));
   return;
 }
+if(act === "finTxEdit"){
+  const id = btn.dataset.id;
+  const snap = await get(ref(db, `${TX_ROOT}/${id}`));
+  if(!snap.exists()){
+    toast("Transaction not found.");
+    return;
+  }
 
+  const t = snap.val() || {};
+  finTxEditId = id;
+
+  const typeEl   = $("apType");
+  const amountEl = $("apAmount");
+  const noteEl   = $("apNote");
+
+  if(typeEl){
+    typeEl.value = (t.direction === "out") ? "out" : "in";
+    typeEl.dispatchEvent(new Event("change", { bubbles:true }));
+  }
+
+  if(amountEl) amountEl.value = String(t.amount || 0);
+  if(noteEl) noteEl.value = String(t.note || "");
+
+  const titleEl = document.querySelector("#mAddPoint .modalTitle, #mAddPoint .title, #mAddPoint h3");
+  if(titleEl) titleEl.textContent = "Edit Transaction";
+
+  openModal("mAddPoint");
+  return;
+}
 if(act === "finTxDel"){
   const id = btn.dataset.id;
   const yes = await confirmBox("Delete transaction?", {

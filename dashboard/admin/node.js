@@ -585,6 +585,284 @@ function ymd(ms){
   const pad = (n)=> String(n).padStart(2,"0");
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 }
+function txTypeLabel(t){
+  if(t.kind === "add_point" && t.direction === "in") return "ADD POINT";
+  if(t.kind === "add_point" && t.direction === "out") return "OUT POINT";
+  if(t.kind === "cash" && t.direction === "in") return "CASH-IN";
+  if(t.kind === "cash" && t.direction === "out") return "CASH-OUT";
+  return "TX";
+}
+
+function renderTransactionTabShell(){
+  const wrap = document.getElementById("viewTransaction");
+  if(!wrap) return;
+
+  wrap.innerHTML = `
+    <div class="txCard">
+      <div class="txHead">
+        <div class="title">Transaction</div>
+        <div class="sub">Add Point, Out Point, Cash-In, Cash-Out</div>
+
+        <div class="txToolbar">
+          <div class="txToolbarLeft">
+            <input id="txRangeInput" class="dateRangeInput" placeholder="Select date range" />
+            <button class="pbtn" type="button" data-txpreset="today">Today</button>
+            <button class="pbtn" type="button" data-txpreset="thisWeek">This Week</button>
+            <button class="pbtn" type="button" data-txpreset="thisMonth">This Month</button>
+            <button class="pbtn" type="button" data-txpreset="showAll">Show All</button>
+          </div>
+
+          <div class="txToolbarRight">
+            <select id="txTypeFilter" class="js-custom-select">
+              <option value="all">All</option>
+              <option value="add_point_in">Add Point</option>
+              <option value="add_point_out">Out Point</option>
+              <option value="cash_in">Cash In</option>
+              <option value="cash_out">Cash Out</option>
+            </select>
+
+            <input id="txSearchInput" class="txSearch" placeholder="Search transaction..." />
+          </div>
+        </div>
+      </div>
+
+      <div class="tblWrap txTableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:140px">Type</th>
+              <th>Remark</th>
+              <th style="width:140px">Amount</th>
+              <th style="width:180px">Date & Time</th>
+              <th style="width:220px">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="txTabTbody">
+            <tr><td colspan="5" class="hint">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="txTabPager" class="tblPager" style="margin-top:12px;"></div>
+    </div>
+  `;
+
+  initCustomSelects(wrap);
+  bindTransactionTabUI();
+}
+function bindTransactionTabUI(){
+  const search = document.getElementById("txSearchInput");
+  const type = document.getElementById("txTypeFilter");
+  const rangeInput = document.getElementById("txRangeInput");
+
+  if(search){
+    search.value = txTabFilter.search || "";
+    search.oninput = () => {
+      txTabFilter.search = search.value || "";
+      txTabPaging.page = 1;
+      renderTransactionRows();
+    };
+  }
+
+  if(type){
+    type.value = txTabFilter.type || "all";
+    type.onchange = () => {
+      txTabFilter.type = type.value || "all";
+      txTabPaging.page = 1;
+      renderTransactionRows();
+    };
+  }
+
+  document.querySelectorAll("[data-txpreset]").forEach(btn => {
+    btn.onclick = () => {
+      const key = btn.dataset.txpreset;
+      if(key === "showAll"){
+        txTabFilter.range = "showAll";
+        if(txTabPicker) txTabPicker.clear();
+        if(rangeInput) rangeInput.value = "Show All";
+      }else{
+        txTabFilter.range = presetRangeMs(key);
+        if(rangeInput && txTabFilter.range !== "showAll"){
+          rangeInput.value = `${ymd(txTabFilter.range.startMs)} → ${ymd(txTabFilter.range.endMs)}`;
+        }
+      }
+      txTabPaging.page = 1;
+      renderTransactionRows();
+    };
+  });
+
+  if(rangeInput){
+    if(txTabPicker){
+      try{ txTabPicker.destroy(); }catch(_){}
+    }
+
+    txTabPicker = flatpickr(rangeInput, {
+      mode: "range",
+      dateFormat: "Y-m-d",
+      showMonths: 2,
+      closeOnSelect: false,
+      onChange: (dates)=>{
+        if(dates.length === 2){
+          txTabFilter.range = {
+            startMs: startOfDayMs(dates[0]),
+            endMs: endOfDayMs(dates[1])
+          };
+          txTabPaging.page = 1;
+          renderTransactionRows();
+        }
+      }
+    });
+  }
+}
+function renderTransactionRows(){
+  const tbody = document.getElementById("txTabTbody");
+  const pager = document.getElementById("txTabPager");
+  if(!tbody || !pager) return;
+
+  let rows = [...txTabRows];
+
+  rows = rows.filter(x => !x.deleted);
+
+  if(txTabFilter.range && txTabFilter.range !== "showAll"){
+    rows = rows.filter(t => {
+      const ms = Number(t.atMs || 0);
+      return ms >= txTabFilter.range.startMs && ms <= txTabFilter.range.endMs;
+    });
+  }
+
+  if(txTabFilter.type !== "all"){
+    rows = rows.filter(t => {
+      if(txTabFilter.type === "add_point_in")  return t.kind === "add_point" && t.direction === "in";
+      if(txTabFilter.type === "add_point_out") return t.kind === "add_point" && t.direction === "out";
+      if(txTabFilter.type === "cash_in")       return t.kind === "cash" && t.direction === "in";
+      if(txTabFilter.type === "cash_out")      return t.kind === "cash" && t.direction === "out";
+      return true;
+    });
+  }
+
+  const q = String(txTabFilter.search || "").trim().toLowerCase();
+  if(q){
+    rows = rows.filter(t => {
+      const hay = `${t.note || ""} ${txTypeLabel(t)} ${t.byUser || ""} ${t.amount || ""}`.toLowerCase();
+      return hay.includes(q);
+    });
+  }
+
+  rows.sort((a,b) => Number(b.atMs || 0) - Number(a.atMs || 0));
+
+  const total = rows.length;
+  const totalPages = Math.max(1, Math.ceil(total / txTabPaging.per));
+  if(txTabPaging.page > totalPages) txTabPaging.page = totalPages;
+
+  const start = (txTabPaging.page - 1) * txTabPaging.per;
+  const pageRows = rows.slice(start, start + txTabPaging.per);
+
+  if(!pageRows.length){
+    tbody.innerHTML = `<tr><td colspan="5" class="hint">No transaction found.</td></tr>`;
+  }else{
+    tbody.innerHTML = pageRows.map(t => `
+      <tr class="${t.deleted ? "txDeleted" : ""}">
+        <td><span class="tag ${t.direction === "out" ? "out" : "in"}">${txTypeLabel(t)}</span></td>
+        <td>${escapeHtml(String(t.note || "-"))}</td>
+        <td class="num ${Number(t.amount || 0) < 0 ? "amtNeg" : ""}">${fmt(t.amount || 0)}</td>
+        <td class="num">${fmtDT(t.atMs)}</td>
+        <td>
+          <div style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap">
+            <button class="btn-view" data-act="finTxView" data-id="${t.id}">View</button>
+            <button class="btn-edit" data-act="finTxEdit" data-id="${t.id}">Edit</button>
+            <button class="btn-delete" data-act="finTxDel" data-id="${t.id}">Delete</button>
+          </div>
+        </td>
+      </tr>
+    `).join("");
+  }
+
+  renderTransactionPager(total, totalPages);
+}
+function renderTransactionPager(total, totalPages){
+  const pager = document.getElementById("txTabPager");
+  if(!pager) return;
+
+  pager.innerHTML = `
+    <div class="tblPagerLeft">
+      <span class="hint">${total ? ((txTabPaging.page - 1) * txTabPaging.per + 1) : 0}-${Math.min(total, txTabPaging.page * txTabPaging.per)} of ${total} items</span>
+      <button class="pbtn" type="button" id="txPrev">‹</button>
+      <div class="tblPagerPages" id="txPages"></div>
+      <button class="pbtn" type="button" id="txNext">›</button>
+    </div>
+    <div class="tblPagerRight">
+      <div class="customSelect" id="txPerPage" data-drop="up">
+        <div class="cs-selected">${txTabPaging.per} / page</div>
+        <div class="cs-options">
+          <div data-value="10">10 / page</div>
+          <div data-value="20">20 / page</div>
+          <div data-value="50">50 / page</div>
+          <div data-value="100">100 / page</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const prev = document.getElementById("txPrev");
+  const next = document.getElementById("txNext");
+  const pages = document.getElementById("txPages");
+
+  if(prev){
+    prev.disabled = txTabPaging.page <= 1;
+    prev.onclick = ()=>{
+      if(txTabPaging.page > 1){
+        txTabPaging.page--;
+        renderTransactionRows();
+      }
+    };
+  }
+
+  if(next){
+    next.disabled = txTabPaging.page >= totalPages;
+    next.onclick = ()=>{
+      if(txTabPaging.page < totalPages){
+        txTabPaging.page++;
+        renderTransactionRows();
+      }
+    };
+  }
+
+  if(pages){
+    const items = buildPageItems(txTabPaging.page, totalPages);
+    pages.innerHTML = "";
+    items.forEach(it=>{
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "pbtn" + (it === txTabPaging.page ? " active" : "");
+      b.textContent = String(it);
+      if(it === "..."){
+        b.disabled = true;
+      }else{
+        b.onclick = ()=>{
+          txTabPaging.page = it;
+          renderTransactionRows();
+        };
+      }
+      pages.appendChild(b);
+    });
+  }
+
+  const cs = document.getElementById("txPerPage");
+  if(cs && cs.dataset.bound !== "1"){
+    cs.dataset.bound = "1";
+    bindCustomSelect(cs, "__txTab");
+  }
+}
+function wireTransactionTab(){
+  onValue(ref(db, TX_ROOT), (snap)=>{
+    const val = snap.exists() ? snap.val() : {};
+    txTabRows = Object.entries(val).map(([id, t]) => ({
+      id,
+      ...(t || {})
+    }));
+    renderTransactionRows();
+  });
+}
 // ===== LIVE MONEY FORMAT: 1000 -> 1,000.00 =====
 function _stripNum(s){
   return String(s ?? "")
@@ -694,6 +972,7 @@ function attachKg(el){
 
   // UI state
   let activeView = "open";
+let activeMainTab = "vault"; 
   let ctxVaultId = null; 
   let ctxAvailablePig = 0;
   let ctxMissingPig = 0;
@@ -707,6 +986,16 @@ function attachKg(el){
   let vaultSearchTerm = "";
   let openVaultDataCache = {};
   let histVaultDataCache = {};
+const TX_ROOT = `finance/transactions/${WALLET_ID}`;
+
+let txTabRows = [];
+let txTabPaging = { page: 1, per: 10 };
+let txTabFilter = {
+  range: "showAll",
+  search: "",
+  type: "all"
+};
+let txTabPicker = null;
   // ===== RIGHT DRAWER GLOBAL (ONE-TIME) =====
 let btnDrawer = null;
 let drawer = null;
@@ -1080,7 +1369,19 @@ async function changeBalance(delta, meta, atMsOverride){
     byUid: me.uid,
     byUser: me.username
   };
+if(meta?.kind === "add_point" || meta?.kind === "cash"){
+  const txRef = push(ref(db, `finance/transactions/${WALLET_ID}`));
 
+  updates[`finance/transactions/${WALLET_ID}/${txRef.key}`] = {
+    ...(meta || {}),
+    amount: Math.abs(Number(meta?.amount || delta || 0)),
+    delta: Number(delta || 0),
+    at: serverTimestamp(),
+    atMs: now,
+    byUid: me.uid,
+    byUser: me.username
+  };
+}
   await update(ref(db), updates);
 }
 
@@ -1226,24 +1527,25 @@ async function uncloseVault(vaultId){
 function setView(v){
   activeView = v;
 
-  $("tabOpen").classList.toggle("active", v === "open");
-  $("tabHistory").classList.toggle("active", v === "history");
+  $("tabOpen")?.classList.toggle("active", v === "open");
+  $("tabHistory")?.classList.toggle("active", v === "history");
+  $("tabTransaction")?.classList.toggle("active", v === "transaction");
 
-  $("viewOpen").classList.toggle("hide", v !== "open");
-  $("viewHistory").classList.toggle("hide", v !== "history");
+  $("viewOpen")?.classList.toggle("hide", v !== "open");
+  $("viewHistory")?.classList.toggle("hide", v !== "history");
+  $("viewTransaction")?.classList.toggle("hide", v !== "transaction");
 
   const openPager = document.getElementById("openVaultPager");
   const histPager = document.getElementById("historyVaultPager");
+  const txPager = document.getElementById("txTabPager");
 
-  if(openPager){
-    openPager.style.display = (v === "open") ? "flex" : "none";
-  }
-
-  if(histPager){
-    histPager.style.display = (v === "history") ? "flex" : "none";
-  }
+  if(openPager) openPager.style.display = (v === "open") ? "flex" : "none";
+  if(histPager) histPager.style.display = (v === "history") ? "flex" : "none";
+  if(txPager)   txPager.style.display   = (v === "transaction") ? "flex" : "none";
 }
-
+// TAMPAAL DI SINI BRO
+renderTransactionTabShell();
+wireTransactionTab();
 function vaultCardHTML(vaultId, v, bucket){
   const s = v.summary || { totalCost:0,totalKg:0,totalEkor:0,totalRevenue:0,profit:0 };
   const bp = (s.babyPig || { qty:0, avgPrice:0, total:0 });
@@ -2209,20 +2511,13 @@ function bindCustomSelect(cs, vaultId){
   const optsWrap = cs.querySelector(".cs-options");
   if(!selected || !optsWrap) return;
 
-  // ✅ Toggle (1 tap open, 1 tap close)
   selected.addEventListener("pointerdown", (e)=>{
     e.preventDefault();
     e.stopPropagation();
-
-    // kalau yang tengah open ialah cs ini -> close
-    if(__openCS?.cs === cs){
-      closeCustomSelect();
-    }else{
-      openCustomSelect(cs);
-    }
+    if(__openCS?.cs === cs) closeCustomSelect();
+    else openCustomSelect(cs);
   }, { passive:false });
 
-  // ✅ pilih option
   optsWrap.addEventListener("pointerdown", (e)=>{
     const opt = e.target.closest("[data-value]");
     if(!opt) return;
@@ -2232,16 +2527,20 @@ function bindCustomSelect(cs, vaultId){
 
     const val = Number(opt.dataset.value || 10) || 10;
 
+    if(vaultId === "__txTab"){
+      txTabPaging.per = val;
+      txTabPaging.page = 1;
+      selected.textContent = `${val} / page`;
+      closeCustomSelect();
+      renderTransactionRows();
+      return;
+    }
+
     const p = getPaging(vaultId);
     p.per = val;
     p.page = 1;
-
-    // update label
     selected.textContent = `${val} / page`;
-
-    // ✅ close portal (guna __openCS)
     closeCustomSelect();
-
     rerenderVaultTbody(vaultId);
   }, { passive:false });
 }
@@ -2937,6 +3236,7 @@ $("btnLogout").addEventListener("click", async ()=>{
 });
 
   $("tabOpen").addEventListener("click", ()=> setView("open"));
+  $("tabTransaction")?.addEventListener("click", ()=> setView("transaction"));
   $("tabHistory").addEventListener("click", ()=> setView("history"));
 
   $("btnAddPoint").addEventListener("click", ()=>{
@@ -3201,40 +3501,88 @@ if(act==="txDel"){
     toast("Limited user: tiada akses delete history.");
     return;
   }
+
   const yes = await confirmBox("Delete transaction?", {
-  title:"Delete",
-  okText:"Delete",
-  cancelText:"Cancel",
-  okClass:"danger"
-});
-if(!yes) return;
+    title:"Delete",
+    okText:"Delete",
+    cancelText:"Cancel",
+    okClass:"danger"
+  });
+  if(!yes) return;
 
   try{
     const txPath = `vaults/${bucket}/${vaultId}/transactions/${txId}`;
 
-    // 1) ambil tx dulu utk rollback kira delta (sbb lepas remove dah hilang)
+    // ambil data tx dulu
     const txSnap = await get(ref(db, txPath));
-    if(!txSnap.exists()){ toast("TX not found."); return; }
+    if(!txSnap.exists()){
+      toast("TX not found.");
+      return;
+    }
+
     const t = txSnap.val();
 
-    // 2) REMOVE dulu — kalau permission denied dia akan throw kat sini
+    // delete terus dari database
     await remove(ref(db, txPath));
 
-    // 3) recompute dulu
+    // recompute summary vault
     await recomputeVaultSummary(vaultId, bucket);
 
-    // 4) BARU adjust wallet (open sahaja)
+    // kalau open bucket, adjust wallet balik
     if(bucket === "open"){
-      await adjustBalanceForTxDelete({ bucket, vaultId, txId, txObj: t });
+      await adjustBalanceForTxDelete({
+        bucket,
+        vaultId,
+        txId,
+        txObj: t
+      });
     }
+
+    // refresh cache + rerender table
+    const txsSnap = await get(ref(db, `vaults/${bucket}/${vaultId}/transactions`));
+    const txsVal = txsSnap.exists() ? txsSnap.val() : {};
+
+    vaultTxCache[vaultId] = {
+      bucket,
+      rows: Object.entries(txsVal).sort((a,b)=>
+        Number(b[1]?.atMs || 0) - Number(a[1]?.atMs || 0)
+      )
+    };
+
+    rerenderVaultTbody(vaultId);
 
     toast("Deleted.");
   }catch(e){
-    console.error(e);
-    toast(e?.message || "Failed");
+    console.error("DELETE TX ERROR =", e);
+    toast(e?.message || "Failed", "error");
   }
+
+  return;
+}
+if(act === "finTxView"){
+  const id = btn.dataset.id;
+  const snap = await get(ref(db, `${TX_ROOT}/${id}`));
+  if(!snap.exists()){ toast("TX not found"); return; }
+  const t = snap.val() || {};
+  openViewNote(String(t.note || ""));
+  return;
 }
 
+if(act === "finTxDel"){
+  const id = btn.dataset.id;
+  const yes = await confirmBox("Delete transaction?", {
+    title: "Delete",
+    okText: "Delete",
+    cancelText: "Cancel",
+    okClass: "danger"
+  });
+  if(!yes) return;
+
+  await remove(ref(db, `${TX_ROOT}/${id}`));
+
+  toast("Deleted.");
+  return;
+}
 if(act==="histEdit"){
   if(!me.isAdmin){ toast("No access."); return; }
 

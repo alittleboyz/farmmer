@@ -105,11 +105,12 @@ html.theme-light input{
       background:var(--bg-login); color:var(--txt); height: 40px;
     }
     input:focus{border-color: #1668dc;}
-    .row{display:flex; gap:10px; align-items:center; margin-top:14px}
+    .row{display:flex; gap:10px; align-items:center;}
     .btn{
       width:100%;
       border: 1px solid transparent; border-radius:8px; padding:0 15px; cursor:pointer;
-      background:var(--btn); color:white; font-weight: 600; letter-spacing:.2px;
+      background:var(--btn); color:white; font-weight: 600;
+      font-size:15px;
       transition:.15s transform, .15s background;
   position:relative;
   display:flex;
@@ -199,7 +200,7 @@ html.theme-light input{
   width:100%;
   display:flex;
   justify-content:center;
-  margin:10px 0 15px;
+  margin:15px 0 10px;
 }
 
 #turnstileWidget{

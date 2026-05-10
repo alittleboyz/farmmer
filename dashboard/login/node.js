@@ -21,6 +21,7 @@ import {
   const db = getDatabase(app);
 
   const $ = (id)=>document.getElementById(id);
+$("btnLogin").disabled = true;
   const toast = (msg)=>{
     const el = $("toast");
     el.textContent = msg;
@@ -187,20 +188,33 @@ function renderTurnstile(){
   box.innerHTML = "";
   window.turnstileToken = "";
 
+  // 🔥 disable button masa verify
+  $("btnLogin").disabled = true;
+
   turnstileId = window.turnstile.render("#turnstileWidget", {
-    sitekey: "0x4AAAAAADMYm_QXydQu476r",
+    sitekey: "ISI_SITE_KEY_KAMU_DI_SINI",
     theme: getTurnstileTheme(),
 
     callback: function(token){
       window.turnstileToken = token;
+
+      // ✅ enable bila success
+      $("btnLogin").disabled = false;
     },
 
     "expired-callback": function(){
       window.turnstileToken = "";
+
+      // ❌ disable balik kalau expired
+      $("btnLogin").disabled = true;
     },
 
     "error-callback": function(){
       window.turnstileToken = "";
+
+      // ❌ disable kalau error
+      $("btnLogin").disabled = true;
+
       toast("Turnstile error. Please try again.");
     }
   });

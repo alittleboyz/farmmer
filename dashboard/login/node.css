@@ -5,6 +5,9 @@
       --border:#303030;
       --bg-login:#141414;
       --bg-login2:#1f1f1f;
+      --border-input:#424242;
+      --disable: rgba(255, 255, 255, 0.25);
+      --disable-bg:rgba(255, 255, 255, 0.08);
     }
     html.theme-light{
   --bg:#f5f7ff;
@@ -16,6 +19,9 @@
  --border:#f0f0f0;
   --bg-login:#ffffff;
  --bg-login2:#ffffff;
+ --border-input:#d9d9d9;
+ --disable: rgba(0, 0, 0, 0.25);
+ --disable-bg:rgba(0, 0, 0, 0.04);
 }
 html.theme-light body{
   background:
@@ -188,4 +194,21 @@ html.theme-light input{
     font-size: 14px;
     font-family: SimSun, sans-serif;
     line-height: 1;
+}
+.turnstileBox{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  margin:10px 0 15px;
+}
+
+#turnstileWidget{
+  max-width:100%;
+}
+.btn:disabled{
+  cursor:not-allowed;
+  border-color:var(--border-input);
+  color: var(--disable);
+  background: var(--disable-bg);
+  box-shadow: none;
 }

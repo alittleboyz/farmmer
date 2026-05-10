@@ -21,6 +21,8 @@ import {
   const db = getDatabase(app);
 
 const $ = (id)=>document.getElementById(id);
+let pendingUser = null;
+let pendingUsername = "";
 
 function showPageLoading(text = "Please wait while fetching..."){
   const el = $("pageLoading");
@@ -121,7 +123,18 @@ const cred = await signInWithEmailAndPassword(auth, email, password);
 
 await ensureProfile(cred.user.uid, username);
 
-location.replace("../admin/");
+pendingUser = cred.user;
+pendingUsername = username;
+
+$("secondUsername").textContent = username;
+
+$("loginStep1").classList.add("hide");
+$("loginStep2").classList.remove("hide");
+
+setLoading(false);
+hidePageLoading();
+
+document.querySelector(".pinInput")?.focus();
   }catch(e){
     console.error(e);
     toast(authMsg(e));
@@ -259,3 +272,90 @@ function waitTurnstileReady(){
 }
 
 waitTurnstileReady();
+function getPinValue(){
+  return Array.from(document.querySelectorAll(".pinInput"))
+    .map(i => i.value.trim())
+    .join("");
+}
+
+function clearPin(){
+  document.querySelectorAll(".pinInput").forEach(i => i.value = "");
+  document.querySelector(".pinInput")?.focus();
+}
+
+async function verifySecondPassword(){
+  const pin = getPinValue();
+
+  if(pin.length !== 6){
+    toast("Please enter 6 digit 2nd password.");
+    return;
+  }
+
+  if(!pendingUser){
+    toast("Session expired. Please login again.");
+    return;
+  }
+
+  showPageLoading("Please wait while fetching...");
+
+  try{
+    const snap = await get(ref(db, `profiles/${pendingUser.uid}/secondPassword`));
+    const savedPin = snap.exists() ? String(snap.val()) : "";
+
+    if(!savedPin){
+      hidePageLoading();
+      toast("2nd password belum setup. Sila hubungi admin.");
+      return;
+    }
+
+    if(pin !== savedPin){
+      hidePageLoading();
+      clearPin();
+      toast("2nd password salah.");
+      return;
+    }
+
+    location.replace("../admin/");
+  }catch(e){
+    console.error(e);
+    hidePageLoading();
+    toast("Failed verify 2nd password.");
+  }
+}
+
+$("btnVerify2nd")?.addEventListener("click", verifySecondPassword);
+
+$("btnBackLogin")?.addEventListener("click", async ()=>{
+  pendingUser = null;
+  pendingUsername = "";
+
+  $("loginStep2").classList.add("hide");
+  $("loginStep1").classList.remove("hide");
+
+  clearPin();
+});
+
+document.querySelectorAll(".pinInput").forEach((input, index, arr)=>{
+  input.addEventListener("input", ()=>{
+    input.value = input.value.replace(/\D/g, "").slice(0,1);
+
+    if(input.value && arr[index + 1]){
+      arr[index + 1].focus();
+    }
+
+    if(getPinValue().length === 6){
+      verifySecondPassword();
+    }
+  });
+
+  input.addEventListener("keydown", (e)=>{
+    if(e.key === "Backspace" && !input.value && arr[index - 1]){
+      arr[index - 1].focus();
+    }
+
+    if(e.key === "Enter"){
+      e.preventDefault();
+      verifySecondPassword();
+    }
+  });
+});

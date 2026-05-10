@@ -1,15 +1,19 @@
     :root{
       --btn:#1668dc; --btnH:#3c89e8; --btnA:#1554ad;
       --bg:#0b1220; --card:rgba(255,255,255,.06);
-      --stroke:rgba(255,255,255,.12); --txt:#eaf1ff; --muted:rgba(255,255,255,.85);--toast:rgba(255,255,255,.85);
+      --stroke:rgba(255,255,255,.12); --txt:rgba(255,255,255,0.85); --muted:rgba(255,255,255,.85);--toast:rgba(255,255,255,.85);
+      --border:#303030;
+      --bg-login:#141414;
     }
     html.theme-light{
   --bg:#f5f7ff;
   --card:rgba(0,0,0,.06);
   --stroke:rgba(0,0,0,.12);
-  --txt:#0b1220;
+  --txt:rgba(0,0,0,0.88)
   --muted:rgba(0,0,0,.75);
   --toast:rgba(255,255,255,.85);
+ --border:#f0f0f0;
+  --bg-login:#ffffff;
 }
 html.theme-light body{
   background:
@@ -26,21 +30,18 @@ html.theme-light input{
       margin:0; min-height:100vh; display:grid; place-items:center;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
       color:var(--txt);
-      background:
-        radial-gradient(1000px 700px at 15% 15%, rgba(22,104,220,.28), transparent 55%),
-        radial-gradient(900px 700px at 85% 25%, rgba(60,137,232,.18), transparent 55%),
-        linear-gradient(180deg,#060914,#0b1220 55%,#050815);
-      padding:20px;
+      background:var(--bg-login);
+      padding:24px;
     }
     .wrap{width:min(420px,100%);}
     @media (max-width: 900px){ .wrap{grid-template-columns:1fr} }
    .card{
-      border: 1px solid rgba(255, 255, 255, .12);
-      border-radius:14px;
-      background: rgb(142 142 142 / 6%);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 18px 50px rgba(0, 0, 0, .35);
-      overflow:hidden;padding:18px
+      border: 1px solid var(--border);
+      border-radius:12px;
+      background: var(--bg-login);
+      overflow:hidden;
+      padding:32px 40px;
+      box-shadow: rgba(0, 0, 0, 0.08) 0px 8px 24px;
     }
     .badge{display:inline-flex; gap:8px; align-items:center; padding:10px 12px; border-radius:999px; margin-top:14px;
       border:1px solid var(--stroke); background:rgba(255,255,255,.05); color:var(--muted); font-weight:600}
@@ -48,9 +49,9 @@ html.theme-light input{
     .title{font-size:25px; font-weight:700; margin:0 0 10px;text-align: center;}
     label{display:block; margin:12px 0 8px; color:var(--muted);font-size:14px}
     input{
-      width:100%; padding:12px 12px; border-radius:8px;
+      width:100%; padding:7px 11px; border-radius:8px;
       border:1px solid var(--stroke); outline:none;transition: all 0.2s;
-      background:rgba(0,0,0,.25); color:var(--txt);
+      background:var(--bg-login); color:var(--txt);
     }
     input:focus{border-color: #1668dc;}
     .row{display:flex; gap:10px; align-items:center; margin-top:14px}
@@ -101,8 +102,8 @@ html.theme-light input{
 }
 
 .inputWrap input{
-  padding-left:42px;
-  padding-right:42px;
+  padding-left:32px;
+  padding-right:32px;
 }
 
 .inputIcon{
@@ -110,8 +111,8 @@ html.theme-light input{
   left:12px;
   top:50%;
   transform:translateY(-50%);
-  width:18px;
-  height:18px;
+  width:16px;
+  height:16px;
   opacity:.7;
   pointer-events:none;
 }
@@ -121,8 +122,8 @@ html.theme-light input{
   right:12px;
   top:50%;
   transform:translateY(-50%);
-  width:20px;
-  height:20px;
+  width:16px;
+  height:16px;
   cursor:pointer;
   opacity:.7;
   transition:.2s;

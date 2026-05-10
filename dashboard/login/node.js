@@ -67,7 +67,12 @@ function authMsg(err){
 async function doLogin(){
   const username = $("username").value.trim().toLowerCase();
   const password = $("password").value;
+ const turnstileToken = window.turnstileToken || "";
 
+if(!turnstileToken){
+  toast("Please complete Turnstile verification.");
+  return;
+}
   // ✅ START spinner
   setLoading(true);
 
@@ -157,5 +162,57 @@ applyTheme(loadTheme());
 // ikut perubahan dari tab/page lain (admin toggle)
 window.addEventListener("storage", (e)=>{
   if(e.key !== THEME_KEY) return;
+
   applyTheme(loadTheme());
+
+  if(window.turnstile){
+    renderTurnstile();
+  }
 });
+// ===== CLOUDFLARE TURNSTILE =====
+let turnstileId = null;
+
+function getTurnstileTheme(){
+  const currentTheme = loadTheme();
+
+  // login light => turnstile dark
+  // login dark  => turnstile light
+  return currentTheme === "light" ? "dark" : "light";
+}
+
+function renderTurnstile(){
+  const box = document.getElementById("turnstileWidget");
+  if(!box || !window.turnstile) return;
+
+  box.innerHTML = "";
+  window.turnstileToken = "";
+
+  turnstileId = window.turnstile.render("#turnstileWidget", {
+    sitekey: "0x4AAAAAADMYm_QXydQu476r",
+    theme: getTurnstileTheme(),
+
+    callback: function(token){
+      window.turnstileToken = token;
+    },
+
+    "expired-callback": function(){
+      window.turnstileToken = "";
+    },
+
+    "error-callback": function(){
+      window.turnstileToken = "";
+      toast("Turnstile error. Please try again.");
+    }
+  });
+}
+
+function waitTurnstileReady(){
+  const timer = setInterval(() => {
+    if(window.turnstile){
+      clearInterval(timer);
+      renderTurnstile();
+    }
+  }, 100);
+}
+
+waitTurnstileReady();

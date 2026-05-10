@@ -192,7 +192,7 @@ function renderTurnstile(){
   $("btnLogin").disabled = true;
 
   turnstileId = window.turnstile.render("#turnstileWidget", {
-    sitekey: "ISI_SITE_KEY_KAMU_DI_SINI",
+    sitekey: "0x4AAAAAADMYm_QXydQu476r",
     theme: getTurnstileTheme(),
 
     callback: function(token){

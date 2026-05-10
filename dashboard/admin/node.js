@@ -3305,13 +3305,86 @@ if(drawerChangePassBtn){
     openChangePass();
   });
 }
+// Button Change 2nd Password dalam dropdown desktop
+const btnChange2ndPass = $("btnChange2ndPass");
+if(btnChange2ndPass){
+  btnChange2ndPass.addEventListener("click", ()=>{
+    closeUserMenu();
+    openChange2ndPass();
+  });
+}
 
+// Button Change 2nd Password dalam drawer mobile
+const drawerChange2ndPassBtn = $("drawerChange2ndPassBtn");
+if(drawerChange2ndPassBtn){
+  drawerChange2ndPassBtn.addEventListener("click", ()=>{
+    try{ closeDrawer(); }catch(_){}
+    openChange2ndPass();
+  });
+}
+// ===== CHANGE 2ND PASSWORD =====
+function openChange2ndPass(){
+  if($("cp2Old"))  $("cp2Old").value  = "";
+  if($("cp2New"))  $("cp2New").value  = "";
+  if($("cp2New2")) $("cp2New2").value = "";
+  openModal("mChange2ndPass");
+}
+
+function onlySixDigit(v){
+  return String(v || "").replace(/\D/g, "").slice(0, 6);
+}
+
+["cp2Old", "cp2New", "cp2New2"].forEach(id => {
+  const el = $(id);
+  if(!el) return;
+
+  el.addEventListener("input", () => {
+    el.value = onlySixDigit(el.value);
+  });
+});
+
+async function doChange2ndPassword(){
+  const user = auth.currentUser;
+  if(!user) throw new Error("No user session.");
+
+  const oldPin = onlySixDigit($("cp2Old")?.value);
+  const newPin = onlySixDigit($("cp2New")?.value);
+  const newPin2 = onlySixDigit($("cp2New2")?.value);
+
+  if(oldPin.length !== 6) throw new Error("Old 2nd password mesti 6 digit.");
+  if(newPin.length !== 6) throw new Error("New 2nd password mesti 6 digit.");
+  if(newPin !== newPin2) throw new Error("Confirm 2nd password tak sama.");
+  if(newPin === oldPin) throw new Error("New 2nd password tidak boleh sama.");
+
+  const passRef = ref(db, `profiles/${user.uid}/secondPassword`);
+  const snap = await get(passRef);
+  const savedPin = snap.exists() ? String(snap.val()) : "";
+
+  if(!savedPin){
+    throw new Error("2nd password belum setup. Sila tambah dulu di Firebase.");
+  }
+
+  if(oldPin !== savedPin){
+    throw new Error("Old 2nd password salah.");
+  }
+
+  await set(passRef, newPin);
+
+  $("cp2Old").value = "";
+  $("cp2New").value = "";
+  $("cp2New2").value = "";
+
+  return "2nd password success change.";
+}
 // Save dalam modal
 const cpSave = $("cpSave");
 if(cpSave){
   bindLoadingClick("cpSave", doChangePassword);
 }
-
+const cp2Save = $("cp2Save");
+if(cp2Save){
+  bindLoadingClick("cp2Save", doChange2ndPassword);
+}
 function closeUserMenu(){
   userDrop.classList.remove("open");
   userBtn.setAttribute("aria-expanded", "false");

@@ -76,6 +76,7 @@ html.theme-light input{
   font-weight:600;
   margin:0;
   line-height: 1.5;
+  color:white;
 }
 
 .loginHeadSub{
@@ -91,7 +92,7 @@ html.theme-light input{
       border:1px solid var(--stroke); background:rgba(255,255,255,.05); color:var(--muted); font-weight:600}
     .dot{width:10px;height:10px;border-radius:50%; background:var(--btn)}
     .title{font-size:25px; font-weight:700; margin:0 0 10px;text-align: center;}
-    label{display:block; margin:12px 0 8px; color:var(--muted);font-size:14px}
+    label{display:block; color:var(--txt);font-size:14px;font-weight:500;}
     input{
       width:100%; padding:7px 11px; border-radius:8px;
       border:1px solid var(--stroke); outline:none;transition: all 0.2s;
@@ -134,7 +135,6 @@ html.theme-light input{
 }
     .btn:hover{background:#3c89e8;}
     .btn:active{background:#1554ad;}
-    .hint{margin-top:12px; font-size:12px; color:var(--muted); line-height:1.5;text-align: center;}
     .toast{
       position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
       background:rgba(0,0,0,.75); color:var(--toast);
@@ -146,6 +146,7 @@ html.theme-light input{
   /* ===== INPUT WITH ICON ===== */
 .inputWrap{
   position:relative;
+  margin-bottom: 24px;
 }
 
 .inputWrap input{

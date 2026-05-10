@@ -20,7 +20,27 @@ import {
   const auth = getAuth(app);
   const db = getDatabase(app);
 
-  const $ = (id)=>document.getElementById(id);
+const $ = (id)=>document.getElementById(id);
+
+function showPageLoading(text = "Please wait while fetching..."){
+  const el = $("pageLoading");
+  if(!el) return;
+
+  const textEl = el.querySelector(".loading-text");
+  if(textEl) textEl.textContent = text;
+
+  el.classList.remove("hide");
+  el.classList.add("show");
+}
+
+function hidePageLoading(){
+  const el = $("pageLoading");
+  if(!el) return;
+
+  el.classList.remove("show");
+  el.classList.add("hide");
+}
+
 $("btnLogin").disabled = true;
   const toast = (msg)=>{
     const el = $("toast");
@@ -76,18 +96,21 @@ if(!turnstileToken){
 }
   // ✅ START spinner
   setLoading(true);
-
+  showPageLoading("Please wait while fetching...");
   // ✅ kalau validation fail, STOP spinner juga
   if(username.length < 3){
-    setLoading(false);
-    toast("Username terlalu pendek.");
-    return;
-  }
-  if(password.length < 6){
-    setLoading(false);
-    toast("Password minimum 6 karakter.");
-    return;
-  }
+  setLoading(false);
+  hidePageLoading();
+  toast("Username terlalu pendek.");
+  return;
+}
+
+if(password.length < 6){
+  setLoading(false);
+  hidePageLoading();
+  toast("Password minimum 6 karakter.");
+  return;
+}
 
   const email = toEmail(username);
 
@@ -103,6 +126,7 @@ location.replace("../admin/");
     console.error(e);
     toast(authMsg(e));
     setLoading(false); // ✅ STOP spinner bila gagal
+    hidePageLoading();
   }
 }
 
@@ -160,6 +184,11 @@ function applyTheme(theme){
 }
 applyTheme(loadTheme());
 
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    hidePageLoading();
+  }, 500);
+});
 // ikut perubahan dari tab/page lain (admin toggle)
 window.addEventListener("storage", (e)=>{
   if(e.key !== THEME_KEY) return;

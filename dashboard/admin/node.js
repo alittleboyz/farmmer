@@ -3344,9 +3344,20 @@ $("btnLogout").addEventListener("click", async ()=>{
   location.replace("../login/");
 });
 
-  $("tabOpen").addEventListener("click", ()=> setView("open"));
-  $("tabTransaction")?.addEventListener("click", ()=> setView("transaction"));
-  $("tabHistory").addEventListener("click", ()=> setView("history"));
+$("tabOpen").addEventListener("click", () => {
+  flashPageLoader("Please wait while fetching...", 350);
+  setView("open");
+});
+
+$("tabTransaction")?.addEventListener("click", () => {
+  flashPageLoader("Please wait while fetching...", 350);
+  setView("transaction");
+});
+
+$("tabHistory").addEventListener("click", () => {
+  flashPageLoader("Please wait while fetching...", 350);
+  setView("history");
+});
 
 $("btnAddPoint").addEventListener("click", ()=>{
   if(!me.isAdmin){ toast("Limited user: tiada akses Add Point."); return; }
@@ -4877,11 +4888,31 @@ document.addEventListener("click", (e)=>{
     init();
   }
 })();
-window.addEventListener("DOMContentLoaded", function () {
+function hidePageLoader(){
   const loader = document.getElementById("pageLoader");
-  if (!loader) return;
+  if(!loader) return;
+  loader.classList.add("hide");
+}
 
-  setTimeout(() => {
-    loader.classList.add("hide");
-  }, 500);
+function showPageLoader(text = "Please wait while fetching..."){
+  const loader = document.getElementById("pageLoader");
+  if(!loader) return;
+
+  const textEl = loader.querySelector(".loading-text");
+  if(textEl) textEl.textContent = text;
+
+  loader.classList.remove("hide");
+}
+
+function flashPageLoader(text = "Please wait while fetching...", delay = 350){
+  showPageLoader(text);
+
+  clearTimeout(window.__pageLoaderTimer);
+  window.__pageLoaderTimer = setTimeout(() => {
+    hidePageLoader();
+  }, delay);
+}
+
+window.addEventListener("load", () => {
+  setTimeout(hidePageLoader, 500);
 });

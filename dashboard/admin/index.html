@@ -100,7 +100,15 @@
     </span>
     <span class="miText">Change Password</span>
   </button>
-
+      
+<button class="userMenuItem" id="btnChange2ndPass" type="button" role="menuitem">
+  <span class="miIcon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+      <path d="M12 2 4 5v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V5l-8-3zm-1 6h2v7h-2V8zm0 9h2v2h-2v-2z"/>
+    </svg>
+  </span>
+  <span class="miText">Change 2nd Password</span>
+</button>
 <!-- 🌐 LANGUAGE (desktop dropdown) -->
 <div class="langWrap" id="langWrapDesktop">
   <button class="userMenuItem" id="btnLangDesktop" type="button" role="menuitem" aria-expanded="false">
@@ -190,7 +198,15 @@
   <span class="miText">Change Password</span>
   <span></span>
 </button>
-
+<button id="drawerChange2ndPassBtn" class="userMenuItem" type="button">
+  <span class="miIcon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+      <path d="M12 2 4 5v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V5l-8-3zm-1 6h2v7h-2V8zm0 9h2v2h-2v-2z"/>
+    </svg>
+  </span>
+  <span class="miText">Change 2nd Password</span>
+  <span></span>
+</button>
 <!-- 🌐 LANGUAGE (mobile drawer) -->
 <div class="langWrap" id="langWrapDrawer">
   <button class="userMenuItem" id="btnLangDrawer" type="button" aria-expanded="false">
@@ -598,6 +614,42 @@
     <div class="modalFoot">
       <button class="btn ghost" data-close="mChangePass" type="button">Cancel</button>
       <button class="btn" id="cpSave" data-loading="Saving..." data-close-modal="mChangePass" data-clickfx>Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ CHANGE 2ND PASSWORD MODAL -->
+<div class="modalBack" id="mChange2ndPass" style="display:none;">
+  <div class="modal" style="max-width:520px;">
+    <div class="modalHead">
+      <div>
+        <div class="title">Change 2nd Password</div>
+        <div class="sub">Masukkan 2nd password lama & 6 digit baru.</div>
+      </div>
+      <button class="x" data-close="mChange2ndPass">✕</button>
+    </div>
+
+    <div class="modalBody">
+      <label><span class="label-required"></span>Old 2nd Password</label>
+      <input id="cp2Old" type="password" inputmode="numeric" maxlength="6" autocomplete="off" />
+
+      <div class="row">
+        <div>
+          <label><span class="label-required"></span>New 2nd Password</label>
+          <input id="cp2New" type="password" inputmode="numeric" maxlength="6" autocomplete="off" />
+        </div>
+        <div>
+          <label><span class="label-required"></span>Confirm 2nd Password</label>
+          <input id="cp2New2" type="password" inputmode="numeric" maxlength="6" autocomplete="off" />
+        </div>
+      </div>
+
+      <div class="hint">Must be exactly 6 digits.</div>
+    </div>
+
+    <div class="modalFoot">
+      <button class="btn ghost" data-close="mChange2ndPass" type="button">Cancel</button>
+      <button class="btn" id="cp2Save" data-loading="Saving..." data-close-modal="mChange2ndPass" data-clickfx>Save</button>
     </div>
   </div>
 </div>

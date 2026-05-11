@@ -132,8 +132,8 @@ body.drawerOpen{
       font-size: 14px;height: 32px;
       transition: all 0.2s;
     }
-    .btn-delete:hover{background: #ff9b9c;color: #ff9b9c;}
-    .btn-delete:active{background: #c83536;color: #c83536;}
+    .btn-delete:hover{color: #ff9b9c;}
+    .btn-delete:active{color: #c83536;}
     .btn-edit{
       border: 1px solid rgba(22, 104, 220, .45); 
       border-radius:6px; padding: 8px 10px; cursor:pointer;

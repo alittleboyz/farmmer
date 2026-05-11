@@ -271,7 +271,6 @@ body.drawerOpen{
     .cardHead{
       padding:14px 14px 10px;
       display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
-      border-bottom:1px solid var(--borderBottom);
       background: var(--panelBg);
     }
     .title{

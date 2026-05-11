@@ -308,7 +308,7 @@
     </div>
 
     <div class="modalFoot">
-      <button class="btn ghost" data-close="mBalance">Close</button>
+      <button class="btn-cancel" data-close="mBalance">Close</button>
     </div>
   </div>
 </div>
@@ -341,7 +341,7 @@
       </div>
     </div>
     <div class="modalFoot">
-      <button class="btn ghost" data-close="mAddPoint">Cancel</button>
+      <button class="btn-cancel" data-close="mAddPoint">Cancel</button>
       <button class="btn" id="apSave" data-loading="Saving..." data-close-modal="mAddPoint" data-clickfx>Save</button>
     </div>
   </div>
@@ -367,12 +367,12 @@
       <label><span class="label-required"></span>Transaction Time</label>
       <div class="txTimeRow">
         <input id="txTime_newVault" type="datetime-local" />
-        <button id="txTimeToggle_newVault" type="button" class="btn ghost">Unlock</button>
+        <button id="txTimeToggle_newVault" type="button" class="btn-cancel">Unlock</button>
       </div>
       <div class="hint">Jika Lock, masa akan ikut masa sekarang.</div>
     </div>
     <div class="modalFoot">
-      <button class="btn ghost" data-close="mNewVault">Cancel</button>
+      <button class="btn-cancel" data-close="mNewVault">Cancel</button>
       <button class="btn" id="nvCreate" data-loading="Creating..." data-close-modal="mNewVault" data-clickfx>Create</button>
     </div>
   </div>
@@ -409,12 +409,12 @@
       <label><span class="label-required"></span>Transaction Time</label>
       <div class="txTimeRow">
         <input id="txTime_cash" type="datetime-local" />
-        <button id="txTimeToggle_cash" type="button" class="btn ghost">Unlock</button>
+        <button id="txTimeToggle_cash" type="button" class="btn-cancel">Unlock</button>
       </div>
       <div class="hint">Jika Lock, masa akan ikut masa sekarang.</div>
     </div>
     <div class="modalFoot">
-      <button class="btn ghost" data-close="mCash">Cancel</button>
+      <button class="btn-cancel" data-close="mCash">Cancel</button>
       <button class="btn" id="cashSave" data-loading="Saving..." data-close-modal="mCash" data-clickfx>Save</button>
     </div>
   </div>
@@ -464,12 +464,12 @@
       <label><span class="label-required"></span>Transaction Time</label>
       <div class="txTimeRow">
         <input id="txTime_buy" type="datetime-local" />
-        <button id="txTimeToggle_buy" type="button" class="btn ghost">Unlock</button>
+        <button id="txTimeToggle_buy" type="button" class="btn-cancel">Unlock</button>
       </div>
       <div class="hint">Jika Lock, masa akan ikut masa sekarang.</div>
     </div>
     <div class="modalFoot">
-      <button class="btn ghost" data-close="mBuy">Cancel</button>
+      <button class="btn-cancel" data-close="mBuy">Cancel</button>
       <button class="btn" id="buySave"  data-loading="Saving..."data-close-modal="mBuy" data-clickfx>Save</button>
     </div>
   </div>
@@ -521,12 +521,12 @@
       <label><span class="label-required"></span>Transaction Time</label>
       <div class="txTimeRow">
         <input id="txTime_sell" type="datetime-local" />
-        <button id="txTimeToggle_sell" type="button" class="btn ghost">Unlock</button>
+        <button id="txTimeToggle_sell" type="button" class="btn-cancel">Unlock</button>
       </div>
       <div class="hint">Jika Lock, masa akan ikut masa sekarang.</div>
     </div>
     <div class="modalFoot">
-      <button class="btn ghost" data-close="mSell">Cancel</button>
+      <button class="btn-cancel" data-close="mSell">Cancel</button>
       <button class="btn" id="sellSave" data-loading="Saving..." data-close-modal="mSell" data-clickfx>Save</button>
     </div>
   </div>
@@ -569,13 +569,13 @@
       <label><span class="label-required"></span>Transaction Time</label>
       <div class="txTimeRow">
         <input id="txTime_missing" type="datetime-local" />
-        <button id="txTimeToggle_missing" type="button" class="btn ghost">Unlock</button>
+        <button id="txTimeToggle_missing" type="button" class="btn-cancel">Unlock</button>
       </div>
       <div class="hint">Jika Lock, masa akan ikut masa sekarang.</div>
     </div>
 
     <div class="modalFoot">
-      <button class="btn ghost" data-close="mMissing">Cancel</button>
+      <button class="btn-cancel" data-close="mMissing">Cancel</button>
       <button class="btn" id="missSave" data-loading="Saving..." data-close-modal="mMissing" data-clickfx>Save</button>
     </div>
   </div>
@@ -612,7 +612,7 @@
     </div>
 
     <div class="modalFoot">
-      <button class="btn ghost" data-close="mChangePass" type="button">Cancel</button>
+      <button class="btn-cancel" data-close="mChangePass" type="button">Cancel</button>
       <button class="btn" id="cpSave" data-loading="Saving..." data-close-modal="mChangePass" data-clickfx>Save</button>
     </div>
   </div>
@@ -648,7 +648,7 @@
     </div>
 
     <div class="modalFoot">
-      <button class="btn ghost" data-close="mChange2ndPass" type="button">Cancel</button>
+      <button class="btn-cancel" data-close="mChange2ndPass" type="button">Cancel</button>
       <button class="btn" id="cp2Save" data-loading="Saving..." data-close-modal="mChange2ndPass" data-clickfx>Save</button>
     </div>
   </div>
@@ -666,7 +666,7 @@
     </div>
 
     <div class="modalFoot" style="display:flex;justify-content:flex-end;gap:10px;">
-      <button class="btn ghost" data-close="mViewNote" type="button">Close</button>
+      <button class="btn-cancel" data-close="mViewNote" type="button">Close</button>
     </div>
   </div>
 </div>
@@ -683,7 +683,7 @@
     <div id="ccMsg" class="cConfirmMsg">Are you sure?</div>
 
     <div class="cConfirmBtns">
-      <button id="ccCancel" class="btn ghost" type="button">Cancel</button>
+      <button id="ccCancel" class="btn-cancel" type="button">Cancel</button>
       <button id="ccOk" class="btn danger" type="button">OK</button>
     </div>
   </div>
@@ -703,7 +703,7 @@
     <input id="cpInput" class="cpInput" type="text" placeholder="Type title..." autocomplete="off"/>
 
     <div class="cConfirmBtns" style="margin-top:12px;">
-      <button id="cpCancel" class="btn ghost" type="button">Cancel</button>
+      <button id="cpCancel" class="btn-cancel" type="button">Cancel</button>
       <button id="cpOk" class="btn" type="button">Save</button>
     </div>
   </div>

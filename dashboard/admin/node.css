@@ -35,6 +35,7 @@
   --borderactivehead:#424242;
   --xHover:#ffffff;
   --xActive:rgba(255,255,255,.65);
+  --btn-cancel:#141414;
 }
     
 
@@ -58,7 +59,7 @@ html.theme-light{
   --stroke2: rgba(0,0,0,.12);
   --txt: #0b1324;
   --muted: rgba(11,19,36,.65);
-  --colorInput:#000000e0;
+  --colorInput:rgba(0,0,0,0.88);
   --iconColor: rgba(255,255,255,.85);
   --borderColor:#d9d9d9;
   --borderActive:#424242;
@@ -74,6 +75,7 @@ html.theme-light{
   --borderactivehead:#1554ad;
   --xHover:#3c89e8;
   --xActive:#1554ad;
+  --btn-cancel:#ffffff;
 }
 *{box-sizing:border-box}
 html.drawerOpen,
@@ -200,8 +202,8 @@ body.drawerOpen{
     .btn-logout:hover{background:#e2445b;}
     .btn-logout:active{background:#b31930;}
     .btn{
-      border:0; border-radius:6px; padding: 0px 15px; cursor:pointer;
-      background:var(--btn); color:white; font-weight:400;
+      border:1px solid transparent; border-radius:6px; padding: 0px 15px; cursor:pointer;
+      background:var(--btn); color:white;
       transition:.15s transform, .15s background;
       display:inline-flex; align-items:center; gap:8px;
       user-select:none;
@@ -209,12 +211,17 @@ body.drawerOpen{
       transition: all 0.2s;
     }
     .btn:hover{background:var(--btnH)}
-    .btn:active{background:var(--btnA); transform: translateY(1px)}
-    .btn.ghost{
-      background:var(--btnCard); border:1px solid var(--borderColor); color:var(--colorInput);
+    .btn:active{background:var(--btnA);}
+    .btn-cancel{
+      border:1px solid var(--borderColor); border-radius:6px; padding: 0px 15px; cursor:pointer;
+      background:var(--btn-cancel); color:var(--colorInput);
+      display:inline-flex; align-items:center; gap:8px;
+      user-select:none;
+      font-size: 14px;height: 32px;
+      transition: all 0.2s;
     }
-    .btn.ghost:hover{background:var(--btnheadHover);color:var(--colorHover);border-color:var(--borderHover);}
-    .btn.ghost:active{color:var(--colorActive);border-color:var(--borderactivehead);}
+    .btn-cancel:hover{background:var(--btnheadHover);color:var(--colorHover);border-color:var(--borderHover);}
+    .btn-cancel:active{color:var(--colorActive);border-color:var(--borderactivehead);}
     .pill {
      padding: 0px 15px;
      border: 1px solid #303030;
@@ -306,23 +313,21 @@ body.drawerOpen{
 
     /* Modal */
     .modalBack{
-      position:fixed; inset:0; background:rgba(0,0,0,.55);
+      position:fixed; inset:0; background:rgba(0,0,0,.45);
       display:none; align-items:center; justify-content:center;
       padding:18px; z-index:100;
     }
     .modal{
       width:min(640px,100%);
       background:var(--panelBg);
-      border:1px solid var(--borderTable);
       border-radius:12px;
-      box-shadow: 0 24px 90px rgba(0,0,0,.6);
+      box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
       overflow:hidden;
       transition: all 0.2s;
     }
     .modalHead{
       padding:14px 14px 10px;
       display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
-      border-bottom:1px solid var(--borderTable);
     }
     .modalHead .x{
       border:none;
@@ -726,7 +731,15 @@ input[type="number"]{
 .kpiTable .kpiBad{ color:red!important; }
 /* ===== USER DROPDOWN ===== */
 .userDrop{ position:relative; }
-.btn-user .caret{ opacity:.8; font-size:12px; transform: translateY(-1px); }
+.btn-user .caret{
+  opacity:.8;
+  font-size:12px;
+  transform:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1;
+}
 
 .userMenu{
   position:absolute;
@@ -980,7 +993,7 @@ input[type="number"]{
 #vaultSearch{
   width:100%;
   height:32px;
-  padding:0 60px 0 14px;
+  padding:4px 11px;
   border-radius:6px;
   background:var(--inputBg);
   border:1px solid #303030;
@@ -1183,9 +1196,32 @@ input[type="number"]{
   align-items:center;
   gap:10px;
 }
-#btnUser .userIcon{ justify-self:center; }
-#btnUser #usernameText{ justify-self:center; text-align:center; }
-#btnUser .caret{ justify-self:center; }
+#btnUser .userIcon{
+  justify-self:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  line-height:0;
+}
+
+#btnUser #usernameText{
+  justify-self:center;
+  text-align:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1;
+  transform:translateY(-1px);
+}
+
+#btnUser .caret{
+  justify-self:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1;
+  transform:none;
+}
 
 /* ===== DRAWER USER ROW (drawerUserRow): icon kiri, text center, tiada caret ===== */
 #drawerUserRow{

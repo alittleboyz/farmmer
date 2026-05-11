@@ -581,7 +581,7 @@ select.native-select {
   cursor:pointer;
   background: var(--inputBg);
   border: 1px solid var(--borderTable);
-  color:#1668dc;
+  color:var(--colorInput);
   outline:none;
   transition: all 0.2s;
   height:32px;
@@ -612,14 +612,14 @@ select.native-select {
   background:var(--panelBg);
   box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
   display:none;
-  padding: 5px 12px;
+  padding:4px;
   
 }
 
 .cs.open .cs__menu{ display:block; }
 
 .cs__opt{
-  padding:4px;
+  padding: 5px 12px;
   border-radius: 4px;
   cursor:pointer;
   color:var(--colorInput);

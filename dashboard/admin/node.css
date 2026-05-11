@@ -965,16 +965,16 @@ input[type="number"]{
   display:flex;
   align-items:center;
   justify-content:flex-start;
-  margin-right:auto;   
-  min-width: 220px;
-  flex:1 1 auto; 
+  margin-right:auto;
+  flex:0 1 150px;
+  max-width:150px;
   min-width:0;
 }
 
 .vaultSearchBox{
   position:relative;
   width:100%;
-  max-width:420px;
+  max-width:150px;
 }
 
 #vaultSearch{

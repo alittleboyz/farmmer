@@ -123,17 +123,17 @@ body.drawerOpen{
     body{ padding-top: var(--headerH); }
     .right{display:flex; align-items:center; gap:5px;flex:0 0 auto;flex-wrap:nowrap;}
     .btn-delete{
-      border: 1px solid rgb(196 19 19); 
+      border: 1px solid #5b1515;
       border-radius:6px; padding: 8px 10px; cursor:pointer;
-      background: rgb(0 0 0 / 0%);
-      color:#f52020; font-weight:400;
+      background: #2c1111;
+      color: #ff4d4f; font-weight:400;
       display:inline-flex; align-items:center; gap:8px;
       user-select:none;
       font-size: 14px;height: 32px;
       transition: all 0.2s;
     }
-    .btn-delete:hover{background: rgb(84 1 1)}
-    .btn-delete:active{background: rgb(42 1 1)}
+    .btn-delete:hover{background: #ff9b9c;color: #ff9b9c;}
+    .btn-delete:active{background: #c83536;color: #c83536;}
     .btn-edit{
       border: 1px solid rgba(22, 104, 220, .45); 
       border-radius:6px; padding: 8px 10px; cursor:pointer;
@@ -589,14 +589,14 @@ select.native-select {
 .cs__btn:hover{border-color:#3c89e8;}.cs__btn:focus{border-color:#1668dc;}
 
 .cs__value{
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing:.2px;
 }
 
 .cs__arrow{
   opacity:.9;
   font-size: 12px;
-  color: #1668dc;
+  color: var(--colorInput);
   transform: translateY(-1px);
 }
 

@@ -612,19 +612,23 @@ select.native-select {
   background:var(--panelBg);
   box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
   display:none;
+  padding: 5px 12px;
+  
 }
 
 .cs.open .cs__menu{ display:block; }
 
 .cs__opt{
-  padding: 5px 12px;
+  padding:4px;
+  border-radius: 4px;
   cursor:pointer;
   color:var(--colorInput);
   display:flex;
   align-items:center;
   justify-content: space-between;
   gap:10px;
-  background:var(--inputBg);
+  background:var(--panelBg);
+  font-size: 14px;
 }
 
 .cs__opt:hover{ background: var(--bgDropdownhover); }

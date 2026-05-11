@@ -36,6 +36,9 @@
   --xHover:#ffffff;
   --xActive:rgba(255,255,255,.65);
   --btn-cancel:#141414;
+  --blue:#1668dc;
+  --blue-hover:#3c89e8;
+  --blue-active:#1554ad;
 }
     
 
@@ -220,8 +223,8 @@ body.drawerOpen{
       font-size: 14px;height: 32px;
       transition: all 0.2s;
     }
-    .btn-cancel:hover{background:var(--btnheadHover);color:var(--colorHover);border-color:var(--borderHover);}
-    .btn-cancel:active{color:var(--colorActive);border-color:var(--borderactivehead);}
+    .btn-cancel:hover{color:var(--blue-hover);border-color:var(--blue-hover);}
+    .btn-cancel:active{color:var(--blue-active);border-color:var(--blue-active);}
     .pill {
      padding: 0px 15px;
      border: 1px solid #303030;
@@ -731,16 +734,6 @@ input[type="number"]{
 .kpiTable .kpiBad{ color:red!important; }
 /* ===== USER DROPDOWN ===== */
 .userDrop{ position:relative; }
-.btn-user .caret{
-  opacity:.8;
-  font-size:12px;
-  transform:none;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  line-height:1;
-}
-
 .userMenu{
   position:absolute;
   right:0;
@@ -1010,8 +1003,8 @@ input[type="number"]{
   top:50%;
   transform:translateY(-50%);
   opacity:.7;
-  width:18px;
-  height:18px;
+  width:14px;
+  height:14px;
   pointer-events:none;
   color:var(--colorInput);
 }
@@ -1176,7 +1169,7 @@ input[type="number"]{
   display:grid;
   grid-template-columns: 24px 1fr 24px; /* kiri icon, tengah text, kanan spacer */
   align-items:center;
-  gap:10px;
+  gap:3px;
 }
 #btnBalance .walletIcon{ justify-self:center; }
 #btnBalance #balanceText{ justify-self:center; text-align:center; }
@@ -1192,9 +1185,9 @@ input[type="number"]{
 /* ===== HEADER USER DROPDOWN (btnUser): icon kiri, username center, caret kanan ===== */
 #btnUser{
   display:grid;
-  grid-template-columns: 24px 1fr 24px;
+  grid-template-columns: 24px 1fr;
   align-items:center;
-  gap:10px;
+  gap:3px;
 }
 #btnUser .userIcon{
   justify-self:center;
@@ -1214,14 +1207,6 @@ input[type="number"]{
   transform:translateY(-1px);
 }
 
-#btnUser .caret{
-  justify-self:center;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  line-height:1;
-  transform:none;
-}
 
 /* ===== DRAWER USER ROW (drawerUserRow): icon kiri, text center, tiada caret ===== */
 #drawerUserRow{

@@ -293,6 +293,23 @@ body.drawerOpen{
   display:block;
   color:currentColor;
 }
+/* ===== MOBILE TAB ICON ONLY ===== */
+@media (max-width:700px){
+  .headerTabs .tab{
+    gap:0;
+  }
+
+  .headerTabs .tab span{
+    display:none;   /* sorok text */
+  }
+
+  .headerTabs .tabIcon{
+    width:19.2px;
+    height:19.2px;
+    flex:0 0 19.2px;
+  }
+
+}
     .actions{display:flex; gap:5px; align-items:center; flex-wrap:wrap}
     .hint{color:var(--colorInput); font-size:12px; line-height:1.4}
     .create-vault{color:#1668dc; font-size:12px; line-height:1.4}

@@ -5023,3 +5023,40 @@ vaultSearch?.addEventListener('blur', () => {
     document.body.classList.remove('mobileSearchOpen');
   }
 });
+function updateLocalClock(){
+  const el = document.getElementById("indoClock");
+
+  const now = new Date();
+
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  let label = "Indonesia";
+
+  if(tz.includes("Kuala_Lumpur")){
+    label = "Malaysia";
+  }else if(
+    tz.includes("Jakarta") ||
+    tz.includes("Makassar") ||
+    tz.includes("Jayapura")
+  ){
+    label = "Indonesia";
+  }
+
+  const time = now.toLocaleTimeString("en-GB",{
+    timeZone: tz,
+    hour:"2-digit",
+    minute:"2-digit",
+    hour12:false
+  });
+
+  const date = now.toLocaleDateString("en-GB",{
+    timeZone: tz,
+    month:"short",
+    day:"numeric"
+  });
+
+  el.textContent = `${label}: ${time} ${date}`;
+}
+
+updateLocalClock();
+setInterval(updateLocalClock,1000);

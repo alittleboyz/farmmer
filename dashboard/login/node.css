@@ -13,7 +13,7 @@
   --bg:#f5f7ff;
   --card:rgba(0,0,0,.06);
   --stroke:rgba(0,0,0,.12);
-  --txt:rgba(0,0,0,0.88)
+  --txt:rgba(0,0,0,0.88);
   --muted:rgba(0,0,0,.75);
   --toast:rgba(255,255,255,.85);
  --border:#f0f0f0;
@@ -375,4 +375,51 @@ html.theme-light input{
   font-size:16px;
   font-weight:400;
   padding:0 !important;
+}
+/* ===== FIX LOGIN PHONE TERPOTONG ===== */
+html, body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+
+body{
+  padding:12px;
+}
+
+.wrap{
+  width:min(420px, 100%);
+  max-width:100%;
+  min-width:0;
+}
+
+.card{
+  width:100%;
+  max-width:100%;
+}
+
+.turnstileBox,
+#turnstileWidget{
+  max-width:100%;
+  overflow:hidden;
+}
+
+@media (max-width:420px){
+  .loginHead{
+    padding:28px 20px 24px;
+  }
+
+  .loginBody{
+    padding:28px 20px;
+  }
+
+  .turnstileBox{
+    justify-content:flex-start;
+  }
+
+  #turnstileWidget{
+    transform:scale(.86);
+    transform-origin:left top;
+    height:70px;
+  }
 }

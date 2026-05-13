@@ -492,7 +492,6 @@ body.mobileSearchOpen #vaultSearch{
     .modalFoot{
       display:flex; justify-content:flex-end; gap:10px;
       padding:12px 14px;
-      border-top:1px solid var(--borderTable);
       background:rgba(255,255,255,.03);
     }
     .danger{background:#d11f3a}

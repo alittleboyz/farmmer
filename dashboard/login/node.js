@@ -176,14 +176,16 @@ toggle.addEventListener("click", ()=>{
 function setLoading(on){
   const btn = $("btnLogin");
   const txt = $("btnText");
+
+  // text button kekal Login
+  if(txt) txt.textContent = "Login";
+
   if(on){
     btn.classList.add("loading");
     btn.disabled = true;
-    txt.textContent = "Logging in...";
   }else{
     btn.classList.remove("loading");
     btn.disabled = false;
-    txt.textContent = "Login";
   }
 }
 // ===== THEME SYNC (LOGIN) =====

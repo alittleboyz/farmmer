@@ -1600,10 +1600,10 @@ input[type="number"]{
   position:relative;
   display:inline-flex;
   align-items:center;
-  width:88px;
+  width:75px;
   height:24px;
   cursor:pointer;
-  flex:0 0 88px;
+  flex:0 0 75px;
   margin:0;
 }
 
@@ -1641,33 +1641,34 @@ input[type="number"]{
 .lockText::after{
   content:attr(data-off);
   position:absolute;
-  left:25px;
-  right:6px;
+  left:22px;
+  right:4px;
   top:50%;
   transform:translateY(-50%);
-  font-size:11px;
+  font-size:10px;
   font-weight:600;
   color:#fff;
   white-space:nowrap;
   text-align:center;
 }
 
+/* ACTIVE */
 .lockSwitchText input:checked + .lockText{
   background:#1668dc;
   border-color:#1668dc;
 }
 
 .lockSwitchText input:checked + .lockText::before{
-  left:66px;
+  left:53px;
 }
 
 .lockSwitchText input:checked + .lockText::after{
   content:attr(data-on);
-  left:6px;
-  right:25px;
+  left:4px;
+  right:22px;
 }
 
-/* phone: jangan turun full width */
+/* phone */
 @media (max-width:520px){
   .txTimeRow{
     flex-direction:row !important;
@@ -1675,7 +1676,7 @@ input[type="number"]{
   }
 
   .lockSwitchText{
-    flex:0 0 88px;
+    flex:0 0 75px;
   }
 }
 /* theme row align (desktop dropdown) */

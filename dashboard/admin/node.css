@@ -2416,10 +2416,35 @@ html.forceDesktop .desktopModeBtn .dmState{
   }
 }
 .indoClock{
+  height:64px;
   display:flex;
   align-items:center;
+  justify-content:center;
   background:transparent;
   color:rgba(255,255,255,0.85);
   font-size:14px;
   white-space:nowrap;
+  padding:0 10px;
+}
+
+/* phone */
+@media (max-width:700px){
+  .indoClock{
+    flex-direction:column;
+    line-height:1.1;
+    min-width:90px;
+    font-size:10px;
+  }
+
+  .indoClock .clockTime{
+    font-size:18px;
+    font-weight:700;
+    color:#fff;
+  }
+
+  .indoClock .clockDate{
+    font-size:10px;
+    font-weight:600;
+    margin-left:4px;
+  }
 }

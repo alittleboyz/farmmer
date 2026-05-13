@@ -891,13 +891,48 @@ input[type="number"]{
   opacity:.5;
 }
 @media (max-width:520px){.rangeRight{justify-content:flex-start}.pbtn{font-size:12px;padding:0px 5px}}
-  @media (max-width: 520px){
+/* ===== FLATPICKR PHONE: 2 MONTH VERTICAL ===== */
+@media (max-width: 600px){
   .flatpickr-calendar{
+    width: calc(100vw - 24px) !important;
+    max-width: 365px !important;
     left: 50% !important;
     right: auto !important;
     transform: translateX(-50%) !important;
-    max-width: calc(100vw - 16px) !important;
-    z-index: 999999 !important;
+    z-index: 9999999 !important;
+  }
+
+  .flatpickr-calendar .flatpickr-months{
+    display:block !important;
+  }
+
+  .flatpickr-calendar .flatpickr-month{
+    width:100% !important;
+    height:44px !important;
+  }
+
+  .flatpickr-calendar .flatpickr-innerContainer{
+    display:block !important;
+  }
+
+  .flatpickr-calendar .flatpickr-rContainer{
+    width:100% !important;
+  }
+
+  .flatpickr-calendar .flatpickr-days{
+    display:block !important;
+    width:100% !important;
+  }
+
+  .flatpickr-calendar .dayContainer{
+    width:100% !important;
+    min-width:100% !important;
+    max-width:100% !important;
+  }
+
+  .flatpickr-calendar .flatpickr-day{
+    width:calc(100% / 7) !important;
+    max-width:none !important;
   }
 }
 .iconBtn{

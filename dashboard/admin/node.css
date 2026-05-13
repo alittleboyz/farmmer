@@ -46,7 +46,7 @@
 html.theme-light{
   --talbeHover:rgba(255, 255, 255, .03);
   --menuDropdown:#ffffff;
-  --scroll:#27272785;
+  --scroll:rgba(0, 0, 0, 0.0);
   --bgDropdownhover:#e3e3e3;
   --bgDropdown:#cacaca;
   --pagebg:#ffffff;
@@ -2447,4 +2447,9 @@ html.forceDesktop .desktopModeBtn .dmState{
     font-weight:600;
     margin-left:4px;
   }
+}
+.txTimeRow input:disabled{
+  cursor:not-allowed !important;
+  background:transparent !important;
+  color: var(--scroll) !important;
 }

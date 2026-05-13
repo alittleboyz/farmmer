@@ -477,7 +477,7 @@ body.mobileSearchOpen #vaultSearch{
     @media (max-width:700px){
   html:not(.forceDesktop) .row{ grid-template-columns:1fr; }
 }
-    label{display:block; margin:10px 0 6px; color:color:rgba(255,255,255,.85); font-weight:400; font-size:14px}
+    label{display:block; margin:10px 0 6px; color:rgba(255,255,255,.85); font-weight:400; font-size:14px}
     input,select,textarea{
       width:100%; padding:0px 15px; border-radius:6px;height:32px;
       border:1px solid var(--borderTable);

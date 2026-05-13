@@ -472,7 +472,7 @@ function txSettingRef(kind){
 
 function initTxTimeControl({ kind, inputId, toggleId }){
   const input = $(inputId);
-  const btn = $(toggleId);
+  const sw = $(toggleId);
   if(!input) return;
 
   input.value = toTxInputValue(Date.now());
@@ -489,25 +489,29 @@ function initTxTimeControl({ kind, inputId, toggleId }){
     defaultDate: new Date()
   });
 
-  if(btn && !me.isAdmin) btn.style.display = "none";
+  if(sw && !me.isAdmin){
+    sw.closest(".lockSwitch")?.style.setProperty("display", "none", "important");
+  }
 
   onValue(txSettingRef(kind), (snap)=>{
     const allow = snap.exists() ? !!snap.val() : false;
+
     input.disabled = !allow;
 
-    if(btn && me.isAdmin){
-      btn.textContent = allow ? "Lock" : "Unlock";
-      btn.dataset.allow = String(allow);
+    if(sw && me.isAdmin){
+      sw.checked = allow;
+      sw.dataset.allow = String(allow);
     }
   });
 
-  if(btn && me.isAdmin){
-    btn.addEventListener("click", async ()=>{
-      await runTransaction(txSettingRef(kind), (cur)=> !cur);
+  if(sw && me.isAdmin && sw.dataset.bound !== "1"){
+    sw.dataset.bound = "1";
+
+    sw.addEventListener("change", async ()=>{
+      await runTransaction(txSettingRef(kind), () => sw.checked);
     });
   }
 }
-
 async function getAtMsFromControl(kind, inputId){
   const allowSnap = await get(txSettingRef(kind));
   const allow = allowSnap.exists() ? !!allowSnap.val() : false;

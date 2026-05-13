@@ -4469,7 +4469,14 @@ if(searchInput){
     rerenderVaultLists();
   });
 }
-  setView("open");
+  const savedTab = localStorage.getItem(ACTIVE_TAB_KEY);
+
+setView(
+  ["open","history","transaction"].includes(savedTab)
+    ? savedTab
+    : "open",
+  false
+);
   initCustomSelects();
     // ===== LIVE FORMAT INPUTS =====
   attachMoney($("apAmount"));

@@ -5049,11 +5049,17 @@ function updateLocalClock(){
     hour12:false
   });
 
-  const date = now.toLocaleDateString("en-GB",{
+  /* ===== FIX DATE FORMAT -> May 13 ===== */
+  const dateObj = new Intl.DateTimeFormat("en-GB",{
     timeZone: tz,
     month:"short",
     day:"numeric"
-  });
+  }).formatToParts(now);
+
+  const day = dateObj.find(x => x.type === "day").value;
+  const month = dateObj.find(x => x.type === "month").value;
+
+  const date = `${month} ${day}`;
 
   el.textContent = `${label}: ${time} ${date}`;
 }

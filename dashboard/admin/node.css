@@ -245,11 +245,22 @@ body.drawerOpen{
      font-weight:600;
     }
     .container{width:100%; margin:16px auto; padding:0 12px 12px;}
-    .topRow{
-      display:flex; align-items:flex-start; justify-content:space-between;
-      gap:12px; flex-wrap:wrap;
-      margin:14px 0 12px;
-    }
+.topRow{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end; /* pergi kanan */
+  gap:12px;
+  flex-wrap:wrap;
+  margin:14px 0 12px;
+}
+
+.actions{
+  display:flex;
+  gap:5px;
+  align-items:center;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
  .tabs{
   display:flex;
   gap:5px;

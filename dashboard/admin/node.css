@@ -1595,53 +1595,88 @@ input[type="number"]{
   right:1px;
   transform: translateY(-50%);
 }
-/* ===== LOCK / UNLOCK SWITCH ===== */
-.lockSwitch{
+/* ===== TRANSACTION TIME SWITCH WITH TEXT ===== */
+.lockSwitchText{
   position:relative;
-  width:44px;
-  height:22px;
   display:inline-flex;
   align-items:center;
-  flex:0 0 44px;
+  width:88px;
+  height:24px;
   cursor:pointer;
+  flex:0 0 88px;
+  margin:0;
 }
 
-.lockSwitch input{
+.lockSwitchText input{
+  position:absolute;
   opacity:0;
   width:0;
   height:0;
-  position:absolute;
 }
 
-.lockSlider{
-  position:absolute;
-  inset:0;
-  background:#2a2a2a;
-  border:1px solid var(--borderColor);
+.lockText{
+  width:100%;
+  height:24px;
   border-radius:999px;
+  background:#303030;
+  border:1px solid var(--borderColor);
+  position:relative;
   transition:.2s;
 }
 
-.lockSlider::before{
+.lockText::before{
   content:"";
   position:absolute;
   width:18px;
   height:18px;
-  left:1px;
+  left:2px;
   top:50%;
   transform:translateY(-50%);
   background:#fff;
   border-radius:50%;
   transition:.2s;
+  z-index:2;
 }
 
-.lockSwitch input:checked + .lockSlider{
+.lockText::after{
+  content:attr(data-off);
+  position:absolute;
+  left:25px;
+  right:6px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:11px;
+  font-weight:600;
+  color:#fff;
+  white-space:nowrap;
+  text-align:center;
+}
+
+.lockSwitchText input:checked + .lockText{
   background:#1668dc;
   border-color:#1668dc;
 }
 
-.lockSwitch input:checked + .lockSlider::before{
-  left:23px;
+.lockSwitchText input:checked + .lockText::before{
+  left:66px;
+}
+
+.lockSwitchText input:checked + .lockText::after{
+  content:attr(data-on);
+  left:6px;
+  right:25px;
+}
+
+/* phone: jangan turun full width */
+@media (max-width:520px){
+  .txTimeRow{
+    flex-direction:row !important;
+    align-items:center !important;
+  }
+
+  .lockSwitchText{
+    flex:0 0 88px;
+  }
 }
 /* theme row align (desktop dropdown) */
 .userMenuItem.themeRow{

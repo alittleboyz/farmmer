@@ -376,6 +376,7 @@ body.drawerOpen{
     width:100% !important;
     max-width:150px !important;
     padding-right:34px;
+    margin:0 12px !important;
   }
 
   body.mobileSearchOpen .vaultSearchIcon{

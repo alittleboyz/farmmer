@@ -5033,7 +5033,7 @@ function updateLocalClock(){
   let label = "Indonesia";
 
   if(tz.includes("Kuala_Lumpur")){
-    label = "Kuala_Lumpur";
+    label = "Kuala Lumpur";
   }else if(
     tz.includes("Jakarta") ||
     tz.includes("Makassar") ||
@@ -5049,7 +5049,6 @@ function updateLocalClock(){
     hour12:false
   });
 
-  /* ===== FIX DATE FORMAT -> May 13 ===== */
   const dateObj = new Intl.DateTimeFormat("en-GB",{
     timeZone: tz,
     month:"short",
@@ -5061,7 +5060,14 @@ function updateLocalClock(){
 
   const date = `${month} ${day}`;
 
-  el.textContent = `${label}: ${time} ${date}`;
+  el.innerHTML = `
+    <span class="clockLabel">${label}</span>
+
+    <span class="clockBottom">
+      <span class="clockTime">${time}</span>
+      <span class="clockDate">${date}</span>
+    </span>
+  `;
 }
 
 updateLocalClock();

@@ -278,6 +278,17 @@ body.drawerOpen{
   background:#1668dc;
   color:white;
 }
+.tab{
+  gap:8px;
+}
+
+.tabIcon{
+  width:19.2px;
+  height:19.2px;
+  flex:0 0 19.2px;
+  display:block;
+  color:currentColor;
+}
     .actions{display:flex; gap:5px; align-items:center; flex-wrap:wrap}
     .hint{color:var(--colorInput); font-size:12px; line-height:1.4}
     .create-vault{color:#1668dc; font-size:12px; line-height:1.4}

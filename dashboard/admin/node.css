@@ -272,6 +272,7 @@ body.drawerOpen{
   align-items:center;
   justify-content:center;
   font-size:14px;
+  transition: all 0.3s;
 }
 .tab:hover{
   color:white;

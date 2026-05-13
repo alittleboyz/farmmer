@@ -195,7 +195,7 @@ body.drawerOpen{
       user-select:none;
       height: 32px;
       font-size: 14px;
-      transition: all 0.2s;
+      transition: all 0.3s;
       grid-template-columns: 24px 1fr 24px;
     }
     .btn-user:hover{border: 1px solid #3c89e8;color:#3c89e8;}
@@ -2376,7 +2376,7 @@ html.forceDesktop .desktopModeBtn .dmState{
   display:flex;
   gap:5px;
   flex:0 0 auto;
-  margin-left:10px;
+  margin-left:16px;
   margin-right:0;
   flex-wrap:nowrap;
 }

@@ -2415,3 +2415,17 @@ html.forceDesktop .desktopModeBtn .dmState{
     margin-left:0 !important;
   }
 }
+.indoClock{
+  height:32px;
+  display:flex;
+  align-items:center;
+  padding:0 12px;
+  border-radius:6px;
+  background:transparent;
+  color:#fff;
+  font-size:14px;
+  font-weight:500;
+  white-space:nowrap;
+  border-left:1px solid rgba(255,255,255,.08);
+  border-right:1px solid rgba(255,255,255,.08);
+}

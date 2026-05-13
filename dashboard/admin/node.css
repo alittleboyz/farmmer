@@ -891,64 +891,74 @@ input[type="number"]{
   opacity:.5;
 }
 @media (max-width:520px){.rangeRight{justify-content:flex-start}.pbtn{font-size:12px;padding:0px 5px}}
-/* ===== FLATPICKR MOBILE: 2 GRID VERTICAL ===== */
+/* ===== FLATPICKR MOBILE: 2 BULAN ATAS BAWAH ===== */
 @media (max-width:600px){
-
   .flatpickr-calendar{
-    width:calc(100vw - 24px) !important;
-    max-width:380px !important;
-
-    left:50% !important;
-    right:auto !important;
-    transform:translateX(-50%) !important;
-
-    padding:10px !important;
-    box-sizing:border-box !important;
-    overflow:hidden !important;
+    width: calc(100vw - 20px) !important;
+    max-width: 390px !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    padding: 10px !important;
+    box-sizing: border-box !important;
   }
 
-  /* susun 2 bulan atas bawah */
-  .flatpickr-calendar .flatpickr-rContainer{
+  .flatpickr-months{
+    display:none !important;
+  }
+
+  .flatpickr-weekdays{
+    display:none !important;
+  }
+
+  .flatpickr-rContainer,
+  .flatpickr-days{
+    width:100% !important;
+    max-width:100% !important;
+  }
+
+  .flatpickr-days{
     display:flex !important;
     flex-direction:column !important;
-    width:100% !important;
+    gap:16px !important;
   }
 
-  /* setiap bulan full width */
-  .flatpickr-calendar .monthContainer{
-    width:100% !important;
-    min-width:100% !important;
-    max-width:100% !important;
-    margin-bottom:18px !important;
-  }
-
-  .flatpickr-calendar .monthContainer:last-child{
-    margin-bottom:0 !important;
-  }
-
-  /* weekday header */
-  .flatpickr-calendar .flatpickr-weekdays{
-    width:100% !important;
-  }
-
-  .flatpickr-calendar .flatpickr-weekday{
-    width:14.285% !important;
-    text-align:center !important;
-  }
-
-  /* day grid */
-  .flatpickr-calendar .dayContainer{
+  .dayContainer{
     width:100% !important;
     min-width:100% !important;
     max-width:100% !important;
-
     display:grid !important;
-    grid-template-columns:repeat(7,1fr) !important;
+    grid-template-columns:repeat(7, 1fr) !important;
+    gap:2px !important;
   }
 
-  .flatpickr-calendar .flatpickr-day{
+  .mobileMonthTitle,
+  .mobileWeekdays{
+    grid-column:1 / -1;
+  }
+
+  .mobileMonthTitle{
+    text-align:center;
+    font-weight:700;
+    color:var(--colorInput);
+    padding:4px 0 8px;
+  }
+
+  .mobileWeekdays{
+    display:grid;
+    grid-template-columns:repeat(7, 1fr);
+    text-align:center;
+    color:var(--colorInput);
+    opacity:.75;
+    font-size:12px;
+    padding-bottom:6px;
+  }
+
+  .flatpickr-day{
     width:100% !important;
     max-width:none !important;
+    height:34px !important;
+    line-height:34px !important;
   }
 }
 .iconBtn{

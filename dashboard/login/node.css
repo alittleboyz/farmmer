@@ -414,12 +414,12 @@ body{
   }
 
   .turnstileBox{
-    justify-content:flex-start;
+    justify-content:center !important;
   }
 
   #turnstileWidget{
     transform:scale(.86);
-    transform-origin:left top;
+    transform-origin:center top;
     height:70px;
   }
 }

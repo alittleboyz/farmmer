@@ -891,55 +891,64 @@ input[type="number"]{
   opacity:.5;
 }
 @media (max-width:520px){.rangeRight{justify-content:flex-start}.pbtn{font-size:12px;padding:0px 5px}}
-/* ===== FLATPICKR PHONE FIX: 2 MONTH VERTICAL CLEAN ===== */
-@media (max-width: 600px){
+/* ===== FLATPICKR MOBILE: 2 GRID VERTICAL ===== */
+@media (max-width:600px){
+
   .flatpickr-calendar{
-    width: calc(100vw - 24px) !important;
-    max-width: 365px !important;
-    left: 50% !important;
-    right: auto !important;
-    transform: translateX(-50%) !important;
-    z-index: 9999999 !important;
-    overflow: hidden !important;
+    width:calc(100vw - 24px) !important;
+    max-width:380px !important;
+
+    left:50% !important;
+    right:auto !important;
+    transform:translateX(-50%) !important;
+
+    padding:10px !important;
+    box-sizing:border-box !important;
+    overflow:hidden !important;
   }
 
-  .flatpickr-calendar .flatpickr-months{
-    display: flex !important;
-    width: 100% !important;
-  }
-
-  .flatpickr-calendar .flatpickr-month{
-    width: 50% !important;
-  }
-
-  .flatpickr-calendar .flatpickr-innerContainer{
-    display: block !important;
-  }
-
+  /* susun 2 bulan atas bawah */
   .flatpickr-calendar .flatpickr-rContainer{
-    width: 100% !important;
+    display:flex !important;
+    flex-direction:column !important;
+    width:100% !important;
   }
 
+  /* setiap bulan full width */
+  .flatpickr-calendar .monthContainer{
+    width:100% !important;
+    min-width:100% !important;
+    max-width:100% !important;
+    margin-bottom:18px !important;
+  }
+
+  .flatpickr-calendar .monthContainer:last-child{
+    margin-bottom:0 !important;
+  }
+
+  /* weekday header */
   .flatpickr-calendar .flatpickr-weekdays{
-    display: none !important;
+    width:100% !important;
   }
 
-  .flatpickr-calendar .flatpickr-days{
-    display: block !important;
-    width: 100% !important;
+  .flatpickr-calendar .flatpickr-weekday{
+    width:14.285% !important;
+    text-align:center !important;
   }
 
+  /* day grid */
   .flatpickr-calendar .dayContainer{
-    width: 100% !important;
-    min-width: 100% !important;
-    max-width: 100% !important;
-    display: grid !important;
-    grid-template-columns: repeat(7, 1fr) !important;
+    width:100% !important;
+    min-width:100% !important;
+    max-width:100% !important;
+
+    display:grid !important;
+    grid-template-columns:repeat(7,1fr) !important;
   }
 
   .flatpickr-calendar .flatpickr-day{
-    width: 100% !important;
-    max-width: none !important;
+    width:100% !important;
+    max-width:none !important;
   }
 }
 .iconBtn{

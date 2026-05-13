@@ -94,7 +94,7 @@ body.drawerOpen{
     }
 
     header{
-      height:64px; display:flex; align-items:center; justify-content:space-between;
+      height:64px; display:flex; align-items:center; justify-content:flex-start;
       padding:0 16px;
       position: fixed !important; top:0;left: 0; right: 0;height: var(--headerH);
       background:var(--headerBg);
@@ -121,7 +121,14 @@ body.drawerOpen{
 
 @keyframes clickFx { from {opacity:1} to {opacity:0} }
     body{ padding-top: var(--headerH); }
-    .right{display:flex; align-items:center; gap:5px;flex:0 0 auto;flex-wrap:nowrap;}
+    .right{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  flex:0 0 auto;
+  flex-wrap:nowrap;
+  margin-left:auto;
+}
     .btn-delete{
       border: 1px solid #5b1515;
       border-radius:6px; padding: 8px 10px; cursor:pointer;
@@ -972,8 +979,7 @@ input[type="number"]{
   display:flex;
   align-items:center;
   justify-content:flex-start;
-  margin-right:auto;
-  flex:0 1 150px;
+  flex:0 0 150px;
   max-width:150px;
   min-width:0;
 }
@@ -2234,9 +2240,11 @@ html.forceDesktop .desktopModeBtn .dmState{
   color: #008000;
 }
 .headerTabs{
+  display:flex;
+  gap:5px;
   flex:0 0 auto;
-  margin-left:8px;
-  margin-right:auto;
+  margin-left:10px;
+  margin-right:0;
   flex-wrap:nowrap;
 }
 

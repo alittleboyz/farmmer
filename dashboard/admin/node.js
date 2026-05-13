@@ -5033,7 +5033,7 @@ function updateLocalClock(){
   let label = "Indonesia";
 
   if(tz.includes("Kuala_Lumpur")){
-    label = "Malaysia";
+    label = "Kuala_Lumpur";
   }else if(
     tz.includes("Jakarta") ||
     tz.includes("Makassar") ||

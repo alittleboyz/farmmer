@@ -5010,3 +5010,16 @@ function flashPageLoader(text = "Please wait while fetching...", delay = 350){
 window.addEventListener("load", () => {
   setTimeout(hidePageLoader, 500);
 });
+const mobileSearchBtn = document.querySelector('.vaultSearchMobileBtn');
+const vaultSearch = document.getElementById('vaultSearch');
+
+mobileSearchBtn?.addEventListener('click', () => {
+  document.body.classList.add('mobileSearchOpen');
+  setTimeout(() => vaultSearch?.focus(), 50);
+});
+
+vaultSearch?.addEventListener('blur', () => {
+  if (window.innerWidth <= 700 && vaultSearch.value.trim() === '') {
+    document.body.classList.remove('mobileSearchOpen');
+  }
+});

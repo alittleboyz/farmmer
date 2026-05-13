@@ -1412,8 +1412,6 @@ input[type="number"]{
   padding-right: 44px;
 }
   
-/* ====== MOBILE MODAL FIX (keyboard-safe + scrollable) ====== */
-
 /* Pastikan backdrop kekal fixed */
 .modalBack{
   position: fixed;

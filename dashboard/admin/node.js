@@ -481,13 +481,16 @@ function initTxTimeControl({ kind, inputId, toggleId }){
     input._flatpickr.destroy();
   }
 
-  flatpickr(input, {
-    enableTime: true,
-    enableSeconds: true,
-    time_24hr: true,
-    dateFormat: "Y-m-d H:i:S",
-    defaultDate: new Date()
-  });
+flatpickr(input, {
+  enableTime: true,
+  enableSeconds: true,
+  time_24hr: true,
+  dateFormat: "Y-m-d H:i:S",
+  defaultDate: new Date(),
+
+  allowInput: true,
+  clickOpens: true
+});
 
   if(sw && !me.isAdmin){
     sw.closest(".lockSwitch")?.style.setProperty("display", "none", "important");

@@ -2925,34 +2925,6 @@ function bindTxSearchClear(vaultId){
 
   sync();
 }
-function decorateMobileFlatpickr(fp){
-  if(!fp || !fp.calendarContainer) return;
-
-  const cal = fp.calendarContainer;
-  const months = cal.querySelectorAll(".flatpickr-month");
-  const days = cal.querySelectorAll(".dayContainer");
-
-  days.forEach((dc, i)=>{
-    let title = dc.querySelector(".mobileMonthTitle");
-    if(!title){
-      title = document.createElement("div");
-      title.className = "mobileMonthTitle";
-      dc.prepend(title);
-    }
-
-    let week = dc.querySelector(".mobileWeekdays");
-    if(!week){
-      week = document.createElement("div");
-      week.className = "mobileWeekdays";
-      week.innerHTML = `<span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>`;
-      title.after(week);
-    }
-
-    const monthText = months[i]?.querySelector(".cur-month")?.textContent || "";
-    const yearText = months[i]?.querySelector(".numInput.cur-year")?.value || "";
-    title.textContent = `${monthText} ${yearText}`;
-  });
-}
 function initVaultDateRangeUI(vaultId){
   const input = document.querySelector(`.dateRangeInput[data-range="${vaultId}"]`);
   if(!input) return;
@@ -3002,22 +2974,16 @@ vaultPickers[vaultId] = flatpickr(input, {
   dateFormat: "Y-m-d",
   showMonths: 2,
   closeOnSelect: false,
-  appendTo: document.body,
   defaultDate: (def && def !== "showAll") ? [new Date(def.startMs), new Date(def.endMs)] : null,
 
-onReady: (dates, str, fp)=> {
+onReady: ()=> {
   if(def === "showAll"){
     input.value = "Show All";
   }else{
     input.value = `${ymd(def.startMs)} → ${ymd(def.endMs)}`;
   }
-
-  decorateMobileFlatpickr(fp);
   clearActivePreset(vaultId);
 },
-
-onMonthChange: (dates, str, fp)=> decorateMobileFlatpickr(fp),
-onYearChange: (dates, str, fp)=> decorateMobileFlatpickr(fp),
 
 onOpen: ()=> {
   const f = vaultFilters[vaultId];

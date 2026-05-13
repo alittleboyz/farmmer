@@ -1032,8 +1032,8 @@ input[type="number"]{
   }
 }
 .iconBtn{
-  width:34px; height:34px;
-  border-radius:8px;
+  width:64px; height:64px;
+  border-radius:6px;
   display:inline-flex;
   align-items:center;
   justify-content:center;
@@ -1041,14 +1041,14 @@ input[type="number"]{
   border:none;
   cursor:pointer;
   transition: all 0.2s;
+  font-size: 16px;
 }
-.iconBtn:hover{ background: rgba(255,255,255,.06); }
+.iconBtn:hover{ background: rgba(255,255,255,.08); }
 .icoRefresh{
   color:var(--iconColor);
   fill: currentColor;
   transition: fill .2s ease, transform .2s ease;
 }
-.icoRefresh:hover{fill:#3c89e8;}.icoRefresh:active{fill:#1554ad;}
 .iconBtn.spinning .icoRefresh{
   animation: spin360 .7s linear infinite;
 }

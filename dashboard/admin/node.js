@@ -507,9 +507,35 @@ function initTxTimeControl({ kind, inputId, toggleId }){
   if(sw && me.isAdmin && sw.dataset.bound !== "1"){
     sw.dataset.bound = "1";
 
-    sw.addEventListener("change", async ()=>{
-      await runTransaction(txSettingRef(kind), () => sw.checked);
-    });
+sw.addEventListener("change", async ()=>{
+  const allow = sw.checked;
+
+  // ✅ update UI terus
+  input.disabled = !allow;
+
+  if(allow){
+    input.value = input.value || toTxInputValue(Date.now());
+
+    if(input._flatpickr){
+      input._flatpickr.setDate(input.value, false, "Y-m-d H:i:S");
+      input._flatpickr.open();
+    }else{
+      input.focus();
+    }
+  }
+
+  try{
+    await set(txSettingRef(kind), allow);
+  }catch(err){
+    console.error(err);
+
+    // kalau Firebase gagal, reverse balik
+    sw.checked = !allow;
+    input.disabled = allow;
+
+    toast("Failed update lock time", "error");
+  }
+});
   }
 }
 async function getAtMsFromControl(kind, inputId){

@@ -5,8 +5,8 @@
   /* ===== THEME TOKENS ===== */
   --menuDropdown:#303030;
   --scroll:rgba(255, 255, 255, 0.25);
-  --bgDropdownhover:rgba(255, 255, 255, .03);
-  --bgDropdown:rgba(255,255,255,.10);
+  --bgDropdownhover:rgba(255, 255, 255, .08);
+  --bgDropdown:#111a2c;
   --pagebg:#000000;
   --bg: #070b16;
   --headerBg: #001529;
@@ -47,8 +47,8 @@ html.theme-light{
   --talbeHover:rgba(255, 255, 255, .03);
   --menuDropdown:#ffffff;
   --scroll:rgba(0, 0, 0, 0.0);
-  --bgDropdownhover:#e3e3e3;
-  --bgDropdown:#cacaca;
+  --bgDropdownhover:rgba(0, 0, 0, .08);
+  --bgDropdown:#e6f4ff;
   --pagebg:#ffffff;
   --bg: #f6f8ff;
   --headerBg:#001529;
@@ -762,6 +762,7 @@ select.native-select {
 .cs__opt:hover{ background: var(--bgDropdownhover); }
 .cs__opt[aria-selected="true"]{
   background: var(--bgDropdown);
+  font-weight:600;
 }
 /* ✅ CUSTOM SELECT dropdown auto-scroll (lebih 6 item) */
 .cs__menu{

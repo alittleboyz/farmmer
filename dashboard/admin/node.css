@@ -304,6 +304,23 @@ body.drawerOpen{
   display:block;
   color:currentColor;
 }
+.vaultSearchMobileBtn{
+  display:none;
+  width:44px;
+  height:100%;
+  border:0;
+  background:transparent;
+  color:rgba(255,255,255,.85);
+  cursor:pointer;
+  align-items:center;
+  justify-content:center;
+}
+
+.vaultSearchMobileBtn svg{
+  width:19.2px;
+  height:19.2px;
+  display:block;
+}
 /* ===== MOBILE TAB ICON ONLY ===== */
 @media (max-width:700px){
   .headerTabs .tab{
@@ -319,7 +336,26 @@ body.drawerOpen{
     height:19.2px;
     flex:0 0 19.2px;
   }
+  .vaultSearchWrap{
+    flex:0 0 44px;
+    max-width:44px;
+  }
 
+  .vaultSearchBox{
+    width:44px;
+    max-width:44px;
+    height:100%;
+  }
+
+  #vaultSearch,
+  .vaultSearchIcon,
+  .vaultSearchClear{
+    display:none !important;
+  }
+
+  .vaultSearchMobileBtn{
+    display:flex;
+  }
 }
     .actions{display:flex; gap:5px; align-items:center; flex-wrap:wrap}
     .hint{color:var(--colorInput); font-size:12px; line-height:1.4}

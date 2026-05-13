@@ -2233,3 +2233,24 @@ html.forceDesktop .desktopModeBtn .dmState{
 .amtPos{
   color: #008000;
 }
+.headerTabs{
+  flex:0 0 auto;
+  margin-left:auto;
+  margin-right:8px;
+  flex-wrap:nowrap;
+}
+
+.headerTabs .tab{
+  white-space:nowrap;
+}
+@media (max-width:700px){
+  .headerTabs{
+    gap:4px;
+    margin-right:4px;
+  }
+
+  .headerTabs .tab{
+    padding:0 10px;
+    font-size:14px;
+  }
+}

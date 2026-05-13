@@ -359,25 +359,26 @@ body.drawerOpen{
     display:flex;
   }
 
-  body.mobileSearchOpen .vaultSearchWrap{
-    flex:0 0 150px !important;
-    width:100% !important;
-    max-width:150px !important;
-    min-width:150px !important;
-  }
+body.mobileSearchOpen .vaultSearchWrap{
+  flex:0 0 174px !important;
+  width:174px !important;
+  max-width:174px !important;
+  min-width:174px !important;
+  margin:0 12px !important;
+}
 
-  body.mobileSearchOpen .vaultSearchBox{
-    width:100% !important;
-    max-width:150px !important;
-  }
+body.mobileSearchOpen .vaultSearchBox{
+  width:150px !important;
+  max-width:150px !important;
+}
 
-  body.mobileSearchOpen #vaultSearch{
-    display:block !important;
-    width:100% !important;
-    max-width:150px !important;
-    padding-right:34px;
-    margin:0 12px !important;
-  }
+body.mobileSearchOpen #vaultSearch{
+  display:block !important;
+  width:150px !important;
+  max-width:150px !important;
+  padding-left:11px !important;
+  padding-right:34px !important;
+}
 
   body.mobileSearchOpen .vaultSearchIcon{
     display:block !important;

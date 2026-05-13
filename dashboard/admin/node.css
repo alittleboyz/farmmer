@@ -530,9 +530,7 @@ body.mobileSearchOpen #vaultSearch{
   padding:12px 12px;
   border-radius:10px;
   background: rgba(20,20,20,.92);
-  border:1px solid rgba(255,255,255,.10);
-  box-shadow:0 18px 60px rgba(0,0,0,.55);
-  backdrop-filter: blur(10px);
+  box-shadow:0 18px 60px rgba(0,0,0,.35);
 }
 
 /* kiri icon */

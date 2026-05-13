@@ -264,7 +264,7 @@ body.drawerOpen{
 .tab {
   border:0;
   background:transparent;
-  color:rgba(255,255,255,0.85);
+  color:rgba(255,255,255,0.65);
   padding:0 15px;
   cursor:pointer;
   height:100%;
@@ -273,7 +273,10 @@ body.drawerOpen{
   justify-content:center;
   font-size:14px;
 }
-
+.tab:hover{
+  color:white;
+  transition: color 0.3s !important;
+}
 .tab.active{
   background:#1668dc;
   color:white;

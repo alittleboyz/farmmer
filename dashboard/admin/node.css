@@ -1105,7 +1105,6 @@ input[type="number"]{
   flex:0 0 150px;
   max-width:150px;
   min-width:0;
-  margin-left:16px;
 }
 
 .vaultSearchBox{
@@ -2374,9 +2373,9 @@ html.forceDesktop .desktopModeBtn .dmState{
 }
 .headerTabs{
   display:flex;
-  gap:5px;
+  gap:0;
   flex:0 0 auto;
-  margin-left:16px;
+  margin-left:0;
   margin-right:0;
   flex-wrap:nowrap;
 }
@@ -2393,5 +2392,24 @@ html.forceDesktop .desktopModeBtn .dmState{
   .headerTabs .tab{
     padding:0 10px;
     font-size:14px;
+  }
+}
+@media (max-width:700px){
+  .headerTabs{
+    gap:0 !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+  }
+
+  .headerTabs .tab{
+    width:44px !important;
+    min-width:44px !important;
+    max-width:44px !important;
+    padding:0 !important;
+    font-size:14px;
+  }
+
+  .vaultSearchWrap{
+    margin-left:0 !important;
   }
 }

@@ -2974,6 +2974,7 @@ vaultPickers[vaultId] = flatpickr(input, {
   dateFormat: "Y-m-d",
   showMonths: 2,
   closeOnSelect: false,
+  appendTo: document.body,
   defaultDate: (def && def !== "showAll") ? [new Date(def.startMs), new Date(def.endMs)] : null,
 
 onReady: ()=> {

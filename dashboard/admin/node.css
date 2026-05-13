@@ -337,13 +337,16 @@ body.drawerOpen{
     flex:0 0 19.2px;
   }
   .vaultSearchWrap{
-    flex:0 0 44px;
-    max-width:44px;
+    flex:0 0 44px !important;
+    width:44px !important;
+    max-width:44px !important;
+    min-width:44px !important;
+    margin-right:0 !important;
   }
 
   .vaultSearchBox{
-    width:44px;
-    max-width:44px;
+    width:44px !important;
+    max-width:44px !important;
     height:100%;
   }
 
@@ -355,6 +358,33 @@ body.drawerOpen{
 
   .vaultSearchMobileBtn{
     display:flex;
+  }
+
+  body.mobileSearchOpen .vaultSearchWrap{
+    flex:0 0 150px !important;
+    width:100% !important;
+    max-width:150px !important;
+    min-width:150px !important;
+  }
+
+  body.mobileSearchOpen .vaultSearchBox{
+    width:100% !important;
+    max-width:150px !important;
+  }
+
+  body.mobileSearchOpen #vaultSearch{
+    display:block !important;
+    width:100% !important;
+    max-width:150px !important;
+    padding-right:34px;
+  }
+
+  body.mobileSearchOpen .vaultSearchIcon{
+    display:block !important;
+  }
+
+  body.mobileSearchOpen .vaultSearchMobileBtn{
+    display:none !important;
   }
 }
     .actions{display:flex; gap:5px; align-items:center; flex-wrap:wrap}
@@ -1116,18 +1146,27 @@ input[type="number"]{
 }
 @media (max-width:700px){
   header{
-    flex-wrap: nowrap;        /* jangan wrap */
-    gap:8px;
+    flex-wrap: nowrap;
+    gap:0;
   }
+
   .vaultSearchWrap{
-    flex: 1 1 auto;           /*  search boleh shrink */
-    min-width: 0;
-    margin-right:auto;
+    flex:0 0 44px !important;
+    width:44px !important;
+    max-width:44px !important;
+    min-width:44px !important;
+    margin-right:0 !important;
   }
-  .vaultSearchBox{ max-width:100%; }
+
+  .vaultSearchBox{
+    width:44px !important;
+    max-width:44px !important;
+    height:100%;
+  }
+
   .right{
-    flex: 0 0 auto;
-    flex-wrap: nowrap;        /*  icon tak turun */
+    flex:0 0 auto;
+    flex-wrap:nowrap;
     margin-left:auto;
   }
 }

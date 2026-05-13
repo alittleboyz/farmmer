@@ -451,16 +451,18 @@ const fmt = (n)=> safeNum(n).toLocaleString(undefined,{
   maximumFractionDigits: 2
 });
 // TX TIME (admin lock/unlock)
-function toLocalInputValue(ms = Date.now()){
+function toTxInputValue(ms = Date.now()){
   const d = new Date(ms);
   const pad = (n)=> String(n).padStart(2,"0");
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 }
 
-function parseDatetimeLocalToMs(v){
-  const s = String(v||"").trim();
+function parseTxInputToMs(v){
+  const s = String(v || "").trim();
   if(!s) return NaN;
-  const ms = Date.parse(s);
+
+  const ms = Date.parse(s.replace(" ", "T"));
   return Number.isFinite(ms) ? ms : NaN;
 }
 
@@ -473,7 +475,19 @@ function initTxTimeControl({ kind, inputId, toggleId }){
   const btn = $(toggleId);
   if(!input) return;
 
-  input.value = toLocalInputValue(Date.now());
+  input.value = toTxInputValue(Date.now());
+
+  if(input._flatpickr){
+    input._flatpickr.destroy();
+  }
+
+  flatpickr(input, {
+    enableTime: true,
+    enableSeconds: true,
+    time_24hr: true,
+    dateFormat: "Y-m-d H:i:S",
+    defaultDate: new Date()
+  });
 
   if(btn && !me.isAdmin) btn.style.display = "none";
 
@@ -500,13 +514,20 @@ async function getAtMsFromControl(kind, inputId){
 
   if(!allow) return Date.now();
 
-  const ms = parseDatetimeLocalToMs($(inputId)?.value);
+  const ms = parseTxInputToMs($(inputId)?.value);
   return Number.isFinite(ms) ? ms : Date.now();
 }
 
 function resetTxTimeInput(inputId){
   const input = $(inputId);
-  if(input) input.value = toLocalInputValue(Date.now());
+  if(!input) return;
+
+  const v = toTxInputValue(Date.now());
+  input.value = v;
+
+  if(input._flatpickr){
+    input._flatpickr.setDate(v, false, "Y-m-d H:i:S");
+  }
 }
 
 const startOfDayMs = (d)=> new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0,0,0,0).getTime();

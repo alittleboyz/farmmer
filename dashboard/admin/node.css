@@ -252,17 +252,16 @@ body.drawerOpen{
     }
     .tabs{display:flex; gap:5px; align-items:center;flex-wrap: wrap;}
     .tab {
-    border: 1px solid var(--borderColor);
-    background: var(--inputBg);
-    color: var(--colorInput);
-    border-radius: 6px;
+    border:0;
+    background:transparent;
+    color:rgba(255,255,255,0.85);
     padding: 0px 15px;
     cursor: pointer;
-    height: 32px;
+    height: 100%;
     align-items: center;
     font-size: 14px;
     }
-    .tab.active{background:rgba(22,104,220,.18); color:var(--BtnActive); border: 1px solid var(--btn);}
+    .tab.active{background:#1668dc; color:white;}
     .actions{display:flex; gap:5px; align-items:center; flex-wrap:wrap}
     .hint{color:var(--colorInput); font-size:12px; line-height:1.4}
     .create-vault{color:#1668dc; font-size:12px; line-height:1.4}

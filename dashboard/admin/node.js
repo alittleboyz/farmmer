@@ -1654,8 +1654,16 @@ async function uncloseVault(vaultId){
   await update(ref(db), updates);
 }
   // ===== RENDER =====
-function setView(v){
+// ===== RENDER =====
+const ACTIVE_TAB_KEY = "farm_active_tab";
+
+function setView(v, save = true){
   activeView = v;
+
+  // simpan tab terakhir
+  if(save){
+    localStorage.setItem(ACTIVE_TAB_KEY, v);
+  }
 
   $("tabOpen")?.classList.toggle("active", v === "open");
   $("tabHistory")?.classList.toggle("active", v === "history");

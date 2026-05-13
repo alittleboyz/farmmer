@@ -177,14 +177,23 @@ function setLoading(on){
   const btn = $("btnLogin");
   const txt = $("btnText");
 
-  // text button kekal Login
-  if(txt) txt.textContent = "Login";
-
   if(on){
-    btn.classList.add("loading");
-    btn.disabled = true;
-  }else{
+    // ✅ tukar text
+    if(txt) txt.textContent = "Logging in...";
+
+    // ❌ jangan add spinner/loading class lagi
     btn.classList.remove("loading");
+
+    // ✅ disable button
+    btn.disabled = true;
+
+  }else{
+    // ✅ balik normal
+    if(txt) txt.textContent = "Login";
+
+    // ❌ pastikan spinner tak muncul
+    btn.classList.remove("loading");
+
     btn.disabled = false;
   }
 }

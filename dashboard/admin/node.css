@@ -2535,27 +2535,25 @@ html.forceDesktop .desktopModeBtn .dmState{
 }
 .tblShell{
   position:relative;
+  border-radius:14px;
+  overflow:hidden;       /* penting: shadow ikut radius */
 }
 
+/* shadow kiri kanan */
 .tblShell::before,
 .tblShell::after{
   content:"";
   position:absolute;
-  top:0;
-  bottom:0;
+  top:1px;
+  bottom:10px;           /* stop sebelum scrollbar bawah */
   width:30px;
   z-index:10;
   pointer-events:none;
   transition:box-shadow .3s;
 }
 
-.tblShell::before{
-  left:0;
-}
-
-.tblShell::after{
-  right:0;
-}
+.tblShell::before{ left:0; }
+.tblShell::after{ right:0; }
 
 .tblShell.ping-left::before{
   box-shadow: inset 10px 0 8px -8px rgba(253,253,253,.12);
@@ -2563,4 +2561,9 @@ html.forceDesktop .desktopModeBtn .dmState{
 
 .tblShell.ping-right::after{
   box-shadow: inset -10px 0 8px -8px rgba(253,253,253,.12);
+}
+
+/* table dalam dia */
+.tblShell .tblWrap{
+  border-radius:14px;
 }

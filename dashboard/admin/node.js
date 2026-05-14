@@ -2679,6 +2679,16 @@ function bindCustomSelect(cs, vaultId){
   const optsWrap = cs.querySelector(".cs-options");
   if(!selected || !optsWrap) return;
 
+  function setActiveOption(val){
+    optsWrap.querySelectorAll("[data-value]").forEach(x=>{
+      x.classList.toggle("active", String(x.dataset.value) === String(val));
+    });
+  }
+
+  // active awal
+  const currentVal = selected.textContent.match(/\d+/)?.[0] || "10";
+  setActiveOption(currentVal);
+
   selected.addEventListener("pointerdown", (e)=>{
     e.preventDefault();
     e.stopPropagation();
@@ -2694,6 +2704,8 @@ function bindCustomSelect(cs, vaultId){
     e.stopPropagation();
 
     const val = Number(opt.dataset.value || 10) || 10;
+
+    setActiveOption(val); // ✅ active warna
 
     if(vaultId === "__txTab"){
       txTabPaging.per = val;

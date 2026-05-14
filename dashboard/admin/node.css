@@ -2567,3 +2567,7 @@ html.forceDesktop .desktopModeBtn .dmState{
 .tblShell .tblWrap{
   border-radius:14px;
 }
+.tblShell .tblWrap{
+  border-radius:14px;
+  overflow:auto;
+}

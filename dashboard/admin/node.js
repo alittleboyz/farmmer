@@ -1712,6 +1712,7 @@ function setView(v, save = true){
 }
 // TAMPAAL DI SINI BRO
 renderTransactionTabShell();
+initTableShadow(document.getElementById("viewTransaction"));
 wireTransactionTab();
 function vaultCardHTML(vaultId, v, bucket){
   const s = v.summary || { totalCost:0,totalKg:0,totalEkor:0,totalRevenue:0,profit:0 };

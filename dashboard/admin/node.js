@@ -2946,32 +2946,11 @@ function getVaultRowsForExport(vaultId){
   const cache = vaultTxCache[vaultId];
   if(!cache) return [];
 
-  let use = [...cache.rows];
+  // ✅ ambil SEMUA data dalam vault cache, bukan page yang tampil
+  let use = [...(cache.rows || [])];
 
-  const f = vaultFilters[vaultId];
-  if(f && f !== "showAll"){
-    use = use.filter(([_, t])=>{
-      const ms = Number(t?.atMs || 0);
-      return ms >= f.startMs && ms <= f.endMs;
-    });
-  }
-
-  const tf = vaultTypeFilters[vaultId] || "all";
-  if(tf !== "all"){
-    use = use.filter(([_, t])=>{
-      if(tf === "cash_in") return t.kind === "cash" && t.direction === "in";
-      if(tf === "cash_out") return t.kind === "cash" && t.direction === "out";
-      return t.kind === tf;
-    });
-  }
-
-  const q = String(vaultTxSearchFilters[vaultId] || "").trim().toLowerCase();
-  if(q){
-    use = use.filter(([_, t])=>{
-      const hay = `${buildTxDesc(t)} ${t.note || ""} ${t.kind || ""} ${t.direction || ""} ${t.category || ""}`.toLowerCase();
-      return hay.includes(q);
-    });
-  }
+  // ✅ sort newest first
+  use.sort((a,b)=> Number(b[1]?.atMs || 0) - Number(a[1]?.atMs || 0));
 
   return use;
 }
@@ -3047,7 +3026,7 @@ function exportVaultCSV(vaultId){
   a.remove();
 
   URL.revokeObjectURL(url);
-  toast("Export success", "success");
+  toast(`Export success: ${rows.length} rows`, "success");
 }
 
 document.addEventListener("click", (e)=>{

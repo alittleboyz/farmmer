@@ -1807,7 +1807,6 @@ ${!isHistory ? `
 
         </div>
 
-        <div class="hr"></div>
         <div class="rangeBar" data-rangebar="${vaultId}">
 <div class="rangeLeft">
   <input class="dateRangeInput" data-range="${vaultId}" type="text" readonly>

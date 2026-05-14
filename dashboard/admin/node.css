@@ -2533,3 +2533,39 @@ html.forceDesktop .desktopModeBtn .dmState{
   background:transparent !important;
   color: var(--scroll) !important;
 }
+.tblWrap{
+  position:relative;
+}
+
+/* kiri + kanan overlay */
+.tblWrap::before,
+.tblWrap::after{
+  content:"";
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:30px;
+  z-index:4;
+  pointer-events:none;
+  transition: box-shadow .3s;
+}
+
+/* kiri */
+.tblWrap::before{
+  left:0;
+}
+
+/* kanan */
+.tblWrap::after{
+  right:0;
+}
+
+/* bila boleh scroll kiri */
+.tblWrap.ping-left::before{
+  box-shadow: inset 10px 0 8px -8px rgba(253,253,253,.12);
+}
+
+/* bila boleh scroll kanan */
+.tblWrap.ping-right::after{
+  box-shadow: inset -10px 0 8px -8px rgba(253,253,253,.12);
+}

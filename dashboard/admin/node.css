@@ -2083,13 +2083,15 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   top:110%;
   left:0;
   right:0;
-  background:#141c2b;
-  border:1px solid rgba(255,255,255,.1);
+  background:var(--panelBg);
   border-radius:8px;
   display:none;
   overflow:hidden;
   z-index:1000;
   transition: opacity .14s ease, transform .14s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .35);
+  padding:4px;
+  transition: all 0.3s;
 }
 
 .customSelect.open .cs-options{
@@ -2097,21 +2099,22 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
 }
 
 .cs-options div{
-  padding:8px 10px;
+  padding:5px 12px;
   transition:.15s;
-  background:var(--inputBg);
+  background:transparent;
   color:var(--colorInput);
-  border-bottom: 1px solid var(--borderBottom);
+  border-radius:4px;
+  transition: all 0.3s;
 }
 
 .cs-options div:hover{
   background: var(--bgDropdownhover);
-  color:#3c89e8;
 }
 
 .cs-options div.active{
-  background:var(--btn);
+  background:var(--bgDropdown);
   color:#fff;
+  font-weight:600;
 }
 /* ✅ Only yang ada data-drop="up" buka ke atas */
 .customSelect[data-drop="up"]{
@@ -2119,7 +2122,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
 }
 .customSelect[data-drop="up"] .cs-options{
   top: auto !important;
-  bottom: calc(100% + 6px) !important;
+  bottom: calc(100% + 3px) !important;
 }
 /* ===== PAGER MOBILE: NO WRAP + SWIPE HORIZONTAL ===== */
 @media (max-width: 560px){

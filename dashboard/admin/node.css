@@ -1848,7 +1848,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
 /* ===== TABLE PAGER ===== */
 .tblPager{
   display:flex;
-  justify-content:space-between;
+  justify-content:flex-end;
   align-items:center;
   margin-top:10px;
   background:transparent;
@@ -1858,7 +1858,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
 }
 #historyVaultPager{
   display:flex;
-  justify-content:space-between;
+  justify-content:flex-end;
   align-items:center;
   margin-top:12px;
   background:transparent;
@@ -1925,9 +1925,33 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
     flex: 0 0 auto;
   }
 }
+/* ===== FIX ALL PAGER RAPAT KANAN ===== */
+.tblPager,
+#openVaultPager,
+#historyVaultPager,
+#txTabPager{
+  justify-content:flex-end !important;
+  align-items:center !important;
+  gap:10px !important;
+}
+
+.tblPagerLeft,
+.tblPagerRight,
+#openVaultPager .tblPagerLeft,
+#openVaultPager .tblPagerRight,
+#historyVaultPager .tblPagerLeft,
+#historyVaultPager .tblPagerRight,
+#txTabPager .tblPagerLeft,
+#txTabPager .tblPagerRight{
+  flex:0 0 auto !important;
+}
+
+.tblPagerRight{
+  margin-left:8px !important;
+}
 #openVaultPager{
   display:flex;
-  justify-content:space-between;
+  justify-content:flex-end;
   align-items:center;
   margin-top:5px !important;
   background: transparent;
@@ -2563,10 +2587,6 @@ html.forceDesktop .desktopModeBtn .dmState{
   box-shadow: inset -10px 0 8px -8px rgba(253,253,253,.12);
 }
 
-/* table dalam dia */
-.tblShell .tblWrap{
-  border-radius:12px;
-}
 .tblShell .tblWrap{
   border-radius:12px;
   overflow:auto;

@@ -854,7 +854,8 @@ if(!pageRows.length){
   tbody.innerHTML = rowsHtml + totalRowHtml;
 }
 
-  renderTransactionPager(total, totalPages);
+renderTransactionPager(total, totalPages);
+initTableShadow(document.getElementById("viewTransaction"));
 }
 function renderTransactionPager(total, totalPages){
   const pager = document.getElementById("txTabPager");
@@ -2146,14 +2147,6 @@ function updateTablePing(shell){
   shell.classList.toggle("ping-right", max > 1 && wrap.scrollLeft < max - 1);
 }
 
-function updateTablePing(wrap){
-  if(!wrap) return;
-
-  const max = wrap.scrollWidth - wrap.clientWidth;
-
-  wrap.classList.toggle("ping-left", wrap.scrollLeft > 1);
-  wrap.classList.toggle("ping-right", max > 1 && wrap.scrollLeft < max - 1);
-}
 function renderVaultList(targetId, data, bucket){
   const el = $(targetId);
   let entries = Object.entries(data || {});

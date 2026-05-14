@@ -1890,7 +1890,9 @@ ${(v.note || v.createdBy) ? `<div class="hr"></div>` : ``}
         ? `
           ${
             (me.isAdmin || isOwner)
-              ? `<button class="btn danger" data-act="vaultDel" data-id="${vaultId}" data-b="open">Delete Vault</button>`
+              ? `
+  <button class="btn ghost" data-act="vaultExport" data-id="${vaultId}" data-b="open">Export</button>
+  <button class="btn danger" data-act="vaultDel" data-id="${vaultId}" data-b="open">Delete Vault</button>`
               : ``
           }
         `
@@ -1902,7 +1904,9 @@ ${(v.note || v.createdBy) ? `<div class="hr"></div>` : ``}
               (v?.closedByUid && v.closedByUid === me.uid);
 
             return isOwnerUnclose
-              ? `<button class="btn ghost" data-act="vaultUnclose" data-id="${vaultId}">Unclosing</button>`
+              ? `
+  <button class="btn ghost" data-act="vaultExport" data-id="${vaultId}" data-b="history">Export</button>
+  <button class="btn ghost" data-act="vaultUnclose" data-id="${vaultId}">Unclosing</button>`
               : ``;
           })()}
           ${me.isAdmin ? `<button class="btn danger" data-act="vaultDel" data-id="${vaultId}" data-b="history">Delete Vault</button>` : ``}
@@ -2933,6 +2937,126 @@ tbody.innerHTML = pageRows
   .join("");
   updateVaultTableTotals(vaultId, pageRows);
 }
+function csvCell(v){
+  const s = String(v ?? "");
+  return `"${s.replace(/"/g, '""')}"`;
+}
+
+function getVaultRowsForExport(vaultId){
+  const cache = vaultTxCache[vaultId];
+  if(!cache) return [];
+
+  let use = [...cache.rows];
+
+  const f = vaultFilters[vaultId];
+  if(f && f !== "showAll"){
+    use = use.filter(([_, t])=>{
+      const ms = Number(t?.atMs || 0);
+      return ms >= f.startMs && ms <= f.endMs;
+    });
+  }
+
+  const tf = vaultTypeFilters[vaultId] || "all";
+  if(tf !== "all"){
+    use = use.filter(([_, t])=>{
+      if(tf === "cash_in") return t.kind === "cash" && t.direction === "in";
+      if(tf === "cash_out") return t.kind === "cash" && t.direction === "out";
+      return t.kind === tf;
+    });
+  }
+
+  const q = String(vaultTxSearchFilters[vaultId] || "").trim().toLowerCase();
+  if(q){
+    use = use.filter(([_, t])=>{
+      const hay = `${buildTxDesc(t)} ${t.note || ""} ${t.kind || ""} ${t.direction || ""} ${t.category || ""}`.toLowerCase();
+      return hay.includes(q);
+    });
+  }
+
+  return use;
+}
+
+function exportVaultCSV(vaultId){
+  const rows = getVaultRowsForExport(vaultId);
+
+  if(!rows.length){
+    toast("No data to export", "error");
+    return;
+  }
+
+  const header = [
+    "Type",
+    "Transaction",
+    "Quantity",
+    "Price Quantity",
+    "Total Amount",
+    "Date & Time",
+    "Note",
+    "By"
+  ];
+
+  const body = rows.map(([txId, t])=>{
+    let type = "TX";
+    if(t.kind === "cash") type = t.direction === "in" ? "CASH-IN" : "CASH-OUT";
+    if(t.kind === "buy") type = "BUY";
+    if(t.kind === "sell") type = "SELL";
+    if(t.kind === "missing") type = "MISSING";
+
+    let qty = "";
+    let unitPrice = "";
+    let amount = Number(t.total || t.amount || 0);
+
+    if(t.kind === "buy"){
+      qty = Number(t.qty || 0);
+      unitPrice = fmt(t.price || 0);
+    }else if(t.kind === "missing"){
+      qty = Number(t.qty || 0);
+      unitPrice = fmt(t.price || 0);
+      amount = -Math.abs(amount);
+    }else if(t.kind === "sell"){
+      qty = Number(t.ekor || 0);
+      unitPrice = fmt(t.priceKg || 0);
+    }else if(t.kind === "cash"){
+      amount = t.direction === "out" ? -Math.abs(amount) : Math.abs(amount);
+    }
+
+    return [
+      type,
+      buildTxDesc(t),
+      qty,
+      unitPrice,
+      fmt(amount),
+      fmtDT(t.atMs),
+      t.note || "",
+      t.byUser || ""
+    ];
+  });
+
+  const csv = [header, ...body]
+    .map(r => r.map(csvCell).join(","))
+    .join("\n");
+
+  const blob = new Blob(["\ufeff" + csv], { type:"text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `vault-${vaultId}-${Date.now()}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  URL.revokeObjectURL(url);
+  toast("Export success", "success");
+}
+
+document.addEventListener("click", (e)=>{
+  const btn = e.target.closest('[data-act="vaultExport"]');
+  if(!btn) return;
+
+  e.preventDefault();
+  exportVaultCSV(btn.dataset.id);
+});
 function bindTxSearchClear(vaultId){
   const input = document.querySelector(`input[data-txsearch="${vaultId}"]`);
   const btn   = document.querySelector(`button[data-txclear="${vaultId}"]`);

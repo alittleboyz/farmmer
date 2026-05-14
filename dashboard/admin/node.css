@@ -591,7 +591,6 @@ body.mobileSearchOpen #vaultSearch{
 @media (prefers-reduced-motion: reduce){
   .toast{ transition:none; }
 }
-    .hr{height:1px;background:var(--borderTable); margin:12px 0}
     .kpiRow{display:flex; gap:10px; flex-wrap:wrap;justify-content: center;}
     .kpi{
       border:1px solid var(--borderTable);
@@ -813,7 +812,6 @@ input[type="number"]{
   display:grid;
   grid-template-columns: 1fr 1fr;
   gap:12px;
-  margin:12px 0 10px;
   font-size:14px;
 }
 @media (max-width: 900px){

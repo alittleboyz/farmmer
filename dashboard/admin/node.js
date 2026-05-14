@@ -684,7 +684,8 @@ function renderTransactionTabShell(){
           </div>
         </div>
       </div>
-
+      
+    <div class="tblShell">
       <div class="tblWrap txTableWrap">
         <table>
           <thead>
@@ -701,7 +702,8 @@ function renderTransactionTabShell(){
           </tbody>
         </table>
       </div>
-
+      </div>
+    
       <div id="txTabPager" class="tblPager" style="margin-top:12px;"></div>
     </div>
   `;

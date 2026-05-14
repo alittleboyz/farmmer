@@ -2108,6 +2108,28 @@ function openWalletLatestNote(){
   }
   openViewNote(note);
 }
+function initTableShadow(root = document){
+  root.querySelectorAll(".tblShell").forEach(shell=>{
+    if(shell.dataset.shadowBound === "1") return;
+    shell.dataset.shadowBound = "1";
+
+    const wrap = shell.querySelector(".tblWrap");
+    if(!wrap) return;
+
+    function updatePing(){
+      const max = wrap.scrollWidth - wrap.clientWidth;
+
+      shell.classList.toggle("ping-left", wrap.scrollLeft > 1);
+      shell.classList.toggle("ping-right", wrap.scrollLeft < max - 1);
+    }
+
+    wrap.addEventListener("scroll", updatePing, { passive:true });
+    window.addEventListener("resize", updatePing);
+
+    requestAnimationFrame(updatePing);
+    setTimeout(updatePing, 300);
+  });
+}
 function renderVaultList(targetId, data, bucket){
   const el = $(targetId);
   let entries = Object.entries(data || {});
@@ -2179,7 +2201,7 @@ function renderVaultList(targetId, data, bucket){
   for(const id of renderedIds){
     initVaultDateRangeUI(id);
   }
-
+  initTableShadow(el);
   for(const id of renderedIds){
     const txPath = `vaults/${bucket}/${id}/transactions`;
 
@@ -2950,23 +2972,7 @@ tbody.innerHTML = pageRows
   .join("");
   updateVaultTableTotals(vaultId, pageRows);
 }
-/* ✅ LETAK SINI PALING BAWAH */
-document.querySelectorAll(".tblShell").forEach(shell=>{
-  const wrap = shell.querySelector(".tblWrap");
-  if(!wrap) return;
 
-  function updatePing(){
-    const max = wrap.scrollWidth - wrap.clientWidth;
-
-    shell.classList.toggle("ping-left", wrap.scrollLeft > 0);
-    shell.classList.toggle("ping-right", wrap.scrollLeft < max - 1);
-  }
-
-  wrap.addEventListener("scroll", updatePing, { passive:true });
-  window.addEventListener("resize", updatePing);
-
-  updatePing();
-});
 function getVaultExportHeader(vaultId){
   const card = document.querySelector(`.card[data-vid="${vaultId}"]`);
 

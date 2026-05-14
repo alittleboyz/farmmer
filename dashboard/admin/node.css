@@ -2434,7 +2434,10 @@ html.forceDesktop .desktopModeBtn .dmState{
   background: #79a5f1;
   color: #008000;
 }
-
+.txTotalRow:hover td,
+.tblWrap table tfoot .vaultTotalRow:hover td{
+  background:#79a5f1 !important;
+}
 .txTotalRow td:nth-child(3){
   color: #00c853;
 }

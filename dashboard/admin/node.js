@@ -524,7 +524,6 @@ if(sw && me.isAdmin && sw.dataset.bound !== "1"){
 
     await runTransaction(txSettingRef(kind), () => allow);
   });
-}
   }
 }
 async function getAtMsFromControl(kind, inputId){

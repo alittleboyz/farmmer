@@ -2109,26 +2109,34 @@ function openWalletLatestNote(){
   openViewNote(note);
 }
 function initTableShadow(root = document){
-  root.querySelectorAll(".tblShell").forEach(shell=>{
-    if(shell.dataset.shadowBound === "1") return;
-    shell.dataset.shadowBound = "1";
-
-    const wrap = shell.querySelector(".tblWrap");
-    if(!wrap) return;
-
-    function updatePing(){
-      const max = wrap.scrollWidth - wrap.clientWidth;
-
-      shell.classList.toggle("ping-left", wrap.scrollLeft > 1);
-      shell.classList.toggle("ping-right", wrap.scrollLeft < max - 1);
+  root.querySelectorAll(".tblWrap").forEach(wrap=>{
+    if(wrap.dataset.shadowBound === "1"){
+      updateTablePing(wrap);
+      return;
     }
 
-    wrap.addEventListener("scroll", updatePing, { passive:true });
-    window.addEventListener("resize", updatePing);
+    wrap.dataset.shadowBound = "1";
 
-    requestAnimationFrame(updatePing);
-    setTimeout(updatePing, 300);
+    wrap.addEventListener("scroll", ()=>{
+      updateTablePing(wrap);
+    }, { passive:true });
+
+    window.addEventListener("resize", ()=>{
+      updateTablePing(wrap);
+    });
+
+    requestAnimationFrame(()=> updateTablePing(wrap));
+    setTimeout(()=> updateTablePing(wrap), 300);
   });
+}
+
+function updateTablePing(wrap){
+  if(!wrap) return;
+
+  const max = wrap.scrollWidth - wrap.clientWidth;
+
+  wrap.classList.toggle("ping-left", wrap.scrollLeft > 1);
+  wrap.classList.toggle("ping-right", max > 1 && wrap.scrollLeft < max - 1);
 }
 function renderVaultList(targetId, data, bucket){
   const el = $(targetId);

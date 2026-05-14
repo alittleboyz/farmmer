@@ -15,6 +15,7 @@
   --inputBg:#141414;
   --cardHeadBg: #1f1f1f;
   --tableHeadBg: #1d1d1d;
+  --trhover:rgba(255, 255, 255, .03);
 
   --stroke: rgba(255,255,255,.12);
   --stroke2: #303030;
@@ -57,6 +58,7 @@ html.theme-light{
   --cardHeadBg: #f7f8fc;
   --tableHeadBg: #ffffff;
   --panelBg: #ffffff;
+  --trhover:rgba(0, 0, 0, .03);
 
   --stroke: rgba(0,0,0,.12);
   --stroke2: rgba(0,0,0,.12);
@@ -426,7 +428,7 @@ body.mobileSearchOpen #vaultSearch{
       font-size:14px;
       text-align: center;
     }
-    tr:hover td{background:var(--bgDropdownhover)}
+    tr:hover td{background:var(--trhover)}
     .num{font-variant-numeric: tabular-nums}
     .tag{
       display:inline-flex; align-items:center; gap:6px;

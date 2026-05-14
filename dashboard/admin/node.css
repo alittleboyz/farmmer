@@ -2092,6 +2092,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   box-shadow: 0 8px 20px rgba(0, 0, 0, .35);
   padding:4px;
   transition: all 0.3s;
+  font-size:14px;
 }
 
 .customSelect.open .cs-options{

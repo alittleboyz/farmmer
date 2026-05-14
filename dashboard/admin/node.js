@@ -2964,6 +2964,7 @@ if(total === 0){
   renderPagerButtons(vaultId, 0, 1);
   tbody.innerHTML = `<tr><td colspan="7" class="hint">No transaction in this date range.</td></tr>`;
   updateVaultTableTotals(vaultId, []);
+  initTableShadow();
   return;
 }
 
@@ -2978,7 +2979,9 @@ renderPagerButtons(vaultId, total, totalPages);
 tbody.innerHTML = pageRows
   .map(([txId,t]) => txRowHTML(vaultId, txId, t, bucket))
   .join("");
-  updateVaultTableTotals(vaultId, pageRows);
+
+updateVaultTableTotals(vaultId, pageRows);
+initTableShadow();
 }
 
 function getVaultExportHeader(vaultId){

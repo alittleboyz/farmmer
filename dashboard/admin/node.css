@@ -2091,7 +2091,6 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   transition: opacity .14s ease, transform .14s ease;
   box-shadow: 0 8px 20px rgba(0, 0, 0, .35);
   padding:4px;
-  transition: all 0.3s;
   font-size:14px;
 }
 
@@ -2168,47 +2167,36 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   position: relative;
   overflow-y: visible !important;
 }
-
-/* bila menu jadi fixed (JS akan tambah class ni) */
-.cs-options.is-fixed{
-  position: fixed !important;
-  top: var(--csTop, 0px) !important;
-  left: var(--csLeft, 0px) !important;
-  width: var(--csW, 120px) !important;
-  bottom: auto !important;
-  right: auto !important;
-  z-index: 9999999 !important;
-}
-
-/* bagi smooth + elak “zoom” feeling */
 .cs-options{
-  transform: translateZ(0);
-  will-change: top,left;
+  will-change: top,left,opacity,transform;
 }
-/* bila JS buat dia fixed/portal */
+
 .cs-options.is-fixed{
   position: fixed !important;
   top: var(--csTop, 0px) !important;
   left: var(--csLeft, 0px) !important;
   width: var(--csW, 120px) !important;
-
-  /* ✅ penting: jangan ikut top:110% dari rule asal */
   right: auto !important;
   bottom: auto !important;
-
   z-index: 9999999 !important;
+  display: block !important;
 
-  /* ✅ start hidden, supaya tak nampak "dari bawah" */
   opacity: 0;
-  transform: translateY(8px);  /* default open-up: akan di-override JS */
-  display: block !important;   /* sebab fixed mode memang paksa show */
+  transform: translateY(-6px);
+  transform-origin: top center;
+  transition: opacity .14s ease, transform .14s ease;
 }
 
-/* bila open, JS akan add class "cs-pop" */
+.customSelect[data-drop="up"] .cs-options.is-fixed{
+  transform: translateY(6px);
+  transform-origin: bottom center;
+}
+
 .cs-options.is-fixed.cs-pop{
   opacity: 1;
   transform: translateY(0);
 }
+
 /* ===== DESKTOP MODE BUTTON (same style as menu item) ===== */
 .desktopModeBtn{
   width:100%;

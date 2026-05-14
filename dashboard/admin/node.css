@@ -1925,30 +1925,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
     flex: 0 0 auto;
   }
 }
-/* ===== FIX ALL PAGER RAPAT KANAN ===== */
-.tblPager,
-#openVaultPager,
-#historyVaultPager,
-#txTabPager{
-  justify-content:flex-end !important;
-  align-items:center !important;
-  gap:10px !important;
-}
 
-.tblPagerLeft,
-.tblPagerRight,
-#openVaultPager .tblPagerLeft,
-#openVaultPager .tblPagerRight,
-#historyVaultPager .tblPagerLeft,
-#historyVaultPager .tblPagerRight,
-#txTabPager .tblPagerLeft,
-#txTabPager .tblPagerRight{
-  flex:0 0 auto !important;
-}
-
-.tblPagerRight{
-  margin-left:8px !important;
-}
 #openVaultPager{
   display:flex;
   justify-content:flex-end;
@@ -2590,4 +2567,72 @@ html.forceDesktop .desktopModeBtn .dmState{
 .tblShell .tblWrap{
   border-radius:12px;
   overflow:auto;
+}
+/* ===== FINAL PAGER FIX ===== */
+
+/* desktop: semua pager rapat kanan */
+@media (min-width: 561px){
+  .tblPager,
+  #openVaultPager,
+  #historyVaultPager,
+  #txTabPager{
+    justify-content:flex-end !important;
+    flex-wrap:nowrap !important;
+    overflow:visible !important;
+  }
+
+  .tblPagerLeft,
+  #openVaultPager .tblPagerLeft,
+  #historyVaultPager .tblPagerLeft,
+  #txTabPager .tblPagerLeft{
+    flex:0 1 auto !important;
+    min-width:0 !important;
+  }
+
+  .tblPagerRight,
+  #openVaultPager .tblPagerRight,
+  #historyVaultPager .tblPagerRight,
+  #txTabPager .tblPagerRight{
+    flex:0 0 auto !important;
+    margin-left:8px !important;
+  }
+}
+
+/* phone: pager boleh swipe kiri kanan */
+@media (max-width: 560px){
+  .tblPager,
+  #openVaultPager,
+  #historyVaultPager,
+  #txTabPager{
+    justify-content:flex-start !important;
+    flex-wrap:nowrap !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    -webkit-overflow-scrolling:touch !important;
+    scrollbar-width:none !important;
+  }
+
+  .tblPager::-webkit-scrollbar,
+  #openVaultPager::-webkit-scrollbar,
+  #historyVaultPager::-webkit-scrollbar,
+  #txTabPager::-webkit-scrollbar{
+    display:none !important;
+  }
+
+  .tblPagerLeft,
+  .tblPagerPages,
+  .tblPagerRight,
+  #openVaultPager .tblPagerLeft,
+  #openVaultPager .tblPagerPages,
+  #openVaultPager .tblPagerRight,
+  #historyVaultPager .tblPagerLeft,
+  #historyVaultPager .tblPagerPages,
+  #historyVaultPager .tblPagerRight,
+  #txTabPager .tblPagerLeft,
+  #txTabPager .tblPagerPages,
+  #txTabPager .tblPagerRight{
+    flex:0 0 auto !important;
+    flex-wrap:nowrap !important;
+    white-space:nowrap !important;
+  }
 }

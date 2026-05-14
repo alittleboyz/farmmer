@@ -481,40 +481,23 @@ function initTxTimeControl({ kind, inputId, toggleId }){
     input._flatpickr.destroy();
   }
 
-flatpickr(input, {
-  enableTime: true,
-  enableSeconds: true,
-  time_24hr: true,
-  dateFormat: "Y-m-d H:i:S",
-  defaultDate: new Date(),
+  flatpickr(input, {
+    enableTime: true,
+    enableSeconds: true,
+    time_24hr: true,
+    dateFormat: "Y-m-d H:i:S",
+    defaultDate: new Date(),
+    allowInput: true,
+    clickOpens: false,
+    disableMobile: true
+  });
 
-  allowInput: true,
-  clickOpens: false,
-  disableMobile: true
-});
+  onValue(txSettingRef(kind), (snap)=>{
+    const allow = snap.exists() ? !!snap.val() : false;
 
-onValue(txSettingRef(kind), (snap)=>{
-  const allow = snap.exists() ? !!snap.val() : false;
-  const canEditTime = allow && me.isAdmin;
-
-  input.disabled = !canEditTime;
-
-  if(input._flatpickr){
-    input._flatpickr.set("clickOpens", canEditTime);
-  }
-
-  if(sw && me.isAdmin){
-    sw.checked = allow;
-    sw.dataset.allow = String(allow);
-  }
-});
-
-if(sw && me.isAdmin && sw.dataset.bound !== "1"){
-  sw.dataset.bound = "1";
-
-  sw.addEventListener("change", async ()=>{
-    const allow = sw.checked;
-    const canEditTime = allow && me.isAdmin;
+    // ✅ admin active = semua user boleh edit
+    // ✅ admin inactive = semua user disable
+    const canEditTime = allow;
 
     input.disabled = !canEditTime;
 
@@ -522,8 +505,34 @@ if(sw && me.isAdmin && sw.dataset.bound !== "1"){
       input._flatpickr.set("clickOpens", canEditTime);
     }
 
-    await runTransaction(txSettingRef(kind), () => allow);
+    // ✅ switch hanya admin nampak
+    if(sw){
+      const wrap = sw.closest(".lockSwitchText") || sw.closest(".lockSwitch");
+
+      if(me.isAdmin){
+        if(wrap) wrap.style.display = "";
+        sw.checked = allow;
+        sw.dataset.allow = String(allow);
+      }else{
+        if(wrap) wrap.style.display = "none";
+      }
+    }
   });
+
+  // ✅ hanya admin boleh control switch
+  if(sw && me.isAdmin && sw.dataset.bound !== "1"){
+    sw.dataset.bound = "1";
+
+    sw.addEventListener("change", async ()=>{
+      const allow = sw.checked;
+      input.disabled = !allow;
+
+      if(input._flatpickr){
+        input._flatpickr.set("clickOpens", allow);
+      }
+
+      await runTransaction(txSettingRef(kind), () => allow);
+    });
   }
 }
 async function getAtMsFromControl(kind, inputId){

@@ -1891,7 +1891,7 @@ ${(v.note || v.createdBy) ? `<div class="hr"></div>` : ``}
           ${
             (me.isAdmin || isOwner)
               ? `
-  <button class="btn ghost" data-act="vaultExport" data-id="${vaultId}" data-b="open">Export</button>
+  <button class="btn ghost" data-act="vaultExport" data-id="${vaultId}" data-b="open">Export as</button>
   <button class="btn danger" data-act="vaultDel" data-id="${vaultId}" data-b="open">Delete Vault</button>`
               : ``
           }
@@ -1905,7 +1905,7 @@ ${(v.note || v.createdBy) ? `<div class="hr"></div>` : ``}
 
             return isOwnerUnclose
               ? `
-  <button class="btn ghost" data-act="vaultExport" data-id="${vaultId}" data-b="history">Export</button>
+  <button class="btn ghost" data-act="vaultExport" data-id="${vaultId}" data-b="history">Export as</button>
   <button class="btn ghost" data-act="vaultUnclose" data-id="${vaultId}">Unclosing</button>`
               : ``;
           })()}
@@ -2937,22 +2937,26 @@ tbody.innerHTML = pageRows
   .join("");
   updateVaultTableTotals(vaultId, pageRows);
 }
-function csvCell(v){
-  const s = String(v ?? "");
-  return `"${s.replace(/"/g, '""')}"`;
+function getVaultExportHeader(vaultId){
+  const card = document.querySelector(`.card[data-vid="${vaultId}"]`);
+
+  const header = card
+    ? Array.from(card.querySelectorAll(".tblWrap table thead th"))
+        .map(th => th.textContent.trim())
+        .filter(text => text && text.toLowerCase() !== "actions")
+    : ["Type", "Transaction", "Quantity", "Price Quantity", "Total Amount", "Date & Time"];
+
+  header.push("Note", "By");
+  return header;
 }
 
 function getVaultRowsForExport(vaultId){
   const cache = vaultTxCache[vaultId];
   if(!cache) return [];
 
-  // ✅ ambil SEMUA data dalam vault cache, bukan page yang tampil
-  let use = [...(cache.rows || [])];
-
-  // ✅ sort newest first
-  use.sort((a,b)=> Number(b[1]?.atMs || 0) - Number(a[1]?.atMs || 0));
-
-  return use;
+  return [...(cache.rows || [])].sort((a,b)=>
+    Number(b[1]?.atMs || 0) - Number(a[1]?.atMs || 0)
+  );
 }
 
 function exportVaultCSV(vaultId){
@@ -2963,16 +2967,7 @@ function exportVaultCSV(vaultId){
     return;
   }
 
-  const header = [
-    "Type",
-    "Transaction",
-    "Quantity",
-    "Price Quantity",
-    "Total Amount",
-    "Date & Time",
-    "Note",
-    "By"
-  ];
+  const header = getVaultExportHeader(vaultId);
 
   const body = rows.map(([txId, t])=>{
     let type = "TX";
@@ -2987,14 +2982,14 @@ function exportVaultCSV(vaultId){
 
     if(t.kind === "buy"){
       qty = Number(t.qty || 0);
-      unitPrice = fmt(t.price || 0);
+      unitPrice = Number(t.price || 0);
     }else if(t.kind === "missing"){
       qty = Number(t.qty || 0);
-      unitPrice = fmt(t.price || 0);
+      unitPrice = Number(t.price || 0);
       amount = -Math.abs(amount);
     }else if(t.kind === "sell"){
       qty = Number(t.ekor || 0);
-      unitPrice = fmt(t.priceKg || 0);
+      unitPrice = Number(t.priceKg || 0);
     }else if(t.kind === "cash"){
       amount = t.direction === "out" ? -Math.abs(amount) : Math.abs(amount);
     }
@@ -3004,28 +2999,33 @@ function exportVaultCSV(vaultId){
       buildTxDesc(t),
       qty,
       unitPrice,
-      fmt(amount),
+      amount,
       fmtDT(t.atMs),
       t.note || "",
       t.byUser || ""
     ];
   });
 
-  const csv = [header, ...body]
-    .map(r => r.map(csvCell).join(","))
-    .join("\n");
+  const data = [header, ...body];
 
-  const blob = new Blob(["\ufeff" + csv], { type:"text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
+  const ws = XLSX.utils.aoa_to_sheet(data);
 
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `vault-${vaultId}-${Date.now()}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
+  ws["!cols"] = data[0].map((_, colIndex)=>{
+    let maxLen = 10;
 
-  URL.revokeObjectURL(url);
+    data.forEach(row=>{
+      const len = String(row[colIndex] ?? "").length;
+      if(len > maxLen) maxLen = len;
+    });
+
+    return { wch: maxLen + 4 };
+  });
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Vault");
+
+  XLSX.writeFile(wb, `vault-${vaultId}-${Date.now()}.xlsx`);
+
   toast(`Export success: ${rows.length} rows`, "success");
 }
 

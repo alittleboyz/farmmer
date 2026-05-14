@@ -2280,8 +2280,15 @@ function ensurePagerBar(vaultId){
     </div>
   `;
 
+const shell = tblWrap.closest(".tblShell");
+
+if(shell){
+  shell.insertAdjacentElement("afterend", bar);
+}else{
   tblWrap.insertAdjacentElement("afterend", bar);
-  return bar;
+}
+
+return bar;
 }
 function buildPageItems(current, total){
   // total kecil: tunjuk semua

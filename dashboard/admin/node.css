@@ -2049,6 +2049,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
   cursor:pointer;
   user-select:none;
   color:var(--colorInput);
+  transition: all 0.3s;
 }
 
 .cs-selected{

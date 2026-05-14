@@ -2777,7 +2777,7 @@ function renderPagerButtons(vaultId, total, totalPages){
   if(!bar) return;
 
   const p = getPaging(vaultId);
-
+  bar.dataset.totalPages = String(totalPages);
   // info text
   const info = bar.querySelector(`[data-info="${vaultId}"]`);
   if(info){
@@ -2801,17 +2801,18 @@ function renderPagerButtons(vaultId, total, totalPages){
     });
   }
 
-  if(btnNext && btnNext.dataset._bound !== "1"){
-    btnNext.dataset._bound = "1";
-    btnNext.addEventListener("click", ()=>{
-      const pp = getPaging(vaultId);
-      const tp = Math.max(1, Math.ceil((total||0) / pp.per));
-      if(pp.page < tp){
-        pp.page += 1;
-        rerenderVaultTbody(vaultId);
-      }
-    });
-  }
+if(btnNext && btnNext.dataset._bound !== "1"){
+  btnNext.dataset._bound = "1";
+  btnNext.addEventListener("click", ()=>{
+    const pp = getPaging(vaultId);
+    const tp = Number(bar.dataset.totalPages || 1);
+
+    if(pp.page < tp){
+      pp.page += 1;
+      rerenderVaultTbody(vaultId);
+    }
+  });
+}
 
   // disable state
   if(btnPrev) btnPrev.disabled = (p.page <= 1);

@@ -2111,25 +2111,38 @@ function openWalletLatestNote(){
   openViewNote(note);
 }
 function initTableShadow(root = document){
-  root.querySelectorAll(".tblWrap").forEach(wrap=>{
-    if(wrap.dataset.shadowBound === "1"){
-      updateTablePing(wrap);
+  root.querySelectorAll(".tblShell").forEach(shell=>{
+    if(shell.dataset.shadowBound === "1"){
+      updateTablePing(shell);
       return;
     }
 
-    wrap.dataset.shadowBound = "1";
+    shell.dataset.shadowBound = "1";
+
+    const wrap = shell.querySelector(".tblWrap");
+    if(!wrap) return;
 
     wrap.addEventListener("scroll", ()=>{
-      updateTablePing(wrap);
+      updateTablePing(shell);
     }, { passive:true });
 
     window.addEventListener("resize", ()=>{
-      updateTablePing(wrap);
+      updateTablePing(shell);
     });
 
-    requestAnimationFrame(()=> updateTablePing(wrap));
-    setTimeout(()=> updateTablePing(wrap), 300);
+    requestAnimationFrame(()=> updateTablePing(shell));
+    setTimeout(()=> updateTablePing(shell), 300);
   });
+}
+
+function updateTablePing(shell){
+  const wrap = shell.querySelector(".tblWrap");
+  if(!wrap) return;
+
+  const max = wrap.scrollWidth - wrap.clientWidth;
+
+  shell.classList.toggle("ping-left", wrap.scrollLeft > 1);
+  shell.classList.toggle("ping-right", max > 1 && wrap.scrollLeft < max - 1);
 }
 
 function updateTablePing(wrap){

@@ -2948,6 +2948,24 @@ tbody.innerHTML = pageRows
   .join("");
   updateVaultTableTotals(vaultId, pageRows);
 }
+/* ✅ LETAK SINI PALING BAWAH */
+document.querySelectorAll(".tblWrap").forEach(wrap=>{
+
+  function updatePing(){
+    const max = wrap.scrollWidth - wrap.clientWidth;
+
+    wrap.classList.toggle("ping-left", wrap.scrollLeft > 0);
+
+    wrap.classList.toggle(
+      "ping-right",
+      wrap.scrollLeft < max - 1
+    );
+  }
+
+  wrap.addEventListener("scroll", updatePing, { passive:true });
+
+  updatePing();
+});
 function getVaultExportHeader(vaultId){
   const card = document.querySelector(`.card[data-vid="${vaultId}"]`);
 

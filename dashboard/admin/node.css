@@ -2248,7 +2248,7 @@ html.forceDesktop .desktopModeBtn .dmState{
   padding: 12px 10px;
   font-weight: 600;
   color: #008000;
-  background: var(--inputBg);
+  background: #79a5f1;
 }
 
 .vaultTotalLabel {

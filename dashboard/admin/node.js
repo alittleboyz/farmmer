@@ -489,30 +489,42 @@ flatpickr(input, {
   defaultDate: new Date(),
 
   allowInput: true,
-  clickOpens: true
+  clickOpens: false,
+  disableMobile: true
 });
 
-if(sw && !me.isAdmin){
-  sw.closest(".lockSwitchText")?.style.setProperty("display", "none", "important");
-}
+onValue(txSettingRef(kind), (snap)=>{
+  const allow = snap.exists() ? !!snap.val() : false;
+  const canEditTime = allow && me.isAdmin;
 
-  onValue(txSettingRef(kind), (snap)=>{
-    const allow = snap.exists() ? !!snap.val() : false;
+  input.disabled = !canEditTime;
 
-    input.disabled = !allow || !me.isAdmin;
+  if(input._flatpickr){
+    input._flatpickr.set("clickOpens", canEditTime);
+  }
 
-    if(sw && me.isAdmin){
-      sw.checked = allow;
-      sw.dataset.allow = String(allow);
+  if(sw && me.isAdmin){
+    sw.checked = allow;
+    sw.dataset.allow = String(allow);
+  }
+});
+
+if(sw && me.isAdmin && sw.dataset.bound !== "1"){
+  sw.dataset.bound = "1";
+
+  sw.addEventListener("change", async ()=>{
+    const allow = sw.checked;
+    const canEditTime = allow && me.isAdmin;
+
+    input.disabled = !canEditTime;
+
+    if(input._flatpickr){
+      input._flatpickr.set("clickOpens", canEditTime);
     }
+
+    await runTransaction(txSettingRef(kind), () => allow);
   });
-
-  if(sw && me.isAdmin && sw.dataset.bound !== "1"){
-    sw.dataset.bound = "1";
-
-sw.addEventListener("change", async ()=>{
-  await runTransaction(txSettingRef(kind), () => sw.checked);
-});
+}
   }
 }
 async function getAtMsFromControl(kind, inputId){

@@ -1845,6 +1845,7 @@ ${!isHistory ? `
   </div>
 </div>
 
+<div class="tblShell">
 <div class="tblWrap">
   <table>
     <thead>
@@ -1873,6 +1874,7 @@ ${!isHistory ? `
   </tr>
 </tfoot>
   </table>
+</div>
 </div>
 
 ${(v.note || v.createdBy) ? `<div class="hr"></div>` : ``}
@@ -2949,20 +2951,19 @@ tbody.innerHTML = pageRows
   updateVaultTableTotals(vaultId, pageRows);
 }
 /* ✅ LETAK SINI PALING BAWAH */
-document.querySelectorAll(".tblWrap").forEach(wrap=>{
+document.querySelectorAll(".tblShell").forEach(shell=>{
+  const wrap = shell.querySelector(".tblWrap");
+  if(!wrap) return;
 
   function updatePing(){
     const max = wrap.scrollWidth - wrap.clientWidth;
 
-    wrap.classList.toggle("ping-left", wrap.scrollLeft > 0);
-
-    wrap.classList.toggle(
-      "ping-right",
-      wrap.scrollLeft < max - 1
-    );
+    shell.classList.toggle("ping-left", wrap.scrollLeft > 0);
+    shell.classList.toggle("ping-right", wrap.scrollLeft < max - 1);
   }
 
   wrap.addEventListener("scroll", updatePing, { passive:true });
+  window.addEventListener("resize", updatePing);
 
   updatePing();
 });

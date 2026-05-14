@@ -492,14 +492,14 @@ flatpickr(input, {
   clickOpens: true
 });
 
-  if(sw && !me.isAdmin){
-    sw.closest(".lockSwitch")?.style.setProperty("display", "none", "important");
-  }
+if(sw && !me.isAdmin){
+  sw.closest(".lockSwitchText")?.style.setProperty("display", "none", "important");
+}
 
   onValue(txSettingRef(kind), (snap)=>{
     const allow = snap.exists() ? !!snap.val() : false;
 
-    input.disabled = !allow;
+    input.disabled = !allow || !me.isAdmin;
 
     if(sw && me.isAdmin){
       sw.checked = allow;

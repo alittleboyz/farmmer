@@ -2751,3 +2751,37 @@ html.forceDesktop .desktopModeBtn .dmState{
     min-width:0;
   }
 }
+.msBox{
+  position:relative;
+  padding-right:34px !important;
+}
+
+.msBox.isEmpty::before{
+  content:"Filter Type";
+  color:rgba(255,255,255,.35);
+  font-size:14px;
+}
+
+.msIconBtn{
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  border:0;
+  background:transparent;
+  color:rgba(255,255,255,.35);
+  padding:0;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+}
+
+.msIconBtn svg{
+  width:14px;
+  height:14px;
+  display:block;
+}
+
+.msBox.hasChip .msIconBtn{
+  color:#3c89e8;
+}

@@ -2760,50 +2760,65 @@ html.forceDesktop .desktopModeBtn .dmState{
   content:"Filter Type";
   color:rgba(255,255,255,.35);
   font-size:14px;
+  padding-left:6px;
 }
-
-.msIconBtn{
+.msArrow{
   position:absolute;
-  right:8px;
+  right:11px;
   top:50%;
   transform:translateY(-50%);
-  border:0;
-  background:transparent;
   color:rgba(255,255,255,.35);
-  padding:0;
-  display:grid;
-  place-items:center;
-  cursor:pointer;
+  pointer-events:none;
+  transition:.15s;
 }
 
-.msIconBtn svg{
+.msArrow svg{
   width:14px;
   height:14px;
   display:block;
 }
 
-.msBox.hasChip .msIconBtn{
+.msClearBtn{
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  width:20px;
+  height:20px;
+  border:0;
+  background:transparent;
   color:#3c89e8;
-}
-/* default: bila ada chip, X hide dulu */
-.msBox.hasChip .msIconBtn{
+  padding:0;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+
   opacity:0;
   visibility:hidden;
   pointer-events:none;
   transition:.15s;
 }
 
-/* hover input baru X keluar */
-.msType:hover .msBox.hasChip .msIconBtn,
-.msBox.hasChip:hover .msIconBtn{
+.msClearBtn svg{
+  width:14px;
+  height:14px;
+  display:block;
+}
+
+/* ada chip: arrow masih nampak */
+.msBox.hasChip .msArrow{
+  opacity:1;
+}
+
+/* hover baru X muncul */
+.msType:hover .msBox.hasChip .msClearBtn{
   opacity:1;
   visibility:visible;
   pointer-events:auto;
 }
 
-/* kalau input kosong, arrow tetap nampak */
-.msBox.isEmpty .msIconBtn{
-  opacity:1;
-  visibility:visible;
-  pointer-events:auto;
+/* hover masa ada chip: arrow hide */
+.msType:hover .msBox.hasChip .msArrow{
+  opacity:0;
 }
+

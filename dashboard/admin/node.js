@@ -2786,45 +2786,38 @@ function initChipTypeFilter(vaultId){
   const box = root.querySelector(".msBox");
   const menu = root.querySelector(".msMenu");
 
-if(!Array.isArray(vaultTypeFilters[vaultId])){
-  vaultTypeFilters[vaultId] = ["all"]; // default chip All Type
-}
+  if(!Array.isArray(vaultTypeFilters[vaultId])){
+    vaultTypeFilters[vaultId] = ["all"]; // default ada All Type chip
+  }
 
   function render(){
     box.innerHTML = "";
 
-    const selected = vaultTypeFilters[vaultId];
+    const selected = vaultTypeFilters[vaultId] || [];
 
-    if(!selected.length){
+    selected.forEach(val=>{
+      const label = menu.querySelector(`[data-value="${val}"]`)?.textContent || val;
+
       const chip = document.createElement("span");
       chip.className = "msChip";
-      chip.innerHTML = `All Type <b>×</b>`;
+      chip.innerHTML = `${label} <b>×</b>`;
+
+      chip.querySelector("b").onclick = (e)=>{
+        e.stopPropagation();
+
+        vaultTypeFilters[vaultId] = vaultTypeFilters[vaultId].filter(x => x !== val);
+
+        resetPaging(vaultId);
+        render();
+        rerenderVaultTbody(vaultId);
+      };
+
       box.appendChild(chip);
-    }else{
-      selected.forEach(val=>{
-        const label = menu.querySelector(`[data-value="${val}"]`)?.textContent || val;
-
-        const chip = document.createElement("span");
-        chip.className = "msChip";
-        chip.innerHTML = `${label} <b>×</b>`;
-
-        chip.querySelector("b").onclick = (e)=>{
-          e.stopPropagation();
-          vaultTypeFilters[vaultId] = vaultTypeFilters[vaultId].filter(x => x !== val);
-          resetPaging(vaultId);
-          render();
-          rerenderVaultTbody(vaultId);
-        };
-
-        box.appendChild(chip);
-      });
-    }
+    });
 
     menu.querySelectorAll("[data-value]").forEach(opt=>{
       const val = opt.dataset.value;
-      opt.classList.toggle("active",
-        val === "all" ? selected.length === 0 : selected.includes(val)
-      );
+      opt.classList.toggle("active", selected.includes(val));
     });
   }
 
@@ -2836,25 +2829,26 @@ if(!Array.isArray(vaultTypeFilters[vaultId])){
     root.classList.toggle("open");
   };
 
-menu.onclick = (e)=>{
-  const opt = e.target.closest("[data-value]");
-  if(!opt) return;
+  menu.onclick = (e)=>{
+    const opt = e.target.closest("[data-value]");
+    if(!opt) return;
 
-  const val = opt.dataset.value;
-  let arr = vaultTypeFilters[vaultId] || [];
+    const val = opt.dataset.value;
+    let arr = vaultTypeFilters[vaultId] || [];
 
-  if(arr.includes(val)){
-    arr = arr.filter(x => x !== val);
-  }else{
-    arr.push(val); // tambah chip, jangan buang All Type
-  }
+    if(arr.includes(val)){
+      arr = arr.filter(x => x !== val);
+    }else{
+      arr.push(val); // tambah chip, All Type tak hilang
+    }
 
-  vaultTypeFilters[vaultId] = arr;
+    vaultTypeFilters[vaultId] = arr;
 
-  resetPaging(vaultId);
-  render();
-  rerenderVaultTbody(vaultId);
-};
+    resetPaging(vaultId);
+    render();
+    rerenderVaultTbody(vaultId);
+  };
+
   document.addEventListener("click", ()=>{
     root.classList.remove("open");
   });
@@ -3033,12 +3027,16 @@ const tf = Array.isArray(vaultTypeFilters[vaultId])
   ? vaultTypeFilters[vaultId]
   : ["all"];
 
-// kalau semua chip kena buang = table kosong
+// kalau semua chip dibuang = table kosong
 if(tf.length === 0){
   use = [];
 }
-// kalau ada All Type = show semua, walaupun ada chip lain
-else if(!tf.includes("all")){
+// kalau ada All Type = show semua data
+else if(tf.includes("all")){
+  // jangan filter apa-apa
+}
+// kalau tiada All Type baru filter ikut chip
+else{
   use = use.filter(([_, t])=>{
     if(!t) return false;
 

@@ -16,6 +16,8 @@
   --cardHeadBg: #1f1f1f;
   --tableHeadBg: #1d1d1d;
   --trhover:rgba(255, 255, 255, .03);
+  --modulx: rgba(255, 255, 255, 0.12);
+
 
   --stroke: rgba(255,255,255,.12);
   --stroke2: #303030;
@@ -40,6 +42,7 @@
   --blue:#1668dc;
   --blue-hover:#3c89e8;
   --blue-active:#1554ad;
+  --modulx-active: rgba(255, 255, 255, 0.08);
 }
     
 
@@ -59,6 +62,8 @@ html.theme-light{
   --tableHeadBg: #ffffff;
   --panelBg: #ffffff;
   --trhover:rgba(0, 0, 0, .03);
+  --modulx: rgba(0, 0, 0, 0.12);
+  --modulx-active: rgba(0, 0, 0, 0.08);
 
   --stroke: rgba(0,0,0,.12);
   --stroke2: rgba(0,0,0,.12);
@@ -461,7 +466,7 @@ body.mobileSearchOpen #vaultSearch{
       transition: all 0.2s;
     }
     .modalHead{
-      padding:14px 14px 10px;
+      padding:20px 20px;
       display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
     }
     .modalHead .x{
@@ -471,10 +476,13 @@ body.mobileSearchOpen #vaultSearch{
       cursor:pointer;
       display:grid; place-items:center;
       transition: all 0.2s;
+      width: 32px;
+      height: 32px;
+      border-radius: 4px;
     }
-    .x:hover{color:var(--xHover);}
-    .x:active{transform:translateY(1px);color:var(--xActive);}
-    .modalBody{padding:12px 14px 14px}
+    .x:hover{background:var(--modulx);}
+    .x:active{background:var(--modulx-active);}
+    .modalBody{padding:20px 20px}
     .row{display:grid; grid-template-columns:1fr 1fr; gap:10px}
     @media (max-width:700px){
   html:not(.forceDesktop) .row{ grid-template-columns:1fr; }
@@ -493,7 +501,7 @@ body.mobileSearchOpen #vaultSearch{
     textarea{min-height:84px; resize:vertical}
     .modalFoot{
       display:flex; justify-content:flex-end; gap:10px;
-      padding:12px 14px;
+      padding:20px 20px;
       background:rgba(255,255,255,.03);
     }
     .danger{background:#d11f3a}

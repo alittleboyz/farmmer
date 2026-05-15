@@ -2597,41 +2597,24 @@ html.forceDesktop .desktopModeBtn .dmState{
     display:none !important;
   }
 
-  /* ✅ clock jadi macam phone kecil */
   .indoClock{
-    flex:0 0 135px !important;
-    width:135px !important;
-    min-width:135px !important;
-    height:64px !important;
-    padding:0 4px !important;
-
-    display:flex !important;
-    flex-direction:column !important;
-    align-items:center !important;
-    justify-content:center !important;
-
-    line-height:1.05 !important;
-    white-space:nowrap !important;
-    color:rgba(255,255,255,.85) !important;
-  }
-
-  .indoClock .clockCity{
-    display:block !important;
-    font-size:11px !important;
-    font-weight:400 !important;
+    flex-direction:column;
+    line-height:1.1;
+    min-width:90px;
+    font-size:10px;
+    color:rgba(255,255,255,0.85);
   }
 
   .indoClock .clockTime{
-    display:block !important;
-    font-size:22px !important;
-    font-weight:700 !important;
-    color:#fff !important;
+    font-size:18px;
+    font-weight:700;
+    color:#fff;
   }
 
   .indoClock .clockDate{
-    display:block !important;
-    font-size:10px !important;
-    font-weight:600 !important;
+    font-size:10px;
+    font-weight:600;
+    margin-left:4px;
   }
 
   .right{

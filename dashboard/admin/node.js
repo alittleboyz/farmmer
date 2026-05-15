@@ -2221,6 +2221,9 @@ function renderVaultList(targetId, data, bucket){
   for(const id of renderedIds){
     initVaultDateRangeUI(id);
   }
+  for(const id of renderedIds){
+  initChipTypeFilter(id);
+}
   initTableShadow(el);
   for(const id of renderedIds){
     const txPath = `vaults/${bucket}/${id}/transactions`;
@@ -2783,9 +2786,9 @@ function initChipTypeFilter(vaultId){
   const box = root.querySelector(".msBox");
   const menu = root.querySelector(".msMenu");
 
-  if(!Array.isArray(vaultTypeFilters[vaultId])){
-    vaultTypeFilters[vaultId] = []; // empty = All Type
-  }
+if(!Array.isArray(vaultTypeFilters[vaultId])){
+  vaultTypeFilters[vaultId] = ["all"]; // default chip All Type
+}
 
   function render(){
     box.innerHTML = "";
@@ -2833,23 +2836,25 @@ function initChipTypeFilter(vaultId){
     root.classList.toggle("open");
   };
 
-  menu.onclick = (e)=>{
-    const opt = e.target.closest("[data-value]");
-    if(!opt) return;
+menu.onclick = (e)=>{
+  const opt = e.target.closest("[data-value]");
+  if(!opt) return;
 
-    const val = opt.dataset.value;
+  const val = opt.dataset.value;
+  let arr = vaultTypeFilters[vaultId] || [];
 
-    if(val === "all"){
-      vaultTypeFilters[vaultId] = [];
-    }else{
-      let arr = vaultTypeFilters[vaultId] || [];
-      if(arr.includes(val)){
-        arr = arr.filter(x => x !== val);
-      }else{
-        arr.push(val);
-      }
-      vaultTypeFilters[vaultId] = arr;
-    }
+  if(arr.includes(val)){
+    arr = arr.filter(x => x !== val);
+  }else{
+    arr.push(val); // tambah chip, jangan buang All Type
+  }
+
+  vaultTypeFilters[vaultId] = arr;
+
+  resetPaging(vaultId);
+  render();
+  rerenderVaultTbody(vaultId);
+};
 
     resetPaging(vaultId);
     render();
@@ -3032,9 +3037,14 @@ if(f && f !== "showAll"){
 
 const tf = Array.isArray(vaultTypeFilters[vaultId])
   ? vaultTypeFilters[vaultId]
-  : [];
+  : ["all"];
 
-if(tf.length){
+// kalau semua chip kena buang = table kosong
+if(tf.length === 0){
+  use = [];
+}
+// kalau ada All Type = show semua, walaupun ada chip lain
+else if(!tf.includes("all")){
   use = use.filter(([_, t])=>{
     if(!t) return false;
 

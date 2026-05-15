@@ -2686,13 +2686,13 @@ html.forceDesktop .desktopModeBtn .dmState{
 .msChip{
   display:inline-flex;
   align-items:center;
-  gap:6px;
-  padding:4px 9px;
-  border-radius:999px;
+  gap:4px;
+  padding:4px;
+  border-radius:4px;
   background:var(--bgDropdown);
   color:var(--colorInput);
   font-size:12px;
-  line-height:1;
+  line-height:22;
   white-space:nowrap;
 }
 

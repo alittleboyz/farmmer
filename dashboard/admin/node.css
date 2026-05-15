@@ -43,6 +43,7 @@
   --blue-hover:#3c89e8;
   --blue-active:#1554ad;
   --modulx-active: rgba(255, 255, 255, 0.08);
+  --xhoverx:rgba(255,255,255,.45);
 }
     
 
@@ -64,6 +65,7 @@ html.theme-light{
   --trhover:rgba(0, 0, 0, .03);
   --modulx: rgba(0, 0, 0, 0.12);
   --modulx-active: rgba(0, 0, 0, 0.08);
+  --xhoverx:rgba(0,0,0,.45);
 
   --stroke: rgba(0,0,0,.12);
   --stroke2: rgba(0,0,0,.12);
@@ -2715,7 +2717,6 @@ html.forceDesktop .desktopModeBtn .dmState{
   max-height:220px;
   overflow:auto;
   background:var(--panelBg);
-  border:1px solid var(--borderTable);
   border-radius:8px;
   padding:4px;
   display:none;
@@ -2758,7 +2759,7 @@ html.forceDesktop .desktopModeBtn .dmState{
 
 .msBox.isEmpty::before{
   content:"Filter Type";
-  color:rgba(255,255,255,.35);
+  color:var(--scroll);
   font-size:14px;
   padding-left:6px;
 }
@@ -2767,7 +2768,7 @@ html.forceDesktop .desktopModeBtn .dmState{
   right:11px;
   top:50%;
   transform:translateY(-50%);
-  color:rgba(255,255,255,.35);
+  color:var(--scroll);
   pointer-events:none;
   transition:.15s;
 }
@@ -2783,11 +2784,9 @@ html.forceDesktop .desktopModeBtn .dmState{
   right:8px;
   top:50%;
   transform:translateY(-50%);
-  width:20px;
-  height:20px;
   border:0;
   background:transparent;
-  color:#3c89e8;
+  color:var(--scroll);
   padding:0;
   cursor:pointer;
   display:grid;
@@ -2804,7 +2803,9 @@ html.forceDesktop .desktopModeBtn .dmState{
   height:14px;
   display:block;
 }
-
+.msClearBtn svg:hover{
+  color:var(--xhoverx)
+}
 /* ada chip: arrow masih nampak */
 .msBox.hasChip .msArrow{
   opacity:1;

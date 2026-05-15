@@ -2825,4 +2825,14 @@ html.forceDesktop .desktopModeBtn .dmState{
 .msType:hover .msBox.hasChip .msArrow{
   opacity:0;
 }
-
+.msChip b{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+.msChip b svg{
+  width:10px;
+  height:10px;
+  display:block;
+}

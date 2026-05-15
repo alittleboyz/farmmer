@@ -417,7 +417,13 @@ body.mobileSearchOpen #vaultSearch{
     .sub{margin-top:4px; color:#1668dc; font-size:11px;}
     .vaultBtns{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
     .cardBody{padding:12px 14px 14px; background:var(--panelBg);}
+.tblWrap table tfoot td{
+  border-bottom:0 !important;
+}
 
+.tblWrap table tfoot tr:last-child td{
+  border-bottom:0 !important;
+}
     /* Excel-like table */
     table{width:100%; border-collapse:separate; border-spacing:0}
     th,td{padding:10px 10px; border-bottom:1px solid var(--borderBottom); text-align: center;;}
@@ -479,6 +485,7 @@ body.mobileSearchOpen #vaultSearch{
       width: 32px;
       height: 32px;
       border-radius: 4px;
+      font-size:16px;
     }
     .x:hover{background:var(--modulx);}
     .x:active{background:var(--modulx-active);}

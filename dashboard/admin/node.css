@@ -2653,3 +2653,101 @@ html.forceDesktop .desktopModeBtn .dmState{
     max-width:40px !important;
   }
 }
+/* ===== TYPE FILTER CHIP SELECT ===== */
+.msType{
+  position:relative;
+  min-width:220px;
+  width:100%;
+}
+
+.msBox{
+  min-height:32px;
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:6px;
+  padding:4px 8px;
+  border:1px solid var(--borderTable);
+  background:var(--inputBg);
+  color:var(--colorInput);
+  border-radius:6px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.msBox:hover{
+  border-color:#3c89e8;
+}
+
+.msType.open .msBox{
+  border-color:#1668dc;
+}
+
+.msChip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:4px 9px;
+  border-radius:999px;
+  background:var(--bgDropdown);
+  color:var(--colorInput);
+  font-size:12px;
+  line-height:1;
+  white-space:nowrap;
+}
+
+.msChip b{
+  cursor:pointer;
+  font-size:14px;
+  opacity:.75;
+}
+
+.msChip b:hover{
+  opacity:1;
+  color:#3c89e8;
+}
+
+.msMenu{
+  position:absolute;
+  top:calc(100% + 4px);
+  left:0;
+  width:100%;
+  max-height:220px;
+  overflow:auto;
+  background:var(--panelBg);
+  border:1px solid var(--borderTable);
+  border-radius:8px;
+  padding:4px;
+  display:none;
+  z-index:999999;
+  box-shadow:0 8px 20px rgba(0,0,0,.35);
+}
+
+.msType.open .msMenu{
+  display:block;
+}
+
+.msMenu div{
+  padding:7px 12px;
+  border-radius:4px;
+  cursor:pointer;
+  color:var(--colorInput);
+  font-size:14px;
+}
+
+.msMenu div:hover{
+  background:var(--bgDropdownhover);
+}
+
+.msMenu div.active{
+  background:var(--bgDropdown);
+  font-weight:600;
+}
+
+@media (max-width:720px){
+  .rangeLeft .msType{
+    flex:1 1 100%;
+    width:100%;
+    min-width:0;
+  }
+}

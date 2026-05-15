@@ -2853,7 +2853,6 @@ if(selected.length){
   box.appendChild(clearBtn);
 }
 
-    box.appendChild(iconBtn);
 
     menu.querySelectorAll("[data-value]").forEach(opt=>{
       opt.classList.toggle("active", selected.includes(opt.dataset.value));

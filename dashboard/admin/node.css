@@ -51,7 +51,7 @@
 html.theme-light{
   --talbeHover:rgba(255, 255, 255, .03);
   --menuDropdown:#ffffff;
-  --scroll:rgba(0, 0, 0, 0.0);
+  --scroll:rgba(0, 0, 0, 0.25);
   --bgDropdownhover:rgba(0, 0, 0, .08);
   --bgDropdown:#e6f4ff;
   --pagebg:#ffffff;
@@ -2143,7 +2143,7 @@ input.isBad:hover, select.isBad:hover, textarea.isBad:hover{
 
 .cs-options div.active{
   background:var(--bgDropdown);
-  color:#fff;
+  color:var(--colorInput);
   font-weight:600;
 }
 

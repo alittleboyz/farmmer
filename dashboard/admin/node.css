@@ -2785,3 +2785,25 @@ html.forceDesktop .desktopModeBtn .dmState{
 .msBox.hasChip .msIconBtn{
   color:#3c89e8;
 }
+/* default: bila ada chip, X hide dulu */
+.msBox.hasChip .msIconBtn{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:.15s;
+}
+
+/* hover input baru X keluar */
+.msType:hover .msBox.hasChip .msIconBtn,
+.msBox.hasChip:hover .msIconBtn{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+}
+
+/* kalau input kosong, arrow tetap nampak */
+.msBox.isEmpty .msIconBtn{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+}

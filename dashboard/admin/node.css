@@ -2665,8 +2665,8 @@ html.forceDesktop .desktopModeBtn .dmState{
   display:flex;
   align-items:center;
   flex-wrap:wrap;
-  gap:6px;
-  padding:4px 8px;
+  gap:4px;
+  padding:4px;
   border:1px solid var(--borderTable);
   background:var(--inputBg);
   color:var(--colorInput);
@@ -2689,7 +2689,7 @@ html.forceDesktop .desktopModeBtn .dmState{
   gap:4px;
   padding:4px;
   border-radius:4px;
-  background:var(--bgDropdown);
+  background:var(--modulx);
   color:var(--colorInput);
   font-size:12px;
   line-height:1;

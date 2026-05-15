@@ -2566,3 +2566,57 @@ html.forceDesktop .desktopModeBtn .dmState{
   border-radius:12px;
   overflow:auto;
 }
+/* ===== FIX PHONE LANDSCAPE HEADER ===== */
+@media (max-width: 900px) and (orientation: landscape){
+  header{
+    overflow:hidden;
+  }
+
+  .vaultSearchWrap{
+    flex:0 0 150px !important;
+    width:150px !important;
+    max-width:150px !important;
+    margin:0 6px !important;
+  }
+
+  .headerTabs{
+    flex:0 0 auto !important;
+  }
+
+  .headerTabs .tab{
+    width:52px !important;
+    min-width:52px !important;
+    max-width:52px !important;
+    padding:0 !important;
+    gap:0 !important;
+  }
+
+  .headerTabs .tab span{
+    display:none !important;
+  }
+
+  .indoClock{
+    min-width:auto !important;
+    width:auto !important;
+    height:64px !important;
+    padding:0 6px !important;
+    font-size:12px !important;
+    white-space:nowrap !important;
+  }
+
+  .indoClock .clockDate{
+    display:none !important;
+  }
+
+  .right{
+    flex:0 0 auto !important;
+    margin-left:auto !important;
+    gap:0 !important;
+  }
+
+  .iconBtn{
+    width:40px !important;
+    min-width:40px !important;
+    max-width:40px !important;
+  }
+}

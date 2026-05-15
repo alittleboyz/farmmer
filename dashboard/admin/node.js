@@ -2855,12 +2855,6 @@ menu.onclick = (e)=>{
   render();
   rerenderVaultTbody(vaultId);
 };
-
-    resetPaging(vaultId);
-    render();
-    rerenderVaultTbody(vaultId);
-  };
-
   document.addEventListener("click", ()=>{
     root.classList.remove("open");
   });

@@ -1815,14 +1815,17 @@ ${!isHistory ? `
 <div class="rangeLeft">
   <input class="dateRangeInput" data-range="${vaultId}" type="text" readonly>
 
-  <select class="js-custom-select" data-typefilter="${vaultId}" style="min-width:160px">
-    <option value="all">All Type</option>
-    <option value="cash_in">Cash In</option>
-    <option value="cash_out">Cash Out</option>
-    <option value="buy">Buy</option>
-    <option value="missing">Missing</option>
-    <option value="sell">Sell</option>
-  </select>
+<div class="msType" data-chip-typefilter="${vaultId}">
+  <div class="msBox" tabindex="0"></div>
+  <div class="msMenu">
+    <div data-value="all">All Type</div>
+    <div data-value="cash_in">Cash In</div>
+    <div data-value="cash_out">Cash Out</div>
+    <div data-value="buy">Buy</div>
+    <div data-value="missing">Missing</div>
+    <div data-value="sell">Sell</div>
+  </div>
+</div>
 
   <!-- ✅ NEW -->
 <div class="txSearchWrap">
@@ -2772,6 +2775,93 @@ function bindCustomSelect(cs, vaultId){
     rerenderVaultTbody(vaultId);
   }, { passive:false });
 }
+function initChipTypeFilter(vaultId){
+  const root = document.querySelector(`[data-chip-typefilter="${vaultId}"]`);
+  if(!root || root.dataset.bound === "1") return;
+  root.dataset.bound = "1";
+
+  const box = root.querySelector(".msBox");
+  const menu = root.querySelector(".msMenu");
+
+  if(!Array.isArray(vaultTypeFilters[vaultId])){
+    vaultTypeFilters[vaultId] = []; // empty = All Type
+  }
+
+  function render(){
+    box.innerHTML = "";
+
+    const selected = vaultTypeFilters[vaultId];
+
+    if(!selected.length){
+      const chip = document.createElement("span");
+      chip.className = "msChip";
+      chip.innerHTML = `All Type <b>×</b>`;
+      box.appendChild(chip);
+    }else{
+      selected.forEach(val=>{
+        const label = menu.querySelector(`[data-value="${val}"]`)?.textContent || val;
+
+        const chip = document.createElement("span");
+        chip.className = "msChip";
+        chip.innerHTML = `${label} <b>×</b>`;
+
+        chip.querySelector("b").onclick = (e)=>{
+          e.stopPropagation();
+          vaultTypeFilters[vaultId] = vaultTypeFilters[vaultId].filter(x => x !== val);
+          resetPaging(vaultId);
+          render();
+          rerenderVaultTbody(vaultId);
+        };
+
+        box.appendChild(chip);
+      });
+    }
+
+    menu.querySelectorAll("[data-value]").forEach(opt=>{
+      const val = opt.dataset.value;
+      opt.classList.toggle("active",
+        val === "all" ? selected.length === 0 : selected.includes(val)
+      );
+    });
+  }
+
+  box.onclick = (e)=>{
+    e.stopPropagation();
+    document.querySelectorAll(".msType.open").forEach(x=>{
+      if(x !== root) x.classList.remove("open");
+    });
+    root.classList.toggle("open");
+  };
+
+  menu.onclick = (e)=>{
+    const opt = e.target.closest("[data-value]");
+    if(!opt) return;
+
+    const val = opt.dataset.value;
+
+    if(val === "all"){
+      vaultTypeFilters[vaultId] = [];
+    }else{
+      let arr = vaultTypeFilters[vaultId] || [];
+      if(arr.includes(val)){
+        arr = arr.filter(x => x !== val);
+      }else{
+        arr.push(val);
+      }
+      vaultTypeFilters[vaultId] = arr;
+    }
+
+    resetPaging(vaultId);
+    render();
+    rerenderVaultTbody(vaultId);
+  };
+
+  document.addEventListener("click", ()=>{
+    root.classList.remove("open");
+  });
+
+  render();
+}
 function renderPagerButtons(vaultId, total, totalPages){
   const bar = ensurePagerBar(vaultId);
   if(!bar) return;
@@ -2940,16 +3030,19 @@ if(f && f !== "showAll"){
   });
 }
 
-const tf = vaultTypeFilters[vaultId] || "all";
-if(tf !== "all"){
+const tf = Array.isArray(vaultTypeFilters[vaultId])
+  ? vaultTypeFilters[vaultId]
+  : [];
+
+if(tf.length){
   use = use.filter(([_, t])=>{
     if(!t) return false;
 
-    if(tf === "cash_in")  return t.kind === "cash" && t.direction === "in";
-    if(tf === "cash_out") return t.kind === "cash" && t.direction === "out";
-
-    // buy / missing / sell
-    return t.kind === tf;
+    return tf.some(type=>{
+      if(type === "cash_in")  return t.kind === "cash" && t.direction === "in";
+      if(type === "cash_out") return t.kind === "cash" && t.direction === "out";
+      return t.kind === type;
+    });
   });
 }
 // ✅ SEARCH filter
@@ -3132,15 +3225,7 @@ function initVaultDateRangeUI(vaultId){
   if(!input) return;
 
   // === TYPE FILTER dropdown ===
-  const sel = document.querySelector(`select[data-typefilter="${vaultId}"]`);
-  if(sel){
-    sel.value = vaultTypeFilters[vaultId] || "all";
-    sel.onchange = ()=>{
-      vaultTypeFilters[vaultId] = sel.value || "all";
-      resetPaging(vaultId);
-      rerenderVaultTbody(vaultId);
-    };
-  }
+initChipTypeFilter(vaultId);
 // === TX SEARCH (per vault) ===
 const s = document.querySelector(`input[data-txsearch="${vaultId}"]`);
 if(s){

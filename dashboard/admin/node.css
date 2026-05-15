@@ -2692,7 +2692,7 @@ html.forceDesktop .desktopModeBtn .dmState{
   background:var(--bgDropdown);
   color:var(--colorInput);
   font-size:12px;
-  line-height:22;
+  line-height:1;
   white-space:nowrap;
 }
 

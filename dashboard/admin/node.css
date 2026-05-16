@@ -3106,22 +3106,28 @@ html.forceDesktop .desktopModeBtn .dmState{
     flex-direction:column !important;
   }
 
-  .flatpickr-calendar.fpStack2 .flatpickr-rContainer,
-  .flatpickr-calendar.fpStack2 .flatpickr-days{
-    width:100% !important;
-    min-width:100% !important;
-  }
+.flatpickr-calendar.fpStack2 .flatpickr-rContainer{
+  width:100% !important;
+}
 
-  .flatpickr-calendar.fpStack2 .flatpickr-days{
-    display:flex !important;
-    flex-direction:column !important;
-  }
+.flatpickr-calendar.fpStack2 .flatpickr-weekdays,
+.flatpickr-calendar.fpStack2 .flatpickr-days{
+  width:100% !important;
+  display:flex !important;
+  flex-direction:row !important;
+}
 
-  .flatpickr-calendar.fpStack2 .dayContainer{
-    width:100% !important;
-    min-width:100% !important;
-    max-width:100% !important;
-  }
+.flatpickr-calendar.fpStack2 .flatpickr-weekdaycontainer,
+.flatpickr-calendar.fpStack2 .dayContainer{
+  width:50% !important;
+  min-width:50% !important;
+  max-width:50% !important;
+}
+
+.flatpickr-calendar.fpStack2 .flatpickr-day{
+  max-width:14.2857% !important;
+  flex-basis:14.2857% !important;
+}
 
   .flatpickr-calendar.fpStack2 .dayContainer + .dayContainer{
     margin-top:14px !important;

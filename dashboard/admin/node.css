@@ -3110,29 +3110,45 @@ html.forceDesktop .desktopModeBtn .dmState{
   width:100% !important;
 }
 
-.flatpickr-calendar.fpStack2 .flatpickr-weekdays,
-.flatpickr-calendar.fpStack2 .flatpickr-days{
-  width:100% !important;
+.flatpickr-calendar.fpStack2 .flatpickr-rContainer{
   display:flex !important;
-  flex-direction:row !important;
+  flex-direction:column !important;
+  width:100% !important;
 }
 
-.flatpickr-calendar.fpStack2 .flatpickr-weekdaycontainer,
+.flatpickr-calendar.fpStack2 .flatpickr-days{
+  display:block !important;
+  width:100% !important;
+}
+
 .flatpickr-calendar.fpStack2 .dayContainer{
-  width:50% !important;
-  min-width:50% !important;
-  max-width:50% !important;
+  width:100% !important;
+  min-width:100% !important;
+  max-width:100% !important;
+}
+
+.flatpickr-calendar.fpStack2 .dayContainer + .dayContainer{
+  margin-top:20px !important;
+  padding-top:18px !important;
+  border-top:1px solid var(--borderTable) !important;
+}
+
+.flatpickr-calendar.fpStack2 .flatpickr-weekdays{
+  display:none !important;
+}
+
+.flatpickr-calendar.fpStack2 .dayContainer::before{
+  content:attr(data-month-label);
+  display:block;
+  font-weight:700;
+  font-size:15px;
+  color:var(--colorInput);
+  margin-bottom:10px;
+  text-align:center;
 }
 
 .flatpickr-calendar.fpStack2 .flatpickr-day{
   max-width:14.2857% !important;
   flex-basis:14.2857% !important;
 }
-
-  .flatpickr-calendar.fpStack2 .dayContainer + .dayContainer{
-    margin-top:14px !important;
-    padding-top:12px !important;
-    border-top:1px solid var(--borderTable) !important;
-    box-shadow:none !important;
-  }
 }

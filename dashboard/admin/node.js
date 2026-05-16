@@ -843,7 +843,7 @@ txTabPicker = flatpickr(rangeInput, {
   mode: "range",
   dateFormat: "Y-m-d",
   showMonths: 2,
-  closeOnSelect: false,
+  closeOnSelect: true,
   disableMobile: true,
 
   onReady: function(_, __, fp){
@@ -860,17 +860,20 @@ onMonthChange: function(_, __, fp){
 onYearChange: function(_, __, fp){
   setupStackFlatpickr(fp);
 },
-  onChange: (dates)=>{
-        
-        if(dates.length === 2){
-          txTabFilter.range = {
-            startMs: startOfDayMs(dates[0]),
-            endMs: endOfDayMs(dates[1])
-          };
-          txTabPaging.page = 1;
-          renderTransactionRows();
-        }
-      }
+onChange: (dates, dateStr, fp)=>{
+  if(dates.length === 2){
+    txTabFilter.range = {
+      startMs: startOfDayMs(dates[0]),
+      endMs: endOfDayMs(dates[1])
+    };
+
+    rangeInput.value = `${ymd(txTabFilter.range.startMs)} → ${ymd(txTabFilter.range.endMs)}`;
+    txTabPaging.page = 1;
+    renderTransactionRows();
+
+    fp.close();
+  }
+}
     });
     const r = txTabFilter.range;
 
@@ -3568,7 +3571,7 @@ vaultPickers[vaultId] = flatpickr(input, {
   mode: "range",
   dateFormat: "Y-m-d",
   showMonths: 2,
-  closeOnSelect: false,
+  closeOnSelect: true,
   defaultDate: (def && def !== "showAll") ? [new Date(def.startMs), new Date(def.endMs)] : null,
 
 onReady: (_, __, fp)=> {
@@ -3603,18 +3606,20 @@ onMonthChange: (_, __, fp)=> {
 onYearChange: (_, __, fp)=> {
   setupStackFlatpickr(fp);
 },
-    onChange: (dates)=>{
-      if(dates.length === 2){
-        const startMs = startOfDayMs(dates[0]);
-        const endMs   = endOfDayMs(dates[1]);
-        vaultFilters[vaultId] = { startMs, endMs };
+onChange: (dates, dateStr, fp)=>{
+  if(dates.length === 2){
+    const startMs = startOfDayMs(dates[0]);
+    const endMs   = endOfDayMs(dates[1]);
+    vaultFilters[vaultId] = { startMs, endMs };
 
-        input.value = `${ymd(startMs)} → ${ymd(endMs)}`;
-        clearActivePreset(vaultId);
-        resetPaging(vaultId);
-        rerenderVaultTbody(vaultId);
-      }
-    },
+    input.value = `${ymd(startMs)} → ${ymd(endMs)}`;
+    clearActivePreset(vaultId);
+    resetPaging(vaultId);
+    rerenderVaultTbody(vaultId);
+
+    fp.close();
+  }
+},
 
 onClose: (dates)=>{
   if(dates.length === 0){

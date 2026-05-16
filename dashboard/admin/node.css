@@ -1049,22 +1049,7 @@ input[type="number"]{
   min-width:0;
 }
 
-.txPresetPanel{
-  display:none;
-  width:100%;
-  grid-template-columns:repeat(auto-fit, minmax(80px, 1fr));
-  gap:8px;
-  margin-top:8px;
-}
 
-.txPresetPanel.open{
-  display:grid;
-}
-
-.txPresetPanel .pbtn{
-  width:100%;
-  justify-content:center;
-}
 
 @media (max-width:720px){
   .txToolbar{
@@ -2951,3 +2936,75 @@ html.forceDesktop .desktopModeBtn .dmState{
   justify-content:center;
 }
 
+/* ===== VAULT RANGE TOGGLE FINAL ===== */
+.vaultRangeRow{
+  display:grid;
+  grid-template-columns:1fr 32px;
+  gap:3px;
+  width:100%;
+  min-width:200px;
+}
+
+.vaultRangeRow .dateRangeInput{
+  width:100% !important;
+  min-width:0 !important;
+}
+
+.vaultPresetToggle{
+  width:32px;
+  height:32px;
+  min-width:32px;
+  border:1px solid var(--borderTable);
+  border-radius:6px;
+  background:var(--inputBg);
+  color:var(--colorInput);
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  padding:0;
+  transition:.2s;
+}
+
+.vaultPresetToggle svg{
+  width:14px;
+  height:14px;
+  display:block;
+  transition:.2s;
+}
+
+.vaultPresetToggle:hover{
+  border-color:#3c89e8;
+  color:#3c89e8;
+}
+
+.vaultPresetToggle.open{
+  border-color:#1668dc;
+  color:#1668dc;
+}
+
+.vaultPresetToggle.open svg{
+  transform:rotate(180deg);
+}
+
+.vaultPresetPanel{
+  display:none !important;
+  width:100%;
+  grid-template-columns:repeat(3, 1fr);
+  gap:8px;
+  margin-top:8px;
+}
+
+.vaultPresetPanel.open{
+  display:grid !important;
+}
+
+.vaultPresetPanel .pbtn{
+  width:100%;
+  justify-content:center;
+}
+
+@media(max-width:520px){
+  .vaultPresetPanel{
+    grid-template-columns:repeat(2, 1fr);
+  }
+}

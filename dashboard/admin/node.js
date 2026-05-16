@@ -665,7 +665,7 @@ function rangeTextFromMsList(msList){
     .map(ms => Number(ms || 0))
     .filter(ms => Number.isFinite(ms) && ms > 0);
 
-  if(!dates.length) return "No Date";
+  if(!dates.length) return "No Data";
 
   return `${ymd(Math.min(...dates))} → ${ymd(Math.max(...dates))}`;
 }

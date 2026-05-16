@@ -1106,6 +1106,7 @@ input[type="number"]{
   .txPresetPanel{
     grid-template-columns:repeat(2, 1fr);
   }
+}
 .txSearch{
   width:100%;
 }

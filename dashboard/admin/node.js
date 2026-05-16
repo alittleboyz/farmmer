@@ -3456,20 +3456,20 @@ function bindTxSearchClear(vaultId){
   sync();
 }
 function initVaultDateRangeUI(vaultId){
-    const toggleBtn = document.querySelector(`[data-vault-preset-toggle="${id}"]`);
-  const presetPanel = document.querySelector(`[data-presets="${id}"]`);
+ const toggleBtn = document.querySelector(`[data-vault-preset-toggle="${vaultId}"]`);
+const presetPanel = document.querySelector(`[data-presets="${vaultId}"]`);
 
-  if(toggleBtn && presetPanel && toggleBtn.dataset.bound !== "1"){
-    toggleBtn.dataset.bound = "1";
+if(toggleBtn && presetPanel && toggleBtn.dataset.bound !== "1"){
+  toggleBtn.dataset.bound = "1";
 
-    toggleBtn.addEventListener("click", (e)=>{
-      e.preventDefault();
-      e.stopPropagation();
+  toggleBtn.addEventListener("click", (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
 
-      presetPanel.classList.toggle("open");
-      toggleBtn.classList.toggle("open", presetPanel.classList.contains("open"));
-    });
-  }
+    presetPanel.classList.toggle("open");
+    toggleBtn.classList.toggle("open", presetPanel.classList.contains("open"));
+  });
+}
   const input = document.querySelector(`.dateRangeInput[data-range="${vaultId}"]`);
   if(!input) return;
 

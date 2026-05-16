@@ -3093,3 +3093,12 @@ html.forceDesktop .desktopModeBtn .dmState{
     -webkit-box-shadow: -1px 0 0 #e6e6e6 !important;
     box-shadow: -1px 0 0 #535353 !important;
 }
+.flatpickr-calendar.arrowTop::before,
+.flatpickr-calendar.arrowTop::after{
+  border-bottom-color: var(--panelBg) !important;
+}
+
+.flatpickr-calendar.arrowBottom::before,
+.flatpickr-calendar.arrowBottom::after{
+  border-top-color: var(--panelBg) !important;
+}

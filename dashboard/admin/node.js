@@ -645,6 +645,10 @@ function ymd(ms){
   const pad = (n)=> String(n).padStart(2,"0");
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 }
+function setupStackFlatpickr(fp){
+  if(!fp || !fp.calendarContainer) return;
+  fp.calendarContainer.classList.add("fpStack2");
+}
 function rangeTextFromMsList(msList){
   const dates = msList
     .map(ms => Number(ms || 0))
@@ -824,12 +828,23 @@ if(rangeInput){
       try{ txTabPicker.destroy(); }catch(_){}
     }
 
-    txTabPicker = flatpickr(rangeInput, {
-      mode: "range",
-      dateFormat: "Y-m-d",
-      showMonths: 2,
-      closeOnSelect: false,
-      onChange: (dates)=>{
+txTabPicker = flatpickr(rangeInput, {
+  mode: "range",
+  dateFormat: "Y-m-d",
+  showMonths: 2,
+  closeOnSelect: false,
+  disableMobile: true,
+
+  onReady: function(_, __, fp){
+    setupStackFlatpickr(fp);
+  },
+
+  onOpen: function(_, __, fp){
+    setupStackFlatpickr(fp);
+  },
+
+  onChange: (dates)=>{
+        
         if(dates.length === 2){
           txTabFilter.range = {
             startMs: startOfDayMs(dates[0]),
@@ -3539,20 +3554,24 @@ vaultPickers[vaultId] = flatpickr(input, {
   closeOnSelect: false,
   defaultDate: (def && def !== "showAll") ? [new Date(def.startMs), new Date(def.endMs)] : null,
 
-onReady: ()=> {
+onReady: (_, __, fp)=> {
+  setupStackFlatpickr(fp);
+
   if(def === "showAll"){
-    input.value = "Show All";
+    input.value = getVaultAllRangeText(vaultId);
   }else{
     input.value = `${ymd(def.startMs)} → ${ymd(def.endMs)}`;
   }
   clearActivePreset(vaultId);
 },
 
-onOpen: ()=> {
+onOpen: (_, __, fp)=> {
+  setupStackFlatpickr(fp);
+
   const f = vaultFilters[vaultId];
 
   if(f === "showAll"){
-    input.value = "Show All";
+    input.value = getVaultAllRangeText(vaultId);
     return;
   }
 

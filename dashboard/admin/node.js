@@ -675,13 +675,16 @@ function renderTransactionTabShell(){
           </div>
 
           <div class="txToolbarRight">
-            <select id="txTypeFilter" class="js-custom-select">
-              <option value="all">All</option>
-              <option value="add_point_in">Add Point</option>
-              <option value="add_point_out">Out Point</option>
-              <option value="cash_in">Cash In</option>
-              <option value="cash_out">Cash Out</option>
-            </select>
+<div class="msType" data-chip-txtype="txTab">
+  <div class="msBox" tabindex="0"></div>
+  <div class="msMenu">
+    <div data-value="all">All</div>
+    <div data-value="add_point_in">Add Point</div>
+    <div data-value="add_point_out">Out Point</div>
+    <div data-value="cash_in">Cash In</div>
+    <div data-value="cash_out">Cash Out</div>
+  </div>
+</div>
 
             <input id="txSearchInput" class="txSearch" placeholder="Search transaction..." />
           </div>
@@ -711,12 +714,11 @@ function renderTransactionTabShell(){
     </div>
   `;
 
-  initCustomSelects(wrap);
+  initTxTabChipTypeFilter();
   bindTransactionTabUI();
 }
 function bindTransactionTabUI(){
   const search = document.getElementById("txSearchInput");
-  const type = document.getElementById("txTypeFilter");
   const rangeInput = document.getElementById("txRangeInput");
   // default tampil bulan ini
 if(rangeInput && txTabFilter.range === "showAll"){
@@ -728,15 +730,6 @@ if(rangeInput && txTabFilter.range === "showAll"){
     search.value = txTabFilter.search || "";
     search.oninput = () => {
       txTabFilter.search = search.value || "";
-      txTabPaging.page = 1;
-      renderTransactionRows();
-    };
-  }
-
-  if(type){
-    type.value = txTabFilter.type || "all";
-    type.onchange = () => {
-      txTabFilter.type = type.value || "all";
       txTabPaging.page = 1;
       renderTransactionRows();
     };
@@ -2915,6 +2908,77 @@ if(selected.length){
     resetPaging(vaultId);
     render();
     rerenderVaultTbody(vaultId);
+  };
+
+  document.addEventListener("click", ()=>{
+    root.classList.remove("open");
+  });
+
+  render();
+}
+function initTxTabChipTypeFilter(){
+  const root = document.querySelector(`[data-chip-txtype="txTab"]`);
+  if(!root || root.dataset.bound === "1") return;
+  root.dataset.bound = "1";
+
+  const box = root.querySelector(".msBox");
+  const menu = root.querySelector(".msMenu");
+
+  function render(){
+    box.innerHTML = "";
+
+    const val = txTabFilter.type || "all";
+    box.classList.toggle("isEmpty", false);
+    box.classList.toggle("hasChip", true);
+
+    const label = menu.querySelector(`[data-value="${val}"]`)?.textContent || "All";
+
+    const chip = document.createElement("span");
+    chip.className = "msChip";
+    chip.innerHTML = `
+      ${label}
+      <b>
+        <svg viewBox="0 0 1024 1024" aria-hidden="true">
+          <path fill="currentColor" d="M799.86 166.31c.02 0 .04.02.08.06l57.69 57.7c.04.03.05.05.06.08a.12.12 0 010 .06c0 .03-.02.05-.06.09L569.93 512l287.7 287.7c.04.04.05.06.06.09a.12.12 0 010 .07c0 .02-.02.04-.06.08l-57.7 57.69c-.03.04-.05.05-.07.06a.12.12 0 01-.07 0c-.03 0-.05-.02-.09-.06L512 569.93l-287.7 287.7c-.04.04-.06.05-.09.06a.12.12 0 01-.07 0c-.02 0-.04-.02-.08-.06l-57.69-57.7c-.04-.03-.05-.05-.06-.07a.12.12 0 010-.07c0-.03.02-.05.06-.09L454.07 512l-287.7-287.7c-.04-.04-.05-.06-.06-.09a.12.12 0 010-.07c0-.02.02-.04.06-.08l57.7-57.69c.03-.04.05-.05.07-.06a.12.12 0 01.07 0c.03 0 .05.02.09.06L512 454.07l287.7-287.7c.04-.04.06-.05.09-.06a.12.12 0 01.07 0z"/>
+        </svg>
+      </b>
+    `;
+
+    chip.querySelector("b").onclick = (e)=>{
+      e.stopPropagation();
+      txTabFilter.type = "all";
+      txTabPaging.page = 1;
+      render();
+      renderTransactionRows();
+    };
+
+    box.appendChild(chip);
+
+    const arrow = document.createElement("span");
+    arrow.className = "msArrow";
+    arrow.innerHTML = `<svg viewBox="0 0 1024 1024"><path fill="currentColor" d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"/></svg>`;
+    box.appendChild(arrow);
+
+    menu.querySelectorAll("[data-value]").forEach(opt=>{
+      opt.classList.toggle("active", opt.dataset.value === val);
+    });
+  }
+
+  box.onclick = (e)=>{
+    e.stopPropagation();
+    root.classList.toggle("open");
+  };
+
+  menu.onclick = (e)=>{
+    const opt = e.target.closest("[data-value]");
+    if(!opt) return;
+
+    txTabFilter.type = opt.dataset.value || "all";
+    txTabPaging.page = 1;
+
+    root.classList.remove("open");
+    render();
+    renderTransactionRows();
   };
 
   document.addEventListener("click", ()=>{

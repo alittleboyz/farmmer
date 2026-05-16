@@ -682,7 +682,7 @@ function renderTransactionTabShell(){
   <button class="pbtn" type="button" data-txpreset="lastWeek">Last Week</button>
   <button class="pbtn" type="button" data-txpreset="thisMonth">This Month</button>
   <button class="pbtn" type="button" data-txpreset="lastMonth">Last Month</button>
-  <button class="pbtn" type="button" data-txpreset="all">Show All</button>
+  <button class="pbtn" type="button" data-txpreset="showAll">Show All</button>
 </div>
 
           <div class="txToolbarRight">

@@ -1022,7 +1022,8 @@ input[type="number"]{
 
 .txToolbar{
   display:grid;
-  grid-template-columns: minmax(320px, 1fr) minmax(220px, 1fr) minmax(280px, 1fr);
+  grid-template-columns:minmax(320px,1fr) minmax(220px,1fr) minmax(280px,1fr);
+  grid-template-areas:"range filter search";
   gap:8px;
   align-items:start;
   width:100%;
@@ -1030,24 +1031,28 @@ input[type="number"]{
 }
 
 .txToolbarLeft{
-  grid-column:1;
-  display:block;
+  grid-area:range;
   min-width:0;
 }
 
 .txToolbarRight{
-  grid-column:2 / 4;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
+  display:contents;
+}
+
+.txToolbarRight .msType{
+  grid-area:filter;
+  width:100%;
   min-width:0;
 }
 
-.txToolbarRight .msType,
-#txSearchInput,
-.txRangeRow{
+#txSearchInput{
+  grid-area:search;
   width:100%;
   min-width:0;
+}
+
+.txRangeRow{
+  width:100%;
 }
 
 .txPresetPanel{
@@ -1066,6 +1071,41 @@ input[type="number"]{
   width:100%;
   justify-content:center;
 }
+
+@media (max-width:720px){
+  .txToolbar{
+    grid-template-columns:1fr;
+    grid-template-areas:
+      "range"
+      "filter"
+      "search";
+  }
+
+  .txToolbarLeft{
+    grid-area:range;
+  }
+
+  .txToolbarRight{
+    display:contents;
+  }
+
+  .txToolbarRight .msType{
+    grid-area:filter;
+  }
+
+  #txSearchInput{
+    grid-area:search;
+  }
+
+  .txPresetPanel{
+    grid-template-columns:repeat(3, 1fr);
+  }
+}
+
+@media(max-width:520px){
+  .txPresetPanel{
+    grid-template-columns:repeat(2, 1fr);
+  }
 .txSearch{
   width:100%;
 }
@@ -2952,8 +2992,3 @@ html.forceDesktop .desktopModeBtn .dmState{
   }
 }
 
-@media(max-width:520px){
-  .txPresetPanel{
-    grid-template-columns:repeat(2, 1fr);
-  }
-}

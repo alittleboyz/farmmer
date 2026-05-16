@@ -718,6 +718,11 @@ function bindTransactionTabUI(){
   const search = document.getElementById("txSearchInput");
   const type = document.getElementById("txTypeFilter");
   const rangeInput = document.getElementById("txRangeInput");
+  // default tampil bulan ini
+if(rangeInput && txTabFilter.range === "showAll"){
+  txTabFilter.range = presetRangeMs("thisMonth");
+  rangeInput.value = `${ymd(txTabFilter.range.startMs)} → ${ymd(txTabFilter.range.endMs)}`;
+}
 
   if(search){
     search.value = txTabFilter.search || "";
@@ -1720,6 +1725,7 @@ function setView(v, save = true){
 }
 // TAMPAAL DI SINI BRO
 renderTransactionTabShell();
+txTabFilter.range = presetRangeMs("thisMonth");
 initTableShadow(document.getElementById("viewTransaction"));
 wireTransactionTab();
 function vaultCardHTML(vaultId, v, bucket){

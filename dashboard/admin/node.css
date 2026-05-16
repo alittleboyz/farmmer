@@ -1030,12 +1030,17 @@ input[type="number"]{
 }
 
 .txToolbarLeft{
+  grid-column:1;
   display:block;
   min-width:0;
 }
 
 .txToolbarRight{
-  display:contents;
+  grid-column:2 / 4;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  min-width:0;
 }
 
 .txToolbarRight .msType,
@@ -2932,10 +2937,11 @@ html.forceDesktop .desktopModeBtn .dmState{
   }
 
   .txToolbarLeft{
-    display:block;
+    grid-column:1;
   }
 
   .txToolbarRight{
+    grid-column:1;
     display:grid;
     grid-template-columns:1fr;
     gap:8px;

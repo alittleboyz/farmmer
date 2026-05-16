@@ -2837,7 +2837,7 @@ html.forceDesktop .desktopModeBtn .dmState{
   display:block;
 }
 
-@media (max-width:837px){
+@media (max-width:1088px){
   .txToolbar{
     width:100% !important;
     display:block !important;
@@ -2880,5 +2880,27 @@ html.forceDesktop .desktopModeBtn .dmState{
     display:grid !important;
     grid-template-columns:1fr;
     gap:8px;
+  }
+}
+@media (max-width:1088px){
+  .txToolbarLeft{
+    display:flex !important;
+    flex-wrap:wrap !important;
+    gap:8px 14px !important;
+    align-items:center !important;
+  }
+
+  #txRangeInput{
+    flex:0 0 100% !important;
+    width:100% !important;
+  }
+
+  .txToolbarLeft .pbtn{
+    flex:0 0 auto !important;
+    width:auto !important;
+    min-width:auto !important;
+    height:32px !important;
+    padding:0 4px !important;
+    justify-content:center !important;
   }
 }

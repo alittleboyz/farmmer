@@ -1022,8 +1022,7 @@ input[type="number"]{
 
 .txToolbar{
   display:grid;
-  grid-template-columns:minmax(320px,1fr) minmax(220px,1fr) minmax(280px,1fr);
-  grid-template-areas:"range filter search";
+  grid-template-columns:1fr 1fr 1fr;
   gap:8px;
   align-items:start;
   width:100%;
@@ -1031,28 +1030,22 @@ input[type="number"]{
 }
 
 .txToolbarLeft{
-  grid-area:range;
   min-width:0;
 }
 
 .txToolbarRight{
-  display:contents;
-}
-
-.txToolbarRight .msType{
-  grid-area:filter;
-  width:100%;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
   min-width:0;
 }
 
-#txSearchInput{
-  grid-area:search;
+.txRangeRow,
+.txToolbarRight .msType,
+.txToolbarRight .txSearchWrap,
+.txToolbarRight .txSearchInput{
   width:100%;
   min-width:0;
-}
-
-.txRangeRow{
-  width:100%;
 }
 
 .txPresetPanel{
@@ -1075,26 +1068,10 @@ input[type="number"]{
 @media (max-width:720px){
   .txToolbar{
     grid-template-columns:1fr;
-    grid-template-areas:
-      "range"
-      "filter"
-      "search";
-  }
-
-  .txToolbarLeft{
-    grid-area:range;
   }
 
   .txToolbarRight{
-    display:contents;
-  }
-
-  .txToolbarRight .msType{
-    grid-area:filter;
-  }
-
-  #txSearchInput{
-    grid-area:search;
+    grid-template-columns:1fr;
   }
 
   .txPresetPanel{
@@ -2971,25 +2948,5 @@ html.forceDesktop .desktopModeBtn .dmState{
 .txPresetPanel .pbtn{
   width:100%;
   justify-content:center;
-}
-@media (max-width:720px){
-  .txToolbar{
-    grid-template-columns:1fr;
-  }
-
-  .txToolbarLeft{
-    grid-column:1;
-  }
-
-  .txToolbarRight{
-    grid-column:1;
-    display:grid;
-    grid-template-columns:1fr;
-    gap:8px;
-  }
-
-  .txPresetPanel{
-    grid-template-columns:repeat(3, 1fr);
-  }
 }
 

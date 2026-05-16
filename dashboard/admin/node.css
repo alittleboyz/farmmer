@@ -1021,27 +1021,31 @@ input[type="number"]{
 }
 
 .txToolbar{
-  display:block;
+  display:grid;
+  grid-template-columns: 370px 220px 320px;
+  gap:8px;
+  align-items:start;
+  justify-content:start;
   margin-top:10px;
 }
 
-.txToolbarLeft,
-.txToolbarRight{
-  width:680px;
-  max-width:100%;
-}
-
 .txToolbarLeft{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
+  display:block;
+  min-width:0;
 }
 
 .txToolbarRight{
-  margin-top:8px;
-  display:grid;
-  grid-template-columns:1fr;
-  gap:8px;
+  display:contents;
+}
+
+.txToolbarRight .msType,
+#txSearchInput{
+  width:100%;
+  min-width:0;
+}
+
+.txRangeRow{
+  width:100%;
 }
 
 .txSearch{
@@ -2909,9 +2913,14 @@ html.forceDesktop .desktopModeBtn .dmState{
   justify-content:center;
 }
 @media (max-width:1088px){
-  .txToolbarLeft,
+  .txToolbar{
+    grid-template-columns:1fr;
+  }
+
   .txToolbarRight{
-    width:100%;
+    display:grid;
+    grid-template-columns:1fr;
+    gap:8px;
   }
 
   .txPresetPanel{

@@ -938,7 +938,7 @@ input[type="number"]{
   align-items:flex-start;
   justify-content:space-between;
   gap:10px;
-  margin:10px 0 10px;
+  margin-top:10px;
   flex-wrap:wrap;
 }
 
@@ -947,7 +947,7 @@ input[type="number"]{
   flex: 1 1 520px;           /* bagi ruang untuk 3 item 1 row (desktop) */
   min-width: 240px;
   display:flex;
-  gap:10px;
+  gap:8px;
   align-items:center;
   flex-wrap:nowrap;          /* desktop: jangan turun */
 }
@@ -1062,7 +1062,7 @@ input[type="number"]{
   }
 
   .txPresetPanel{
-    grid-template-columns:repeat(6, 1fr);
+    grid-template-columns:repeat(7, 1fr);
   }
 }
 @media(max-width:520px){
@@ -2899,8 +2899,8 @@ html.forceDesktop .desktopModeBtn .dmState{
 }
 
 .txPresetToggle svg{
-  width:14px;
-  height:14px;
+  width:12px;
+  height:12px;
   display:block;
   transition:.2s;
 }
@@ -2966,8 +2966,8 @@ html.forceDesktop .desktopModeBtn .dmState{
 }
 
 .vaultPresetToggle svg{
-  width:14px;
-  height:14px;
+  width:12px;
+  height:12px;
   display:block;
   transition:.2s;
 }

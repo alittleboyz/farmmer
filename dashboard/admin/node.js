@@ -664,15 +664,24 @@ function renderTransactionTabShell(){
 
         <div class="txToolbar">
           <div class="txToolbarLeft">
-            <input id="txRangeInput" class="dateRangeInput" placeholder="Select date range" />
-<button class="pbtn" type="button" data-txpreset="today">Today</button>
-<button class="pbtn" type="button" data-txpreset="yesterday">Yesterday</button>
-<button class="pbtn" type="button" data-txpreset="thisWeek">This Week</button>
-<button class="pbtn" type="button" data-txpreset="lastWeek">Last Week</button>
-<button class="pbtn" type="button" data-txpreset="thisMonth">This Month</button>
-<button class="pbtn" type="button" data-txpreset="lastMonth">Last Month</button>
-<button class="pbtn" type="button" data-txpreset="showAll">Show All</button>
-          </div>
+<div class="txRangeRow">
+  <input id="txRangeInput" class="dateRangeInput" placeholder="Select date range" />
+
+  <button id="txPresetToggle" class="txPresetToggle" type="button" aria-label="Toggle presets">
+    <svg viewBox="0 0 1024 1024">
+      <path fill="currentColor" d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"/>
+    </svg>
+  </button>
+</div>
+
+<div id="txPresetPanel" class="txPresetPanel">
+  <button class="pbtn" type="button" data-txpreset="today">Today</button>
+  <button class="pbtn" type="button" data-txpreset="yesterday">Yesterday</button>
+  <button class="pbtn" type="button" data-txpreset="thisWeek">This Week</button>
+  <button class="pbtn" type="button" data-txpreset="lastWeek">Last Week</button>
+  <button class="pbtn" type="button" data-txpreset="thisMonth">This Month</button>
+  <button class="pbtn" type="button" data-txpreset="lastMonth">Last Month</button>
+</div>
 
           <div class="txToolbarRight">
 <div class="msType" data-chip-txtype="txTab">
@@ -720,6 +729,18 @@ function renderTransactionTabShell(){
 function bindTransactionTabUI(){
   const search = document.getElementById("txSearchInput");
   const rangeInput = document.getElementById("txRangeInput");
+  const presetToggle = document.getElementById("txPresetToggle");
+const presetPanel = document.getElementById("txPresetPanel");
+
+if(presetToggle && presetPanel && presetToggle.dataset.bound !== "1"){
+  presetToggle.dataset.bound = "1";
+
+  presetToggle.onclick = (e)=>{
+    e.stopPropagation();
+    presetPanel.classList.toggle("open");
+    presetToggle.classList.toggle("open");
+  };
+}
   // default tampil bulan ini
 if(rangeInput && txTabFilter.range === "showAll"){
   txTabFilter.range = presetRangeMs("thisMonth");

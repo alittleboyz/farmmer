@@ -2614,8 +2614,15 @@ html.forceDesktop .desktopModeBtn .dmState{
   transition:box-shadow .3s;
 }
 
-.tblShell::before{ left:0; }
-.tblShell::after{ right:0; }
+.tblShell::before{
+  left:0;
+  border-radius:12px 0 0 12px;
+}
+
+.tblShell::after{
+  right:0;
+  border-radius:0 12px 12px 0;
+}
 
 .tblShell.ping-left::before{
   box-shadow: inset 10px 0 8px -8px rgba(253,253,253,.12);

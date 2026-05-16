@@ -1023,7 +1023,7 @@ input[type="number"]{
 .txToolbar{
   display:grid;
   grid-template-columns: minmax(320px, 1fr) minmax(220px, 1fr) minmax(280px, 1fr);
-  gap:10px;
+  gap:8px;
   align-items:start;
   width:100%;
   margin-top:10px;
@@ -2601,6 +2601,7 @@ html.forceDesktop .desktopModeBtn .dmState{
 .tblShell .tblWrap{
   border-radius:12px;
   overflow:auto;
+  margin-top:10px;
 }
 /* ===== FIX PHONE LANDSCAPE HEADER ===== */
 @media (max-width: 900px) and (orientation: landscape){
@@ -2849,7 +2850,7 @@ html.forceDesktop .desktopModeBtn .dmState{
 .txRangeRow{
   display:grid;
   grid-template-columns: 1fr 32px;
-  gap:6px;
+  gap:3px;
   width:100%;
 }
 

@@ -2595,7 +2595,6 @@ html.forceDesktop .desktopModeBtn .dmState{
   background:transparent !important;
   color: var(--scroll) !important;
 }
-/* ===== TABLE EDGE SHADOW CLEAN ===== */
 .tblShell{
   position:relative;
   border-radius:12px;
@@ -2608,49 +2607,37 @@ html.forceDesktop .desktopModeBtn .dmState{
   margin-top:10px;
 }
 
-/* default hide */
 .tblShell::before,
 .tblShell::after{
   content:"";
   position:absolute;
-  top:10px;              /* ikut margin-top tblWrap */
+  top:10px;
   bottom:0;
-  width:26px;
+  width:30px;
   z-index:10;
   pointer-events:none;
   opacity:0;
   transition:opacity .18s ease;
 }
 
-/* kiri */
 .tblShell::before{
   left:0;
   border-radius:12px 0 0 12px;
-  background:linear-gradient(
-    to right,
-    rgba(255,255,255,.12),
-    rgba(255,255,255,0)
-  );
 }
 
-/* kanan */
 .tblShell::after{
   right:0;
   border-radius:0 12px 12px 0;
-  background:linear-gradient(
-    to left,
-    rgba(255,255,255,.12),
-    rgba(255,255,255,0)
-  );
 }
 
-/* show hanya bila JS tambah class */
 .tblShell.ping-left::before{
   opacity:1;
+  box-shadow: inset 10px 0 8px -8px rgba(253,253,253,.12);
 }
 
 .tblShell.ping-right::after{
   opacity:1;
+  box-shadow: inset -10px 0 8px -8px rgba(253,253,253,.12);
 }
 /* ===== FIX PHONE LANDSCAPE HEADER ===== */
 @media (max-width: 900px) and (orientation: landscape){

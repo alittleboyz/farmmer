@@ -624,15 +624,15 @@ function clearVaultDateRange(vaultId){
   }
 
   if(input){
-    input.value = "Show All";
+    input.value = getVaultAllRangeText(vaultId);
 
     // paksa text kekal, sebab kadang flatpickr clear balik
     requestAnimationFrame(()=>{
-      input.value = "Show All";
+      input.value = getVaultAllRangeText(vaultId);
     });
 
     setTimeout(()=>{
-      input.value = "Show All";
+      input.value = getVaultAllRangeText(vaultId);
     }, 0);
   }
 
@@ -644,6 +644,28 @@ function ymd(ms){
   const d = new Date(ms);
   const pad = (n)=> String(n).padStart(2,"0");
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+}
+function rangeTextFromMsList(msList){
+  const dates = msList
+    .map(ms => Number(ms || 0))
+    .filter(ms => Number.isFinite(ms) && ms > 0);
+
+  if(!dates.length) return "No Date";
+
+  return `${ymd(Math.min(...dates))} → ${ymd(Math.max(...dates))}`;
+}
+
+function getVaultAllRangeText(vaultId){
+  const rows = vaultTxCache[vaultId]?.rows || [];
+  return rangeTextFromMsList(rows.map(([_, t]) => t?.atMs));
+}
+
+function getTxTabAllRangeText(){
+  return rangeTextFromMsList(
+    txTabRows
+      .filter(t => !t.deleted)
+      .map(t => t.atMs)
+  );
 }
 function txTypeLabel(t){
   if(t.kind === "add_point" && t.direction === "in") return "ADD POINT";
@@ -778,9 +800,9 @@ if(rangeInput && txTabFilter.range === "showAll"){
         txTabPicker.clear();
       }
 
-      if(rangeInput){
-        rangeInput.value = "Show All";
-      }
+if(rangeInput){
+  rangeInput.value = getTxTabAllRangeText();
+}
     }else{
       const r = presetRangeMs(key);
       if(!r) return;

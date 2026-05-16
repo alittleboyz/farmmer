@@ -665,10 +665,13 @@ function renderTransactionTabShell(){
         <div class="txToolbar">
           <div class="txToolbarLeft">
             <input id="txRangeInput" class="dateRangeInput" placeholder="Select date range" />
-            <button class="pbtn" type="button" data-txpreset="today">Today</button>
-            <button class="pbtn" type="button" data-txpreset="thisWeek">This Week</button>
-            <button class="pbtn" type="button" data-txpreset="thisMonth">This Month</button>
-            <button class="pbtn" type="button" data-txpreset="showAll">Show All</button>
+<button class="pbtn" type="button" data-txpreset="today">Today</button>
+<button class="pbtn" type="button" data-txpreset="yesterday">Yesterday</button>
+<button class="pbtn" type="button" data-txpreset="thisWeek">This Week</button>
+<button class="pbtn" type="button" data-txpreset="lastWeek">Last Week</button>
+<button class="pbtn" type="button" data-txpreset="thisMonth">This Month</button>
+<button class="pbtn" type="button" data-txpreset="lastMonth">Last Month</button>
+<button class="pbtn" type="button" data-txpreset="showAll">Show All</button>
           </div>
 
           <div class="txToolbarRight">
@@ -737,6 +740,10 @@ function bindTransactionTabUI(){
   document.querySelectorAll("[data-txpreset]").forEach(btn => {
     btn.onclick = () => {
       const key = btn.dataset.txpreset;
+      
+      document.querySelectorAll("[data-txpreset]").forEach(b => {
+  b.classList.toggle("active", b === btn);
+});
       if(key === "showAll"){
         txTabFilter.range = "showAll";
         if(txTabPicker) txTabPicker.clear();

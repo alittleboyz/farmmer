@@ -2836,29 +2836,35 @@ html.forceDesktop .desktopModeBtn .dmState{
   height:10px;
   display:block;
 }
+
+/* ===== FIX TRANSACTION TAB MOBILE WIDTH ===== */
 @media (max-width:700px){
-  .txToolbar,
-  .txToolbarLeft,
-  .txToolbarRight{
-    width:100%;
+  .txToolbar{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:stretch !important;
+    width:100% !important;
   }
 
   .txToolbarLeft,
   .txToolbarRight{
-    flex-direction:column;
-    align-items:stretch;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:stretch !important;
+    width:100% !important;
+    max-width:100% !important;
   }
 
   #txRangeInput,
   #txSearchInput,
-  #txTypeFilter,
-  .txToolbarRight .cs{
+  .txToolbarRight .cs,
+  .txToolbarRight .cs__btn{
     width:100% !important;
     max-width:100% !important;
     min-width:0 !important;
   }
 
   .txToolbarLeft .pbtn{
-    align-self:flex-start;
+    align-self:flex-start !important;
   }
 }

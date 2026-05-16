@@ -2934,7 +2934,6 @@ html.forceDesktop .desktopModeBtn .dmState{
   width:100%;
   grid-template-columns:repeat(7, 1fr);
   gap:8px;
-  margin-top:8px;
 }
 
 .txPresetPanel.open{

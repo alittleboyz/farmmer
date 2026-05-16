@@ -1022,32 +1022,28 @@ input[type="number"]{
 
 .txToolbar{
   display:grid;
-  grid-template-columns: 370px 220px 320px;
-  gap:8px;
+  grid-template-columns: minmax(320px, 1fr) minmax(220px, 1fr) minmax(280px, 1fr);
+  gap:10px;
   align-items:start;
-  justify-content:start;
+  width:100%;
   margin-top:10px;
 }
 
-.txToolbarLeft{
-  display:block;
-  min-width:0;
-}
-
+.txToolbarLeft,
 .txToolbarRight{
   display:contents;
 }
 
 .txToolbarRight .msType,
-#txSearchInput{
+#txSearchInput,
+.txRangeRow{
   width:100%;
   min-width:0;
 }
 
-.txRangeRow{
-  width:100%;
+.txPresetPanel{
+  grid-column:1 / -1;
 }
-
 .txSearch{
   width:100%;
 }
@@ -2912,18 +2908,18 @@ html.forceDesktop .desktopModeBtn .dmState{
   width:100%;
   justify-content:center;
 }
-@media (max-width:1088px){
+@media (max-width:720px){
   .txToolbar{
     grid-template-columns:1fr;
   }
 
+  .txToolbarLeft,
   .txToolbarRight{
-    display:grid;
-    grid-template-columns:1fr;
-    gap:8px;
+    display:contents;
   }
 
   .txPresetPanel{
+    grid-column:auto;
     grid-template-columns:repeat(3, 1fr);
   }
 }

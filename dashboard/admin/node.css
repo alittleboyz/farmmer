@@ -1038,6 +1038,7 @@ input[type="number"]{
   grid-template-columns:1fr 1fr;
   gap:8px;
   min-width:0;
+  margin-top:10px;
 }
 
 .txRangeRow,

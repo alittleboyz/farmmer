@@ -1021,42 +1021,43 @@ input[type="number"]{
 }
 
 .txToolbar{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  width:100%;
+  margin-top:10px;
+}
+
+.txToolbarMain{
   display:grid;
   grid-template-columns:1fr 1fr 1fr;
-  gap:8px;
-  align-items:start;
+  gap:10px;
+  align-items:center;
   width:100%;
-  margin-top:10px;
 }
 
-.txToolbarLeft{
-  min-width:0;
-}
-
-.txToolbarRight{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  min-width:0;
-  margin-top:10px;
-}
-
-.txRangeRow,
-.txToolbarRight .msType,
-.txToolbarRight .txSearchWrap,
-.txToolbarRight .txSearchInput{
+.txToolbarMain .txSearchInput,
+.txToolbarMain .msType,
+.txToolbarMain .txRangeRow{
   width:100%;
   min-width:0;
 }
+.txToolbarMain > .txSearchInput{
+  min-width:0 !important;
+  width:100% !important;
+}
 
+.txToolbarMain > .msType{
+  min-width:0 !important;
+  width:100% !important;
+}
 
-
+.txToolbarMain > .txRangeRow{
+  min-width:0 !important;
+  width:100% !important;
+}
 @media (max-width:720px){
-  .txToolbar{
-    grid-template-columns:1fr;
-  }
-
-  .txToolbarRight{
+  .txToolbarMain{
     grid-template-columns:1fr;
   }
 
@@ -1064,7 +1065,6 @@ input[type="number"]{
     grid-template-columns:repeat(3, 1fr);
   }
 }
-
 @media(max-width:520px){
   .txPresetPanel{
     grid-template-columns:repeat(2, 1fr);

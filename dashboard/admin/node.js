@@ -1133,7 +1133,7 @@ let txTabPaging = { page: 1, per: 10 };
 let txTabFilter = {
   range: "showAll",
   search: "",
-  type: "all"
+  type: ["all"]
 };
 let txTabPicker = null;
   // ===== RIGHT DRAWER GLOBAL (ONE-TIME) =====

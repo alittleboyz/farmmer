@@ -2837,7 +2837,7 @@ html.forceDesktop .desktopModeBtn .dmState{
   display:block;
 }
 
-@media (max-width:700px){
+@media (max-width:837px){
   .txToolbar{
     width:100% !important;
     display:block !important;

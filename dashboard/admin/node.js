@@ -1869,44 +1869,49 @@ ${!isHistory ? `
 
         </div>
 
-        <div class="rangeBar" data-rangebar="${vaultId}">
-<div class="rangeLeft">
-  <input class="dateRangeInput" data-range="${vaultId}" type="text" readonly>
+<div class="rangeBar" data-rangebar="${vaultId}">
+  <div class="rangeLeft">
 
-<div class="msType" data-chip-typefilter="${vaultId}">
-  <div class="msBox" tabindex="0"></div>
-  <div class="msMenu">
-    <div data-value="all">All Type</div>
-    <div data-value="cash_in">Cash In</div>
-    <div data-value="cash_out">Cash Out</div>
-    <div data-value="buy">Buy</div>
-    <div data-value="missing">Missing</div>
-    <div data-value="sell">Sell</div>
+    <!-- Search pindah ke kiri -->
+    <div class="txSearchWrap">
+      <input class="txSearchInput"
+        type="text"
+        placeholder="Search transaction..."
+        data-txsearch="${vaultId}">
+
+      <button type="button" class="vaultSearchClear" data-txclear="${vaultId}" aria-label="Clear search">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="currentColor" d="m12.002 2.005c5.518 0 9.998 4.48 9.998 9.997 0 5.518-4.48 9.998-9.998 9.998-5.517 0-9.997-4.48-9.997-9.998 0-5.517 4.48-9.997 9.997-9.997zm0 8.933-2.721-2.722c-.146-.146-.339-.219-.531-.219-.404 0-.75.324-.75.749 0 .193.073.384.219.531l2.722 2.722-2.728 2.728c-.147.147-.22.34-.22.531 0 .427.35.75.751.75.192 0 .384-.073.53-.219l2.728-2.728 2.729 2.728c.146.146.338.219.53.219.401 0 .75-.323.75-.75 0-.191-.073-.384-.22-.531l-2.727-2.728 2.717-2.717c.146-.147.219-.338.219-.531 0-.425-.346-.75-.75-.75-.192 0-.385.073-.531.22z"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Filter tengah -->
+    <div class="msType" data-chip-typefilter="${vaultId}">
+      <div class="msBox" tabindex="0"></div>
+      <div class="msMenu">
+        <div data-value="all">All Type</div>
+        <div data-value="cash_in">Cash In</div>
+        <div data-value="cash_out">Cash Out</div>
+        <div data-value="buy">Buy</div>
+        <div data-value="missing">Missing</div>
+        <div data-value="sell">Sell</div>
+      </div>
+    </div>
+
+    <!-- Date range pindah ke kanan -->
+    <input class="dateRangeInput" data-range="${vaultId}" type="text" readonly>
+
   </div>
-</div>
-
-  <!-- ✅ NEW -->
-<div class="txSearchWrap">
-  <input class="txSearchInput"
-    type="text"
-    placeholder="Search transaction..."
-    data-txsearch="${vaultId}">
-
-  <button type="button" class="vaultSearchClear" data-txclear="${vaultId}" aria-label="Clear search">
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path fill="currentColor" d="m12.002 2.005c5.518 0 9.998 4.48 9.998 9.997 0 5.518-4.48 9.998-9.998 9.998-5.517 0-9.997-4.48-9.997-9.998 0-5.517 4.48-9.997 9.997-9.997zm0 8.933-2.721-2.722c-.146-.146-.339-.219-.531-.219-.404 0-.75.324-.75.749 0 .193.073.384.219.531l2.722 2.722-2.728 2.728c-.147.147-.22.34-.22.531 0 .427.35.75.751.75.192 0 .384-.073.53-.219l2.728-2.728 2.729 2.728c.146.146.338.219.53.219.401 0 .75-.323.75-.75 0-.191-.073-.384-.22-.531l-2.727-2.728 2.717-2.717c.146-.147.219-.338.219-.531 0-.425-.346-.75-.75-.75-.192 0-.385.073-.531.22z"></path>
-  </button>
-</div>
-</div>
 
   <div class="rangeRight" data-presets="${vaultId}">
-    <button class="pbtn" data-preset="today"     data-vid="${vaultId}">Today</button>
+    <button class="pbtn" data-preset="today" data-vid="${vaultId}">Today</button>
     <button class="pbtn" data-preset="yesterday" data-vid="${vaultId}">Yesterday</button>
-    <button class="pbtn" data-preset="thisWeek"  data-vid="${vaultId}">This Week</button>
-    <button class="pbtn" data-preset="lastWeek"  data-vid="${vaultId}">Last Week</button>
+    <button class="pbtn" data-preset="thisWeek" data-vid="${vaultId}">This Week</button>
+    <button class="pbtn" data-preset="lastWeek" data-vid="${vaultId}">Last Week</button>
     <button class="pbtn" data-preset="thisMonth" data-vid="${vaultId}">This Month</button>
     <button class="pbtn" data-preset="lastMonth" data-vid="${vaultId}">Last Month</button>
-    <button class="pbtn" data-preset="showAll"   data-vid="${vaultId}">Show All</button>
+    <button class="pbtn" data-preset="showAll" data-vid="${vaultId}">Show All</button>
   </div>
 </div>
 

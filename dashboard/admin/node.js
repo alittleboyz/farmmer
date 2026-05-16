@@ -805,15 +805,23 @@ function renderTransactionRows(){
     });
   }
 
-  if(txTabFilter.type !== "all"){
-    rows = rows.filter(t => {
-      if(txTabFilter.type === "add_point_in")  return t.kind === "add_point" && t.direction === "in";
-      if(txTabFilter.type === "add_point_out") return t.kind === "add_point" && t.direction === "out";
-      if(txTabFilter.type === "cash_in")       return t.kind === "cash" && t.direction === "in";
-      if(txTabFilter.type === "cash_out")      return t.kind === "cash" && t.direction === "out";
-      return true;
+const tf = Array.isArray(txTabFilter.type) ? txTabFilter.type : ["all"];
+
+if(tf.length === 0){
+  rows = [];
+}else if(tf.includes("all")){
+  // show semua
+}else{
+  rows = rows.filter(t => {
+    return tf.some(type=>{
+      if(type === "add_point_in")  return t.kind === "add_point" && t.direction === "in";
+      if(type === "add_point_out") return t.kind === "add_point" && t.direction === "out";
+      if(type === "cash_in")       return t.kind === "cash" && t.direction === "in";
+      if(type === "cash_out")      return t.kind === "cash" && t.direction === "out";
+      return false;
     });
-  }
+  });
+}
 
   const q = String(txTabFilter.search || "").trim().toLowerCase();
   if(q){
@@ -2924,43 +2932,56 @@ function initTxTabChipTypeFilter(){
   const box = root.querySelector(".msBox");
   const menu = root.querySelector(".msMenu");
 
+  if(!Array.isArray(txTabFilter.type)){
+    txTabFilter.type = ["all"];
+  }
+
   function render(){
     box.innerHTML = "";
 
-    const val = txTabFilter.type || "all";
-    box.classList.toggle("isEmpty", false);
-    box.classList.toggle("hasChip", true);
+    const selected = txTabFilter.type || [];
 
-    const label = menu.querySelector(`[data-value="${val}"]`)?.textContent || "All";
+    box.classList.toggle("isEmpty", selected.length === 0);
+    box.classList.toggle("hasChip", selected.length > 0);
 
-    const chip = document.createElement("span");
-    chip.className = "msChip";
-    chip.innerHTML = `
-      ${label}
-      <b>
-        <svg viewBox="0 0 1024 1024" aria-hidden="true">
-          <path fill="currentColor" d="M799.86 166.31c.02 0 .04.02.08.06l57.69 57.7c.04.03.05.05.06.08a.12.12 0 010 .06c0 .03-.02.05-.06.09L569.93 512l287.7 287.7c.04.04.05.06.06.09a.12.12 0 010 .07c0 .02-.02.04-.06.08l-57.7 57.69c-.03.04-.05.05-.07.06a.12.12 0 01-.07 0c-.03 0-.05-.02-.09-.06L512 569.93l-287.7 287.7c-.04.04-.06.05-.09.06a.12.12 0 01-.07 0c-.02 0-.04-.02-.08-.06l-57.69-57.7c-.04-.03-.05-.05-.06-.07a.12.12 0 010-.07c0-.03.02-.05.06-.09L454.07 512l-287.7-287.7c-.04-.04-.05-.06-.06-.09a.12.12 0 010-.07c0-.02.02-.04.06-.08l57.7-57.69c.03-.04.05-.05.07-.06a.12.12 0 01.07 0c.03 0 .05.02.09.06L512 454.07l287.7-287.7c.04-.04.06-.05.09-.06a.12.12 0 01.07 0z"/>
-        </svg>
-      </b>
-    `;
+    selected.forEach(val=>{
+      const label = menu.querySelector(`[data-value="${val}"]`)?.textContent || val;
 
-    chip.querySelector("b").onclick = (e)=>{
-      e.stopPropagation();
-      txTabFilter.type = "all";
-      txTabPaging.page = 1;
-      render();
-      renderTransactionRows();
-    };
+      const chip = document.createElement("span");
+      chip.className = "msChip";
+      chip.innerHTML = `
+        ${label}
+        <b>
+          <svg viewBox="0 0 1024 1024" aria-hidden="true">
+            <path fill="currentColor" d="M799.86 166.31c.02 0 .04.02.08.06l57.69 57.7c.04.03.05.05.06.08a.12.12 0 010 .06c0 .03-.02.05-.06.09L569.93 512l287.7 287.7c.04.04.05.06.06.09a.12.12 0 010 .07c0 .02-.02.04-.06.08l-57.7 57.69c-.03.04-.05.05-.07.06a.12.12 0 01-.07 0c-.03 0-.05-.02-.09-.06L512 569.93l-287.7 287.7c-.04.04-.06.05-.09.06a.12.12 0 01-.07 0c-.02 0-.04-.02-.08-.06l-57.69-57.7c-.04-.03-.05-.05-.06-.07a.12.12 0 010-.07c0-.03.02-.05.06-.09L454.07 512l-287.7-287.7c-.04-.04-.05-.06-.06-.09a.12.12 0 010-.07c0-.02.02-.04.06-.08l57.7-57.69c.03-.04.05-.05.07-.06a.12.12 0 01.07 0c.03 0 .05.02.09.06L512 454.07l287.7-287.7c.04-.04.06-.05.09-.06a.12.12 0 01.07 0z"/>
+          </svg>
+        </b>
+      `;
 
-    box.appendChild(chip);
+      chip.querySelector("b").onclick = (e)=>{
+        e.stopPropagation();
+
+        txTabFilter.type = txTabFilter.type.filter(x => x !== val);
+
+        txTabPaging.page = 1;
+        render();
+        renderTransactionRows();
+      };
+
+      box.appendChild(chip);
+    });
 
     const arrow = document.createElement("span");
     arrow.className = "msArrow";
-    arrow.innerHTML = `<svg viewBox="0 0 1024 1024"><path fill="currentColor" d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"/></svg>`;
+    arrow.innerHTML = `
+      <svg viewBox="0 0 1024 1024">
+        <path fill="currentColor" d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"/>
+      </svg>
+    `;
     box.appendChild(arrow);
 
     menu.querySelectorAll("[data-value]").forEach(opt=>{
-      opt.classList.toggle("active", opt.dataset.value === val);
+      opt.classList.toggle("active", selected.includes(opt.dataset.value));
     });
   }
 
@@ -2973,10 +2994,18 @@ function initTxTabChipTypeFilter(){
     const opt = e.target.closest("[data-value]");
     if(!opt) return;
 
-    txTabFilter.type = opt.dataset.value || "all";
+    const val = opt.dataset.value;
+    let arr = txTabFilter.type || [];
+
+    if(arr.includes(val)){
+      arr = arr.filter(x => x !== val);
+    }else{
+      arr.push(val);
+    }
+
+    txTabFilter.type = arr;
     txTabPaging.page = 1;
 
-    root.classList.remove("open");
     render();
     renderTransactionRows();
   };

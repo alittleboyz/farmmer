@@ -938,7 +938,7 @@ input[type="number"]{
   align-items:flex-start;
   justify-content:space-between;
   gap:10px;
-  margin:10px 0 14px;
+  margin:10px 0 10px;
   flex-wrap:wrap;
 }
 
@@ -2989,7 +2989,7 @@ html.forceDesktop .desktopModeBtn .dmState{
 .vaultPresetPanel{
   display:none !important;
   width:100%;
-  grid-template-columns:repeat(3, 1fr);
+  grid-template-columns:repeat(7, 1fr);
   gap:8px;
   margin-top:8px;
 }
@@ -3005,6 +3005,6 @@ html.forceDesktop .desktopModeBtn .dmState{
 
 @media(max-width:520px){
   .vaultPresetPanel{
-    grid-template-columns:repeat(2, 1fr);
+    grid-template-columns:repeat(3, 1fr);
   }
 }

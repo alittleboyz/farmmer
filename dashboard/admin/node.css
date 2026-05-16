@@ -3029,7 +3029,8 @@ html.forceDesktop .desktopModeBtn .dmState{
 /* ===== FLATPICKR THEME CUSTOM ===== */
 .flatpickr-calendar{
   background:var(--panelBg) !important;
-  border:1px solid var(--borderTable) !important;
+  border:0 !important;
+  border-radius:8px !important;
   box-shadow:0 18px 60px rgba(0,0,0,.45) !important;
   color:var(--colorInput) !important;
 }
@@ -3087,4 +3088,8 @@ html.forceDesktop .desktopModeBtn .dmState{
 .flatpickr-prev-month:hover svg,
 .flatpickr-next-month:hover svg{
   fill:var(--btnH) !important;
+}
+.dayContainer + .dayContainer {
+    -webkit-box-shadow: -1px 0 0 #e6e6e6 !important;
+    box-shadow: -1px 0 0 #535353 !important;
 }

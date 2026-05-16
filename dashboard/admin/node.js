@@ -785,6 +785,15 @@ if(rangeInput && txTabFilter.range === "showAll"){
         }
       }
     });
+    const r = txTabFilter.range;
+
+if(r && r !== "showAll"){
+  const start = new Date(r.startMs);
+  const end = new Date(r.endMs);
+
+  txTabPicker.setDate([start, end], false);
+  rangeInput.value = `${ymd(r.startMs)} → ${ymd(r.endMs)}`;
+}
   }
 }
 function renderTransactionRows(){

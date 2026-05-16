@@ -5620,3 +5620,37 @@ function updateLocalClock(){
 
 updateLocalClock();
 setInterval(updateLocalClock,1000);
+document.querySelectorAll('.tblWrap').forEach(wrap => {
+
+  const shell = wrap.closest('.tblShell');
+  if(!shell) return;
+
+  function updateScrollShadow(){
+
+    const maxScroll =
+      wrap.scrollWidth - wrap.clientWidth;
+
+    // LEFT
+    if(wrap.scrollLeft > 2){
+      shell.classList.add('ping-left');
+    }else{
+      shell.classList.remove('ping-left');
+    }
+
+    // RIGHT
+    if(wrap.scrollLeft < maxScroll - 2){
+      shell.classList.add('ping-right');
+    }else{
+      shell.classList.remove('ping-right');
+    }
+  }
+
+  wrap.addEventListener('scroll', updateScrollShadow);
+
+  // first load
+  updateScrollShadow();
+
+  // resize
+  window.addEventListener('resize', updateScrollShadow);
+
+});

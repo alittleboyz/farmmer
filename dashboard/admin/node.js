@@ -1899,12 +1899,20 @@ ${!isHistory ? `
       </div>
     </div>
 
-    <!-- Date range pindah ke kanan -->
-    <input class="dateRangeInput" data-range="${vaultId}" type="text" readonly>
+<!-- Date range pindah ke kanan -->
+<div class="vaultRangeRow">
+  <input class="dateRangeInput" data-range="${vaultId}" type="text" readonly>
+
+  <button class="vaultPresetToggle" data-vault-preset-toggle="${vaultId}" type="button" aria-label="Toggle presets">
+    <svg viewBox="0 0 1024 1024">
+      <path fill="currentColor" d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"/>
+    </svg>
+  </button>
+</div>
 
   </div>
 
-  <div class="rangeRight" data-presets="${vaultId}">
+  <div class="vaultPresetPanel" data-presets="${vaultId}">
     <button class="pbtn" data-preset="today" data-vid="${vaultId}">Today</button>
     <button class="pbtn" data-preset="yesterday" data-vid="${vaultId}">Yesterday</button>
     <button class="pbtn" data-preset="thisWeek" data-vid="${vaultId}">This Week</button>
@@ -3448,6 +3456,20 @@ function bindTxSearchClear(vaultId){
   sync();
 }
 function initVaultDateRangeUI(vaultId){
+    const toggleBtn = document.querySelector(`[data-vault-preset-toggle="${id}"]`);
+  const presetPanel = document.querySelector(`[data-presets="${id}"]`);
+
+  if(toggleBtn && presetPanel && toggleBtn.dataset.bound !== "1"){
+    toggleBtn.dataset.bound = "1";
+
+    toggleBtn.addEventListener("click", (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+
+      presetPanel.classList.toggle("open");
+      toggleBtn.classList.toggle("open", presetPanel.classList.contains("open"));
+    });
+  }
   const input = document.querySelector(`.dateRangeInput[data-range="${vaultId}"]`);
   if(!input) return;
 

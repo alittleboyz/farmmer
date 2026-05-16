@@ -842,7 +842,7 @@ input[type="number"]{
 .kpiSplit{
   display:grid;
   grid-template-columns: 1fr 1fr;
-  gap:12px;
+  gap:10px;
   font-size:14px;
 }
 @media (max-width: 900px){
@@ -1031,7 +1031,7 @@ input[type="number"]{
 .txToolbarMain{
   display:grid;
   grid-template-columns:1fr 1fr 1fr;
-  gap:10px;
+  gap:8px;
   align-items:center;
   width:100%;
 }
@@ -2606,8 +2606,8 @@ html.forceDesktop .desktopModeBtn .dmState{
 .tblShell::after{
   content:"";
   position:absolute;
-  top:1px;
-  bottom:10px;           /* stop sebelum scrollbar bawah */
+  top:10px;
+  bottom:0;
   width:30px;
   z-index:10;
   pointer-events:none;

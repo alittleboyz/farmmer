@@ -647,7 +647,18 @@ function ymd(ms){
 }
 function setupStackFlatpickr(fp){
   if(!fp || !fp.calendarContainer) return;
-  fp.calendarContainer.classList.add("fpStack2");
+
+  const cal = fp.calendarContainer;
+  cal.classList.toggle("fpStack2", window.innerWidth <= 520);
+
+  const months = cal.querySelectorAll(".flatpickr-month");
+  const days = cal.querySelectorAll(".dayContainer");
+
+  days.forEach((dc, i)=>{
+    const m = months[i]?.querySelector(".cur-month")?.textContent || "";
+    const y = months[i]?.querySelector(".numInput.cur-year")?.value || "";
+    dc.setAttribute("data-month-label", `${m} ${y}`.trim());
+  });
 }
 function rangeTextFromMsList(msList){
   const dates = msList
@@ -842,7 +853,13 @@ txTabPicker = flatpickr(rangeInput, {
   onOpen: function(_, __, fp){
     setupStackFlatpickr(fp);
   },
+onMonthChange: function(_, __, fp){
+  setupStackFlatpickr(fp);
+},
 
+onYearChange: function(_, __, fp){
+  setupStackFlatpickr(fp);
+},
   onChange: (dates)=>{
         
         if(dates.length === 2){
@@ -3579,7 +3596,13 @@ onOpen: (_, __, fp)=> {
     input.value = `${ymd(f.startMs)} → ${ymd(f.endMs)}`;
   }
 },
+onMonthChange: (_, __, fp)=> {
+  setupStackFlatpickr(fp);
+},
 
+onYearChange: (_, __, fp)=> {
+  setupStackFlatpickr(fp);
+},
     onChange: (dates)=>{
       if(dates.length === 2){
         const startMs = startOfDayMs(dates[0]);
@@ -3598,10 +3621,10 @@ onClose: (dates)=>{
     const f = vaultFilters[vaultId];
 
     if(f === "showAll"){
-      input.value = "Show All";
-      requestAnimationFrame(()=>{
-        input.value = "Show All";
-      });
+input.value = getVaultAllRangeText(vaultId);
+requestAnimationFrame(()=>{
+  input.value = getVaultAllRangeText(vaultId);
+});
     }else if(f){
       input.value = `${ymd(f.startMs)} → ${ymd(f.endMs)}`;
     }else{

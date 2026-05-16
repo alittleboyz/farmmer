@@ -5620,10 +5620,13 @@ function updateLocalClock(){
 
 updateLocalClock();
 setInterval(updateLocalClock,1000);
+
 document.querySelectorAll('.tblWrap').forEach(wrap => {
 
   const shell = wrap.closest('.tblShell');
   if(!shell) return;
+
+  let scrollTimer;
 
   function updateScrollShadow(){
 
@@ -5643,12 +5646,18 @@ document.querySelectorAll('.tblWrap').forEach(wrap => {
     }else{
       shell.classList.remove('ping-right');
     }
+
+    // reset timer
+    clearTimeout(scrollTimer);
+
+    // bila stop scroll -> hide semua shadow
+    scrollTimer = setTimeout(() => {
+      shell.classList.remove('ping-left');
+      shell.classList.remove('ping-right');
+    }, 500); // 500ms lepas stop scroll
   }
 
   wrap.addEventListener('scroll', updateScrollShadow);
-
-  // first load
-  updateScrollShadow();
 
   // resize
   window.addEventListener('resize', updateScrollShadow);

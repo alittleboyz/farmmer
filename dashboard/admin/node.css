@@ -3153,8 +3153,8 @@ html.forceDesktop .desktopModeBtn .dmState{
     margin:0 !important;
   }
   .span.flatpickr-weekday {
-    font-size: 70%;
-    font-weight: 500;
+    font-size: 70% !important;
+    font-weight: 500 !important;
   }
   .flatpickr-current-month{
     font-size: 100%;

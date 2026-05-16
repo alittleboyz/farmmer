@@ -758,27 +758,39 @@ if(rangeInput && txTabFilter.range === "showAll"){
     };
   }
 
-  document.querySelectorAll("[data-txpreset]").forEach(btn => {
-    btn.onclick = () => {
-      const key = btn.dataset.txpreset;
-      
-      document.querySelectorAll("[data-txpreset]").forEach(b => {
-  b.classList.toggle("active", b === btn);
-});
-      if(key === "showAll"){
-        txTabFilter.range = "showAll";
-        if(txTabPicker) txTabPicker.clear();
-        if(rangeInput) rangeInput.value = "Show All";
-      }else{
-        txTabFilter.range = presetRangeMs(key);
-        if(rangeInput && txTabFilter.range !== "showAll"){
-          rangeInput.value = `${ymd(txTabFilter.range.startMs)} → ${ymd(txTabFilter.range.endMs)}`;
-        }
+ document.querySelectorAll("[data-txpreset]").forEach(btn => {
+  btn.onclick = () => {
+    const key = btn.dataset.txpreset;
+
+    document.querySelectorAll("[data-txpreset]").forEach(b => {
+      b.classList.toggle("active", b === btn);
+    });
+
+    if(key === "showAll"){
+      txTabFilter.range = "showAll";
+
+      if(txTabPicker){
+        txTabPicker.clear();
       }
-      txTabPaging.page = 1;
-      renderTransactionRows();
-    };
-  });
+
+      if(rangeInput){
+        rangeInput.value = "Show All";
+      }
+    }else{
+      const r = presetRangeMs(key);
+      if(!r) return;
+
+      txTabFilter.range = r;
+
+      if(rangeInput){
+        rangeInput.value = `${ymd(r.startMs)} → ${ymd(r.endMs)}`;
+      }
+    }
+
+    txTabPaging.page = 1;
+    renderTransactionRows();
+  };
+});
 
   if(rangeInput){
     if(txTabPicker){

@@ -1029,7 +1029,11 @@ input[type="number"]{
   margin-top:10px;
 }
 
-.txToolbarLeft,
+.txToolbarLeft{
+  display:block;
+  min-width:0;
+}
+
 .txToolbarRight{
   display:contents;
 }
@@ -1042,7 +1046,20 @@ input[type="number"]{
 }
 
 .txPresetPanel{
-  grid-column:1 / -1;
+  display:none;
+  width:100%;
+  grid-template-columns:repeat(auto-fit, minmax(80px, 1fr));
+  gap:8px;
+  margin-top:8px;
+}
+
+.txPresetPanel.open{
+  display:grid;
+}
+
+.txPresetPanel .pbtn{
+  width:100%;
+  justify-content:center;
 }
 .txSearch{
   width:100%;
@@ -2914,13 +2931,17 @@ html.forceDesktop .desktopModeBtn .dmState{
     grid-template-columns:1fr;
   }
 
-  .txToolbarLeft,
+  .txToolbarLeft{
+    display:block;
+  }
+
   .txToolbarRight{
-    display:contents;
+    display:grid;
+    grid-template-columns:1fr;
+    gap:8px;
   }
 
   .txPresetPanel{
-    grid-column:auto;
     grid-template-columns:repeat(3, 1fr);
   }
 }

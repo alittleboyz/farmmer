@@ -3090,7 +3090,7 @@ html.forceDesktop .desktopModeBtn .dmState{
 .flatpickr-calendar.arrowBottom::after{
   border-top-color: var(--panelBg) !important;
 }
-/* ===== FLATPICKR PHONE: paksa 2 month stack atas bawah ===== */
+/* ===== FLATPICKR PHONE: 2 MONTH ATAS BAWAH + WEEKDAY EACH MONTH ===== */
 @media (max-width:520px){
   .flatpickr-calendar.fpStack2{
     left:50% !important;
@@ -3105,23 +3105,42 @@ html.forceDesktop .desktopModeBtn .dmState{
   .flatpickr-calendar.fpStack2 .flatpickr-innerContainer,
   .flatpickr-calendar.fpStack2 .flatpickr-rContainer{
     width:100% !important;
-    max-width:100% !important;
     display:block !important;
+  }
+
+  .flatpickr-calendar.fpStack2 .flatpickr-months{
+    display:flex !important;
+    width:100% !important;
+  }
+
+  .flatpickr-calendar.fpStack2 .flatpickr-month{
+    width:50% !important;
+  }
+
+  .flatpickr-calendar.fpStack2 .flatpickr-weekdays{
+    display:flex !important;
+    width:100% !important;
+  }
+
+  .flatpickr-calendar.fpStack2 .flatpickr-weekdaycontainer{
+    width:50% !important;
+    min-width:50% !important;
+    max-width:50% !important;
   }
 
   .flatpickr-calendar.fpStack2 .flatpickr-days{
     width:100% !important;
     display:flex !important;
-    flex-direction:column !important;
+    flex-wrap:wrap !important;
   }
 
   .flatpickr-calendar.fpStack2 .dayContainer{
-    width:100% !important;
-    min-width:100% !important;
-    max-width:100% !important;
+    width:50% !important;
+    min-width:50% !important;
+    max-width:50% !important;
     display:flex !important;
     flex-wrap:wrap !important;
-    padding:0 12px !important;
+    padding:0 6px !important;
     box-sizing:border-box !important;
   }
 
@@ -3132,16 +3151,5 @@ html.forceDesktop .desktopModeBtn .dmState{
     height:32px !important;
     line-height:32px !important;
     margin:0 !important;
-  }
-
-  .flatpickr-calendar.fpStack2 .dayContainer + .dayContainer{
-    margin-top:18px !important;
-    padding-top:18px !important;
-    border-top:1px solid var(--borderTable) !important;
-    box-shadow:none !important;
-  }
-
-  .flatpickr-calendar.fpStack2 .flatpickr-weekdays{
-    display:none !important;
   }
 }

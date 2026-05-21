@@ -3433,6 +3433,15 @@ html.forceDesktop .desktopModeBtn .dmState{
 #notesGrid > .card .cardBody{
   width: 100%;
 }
+.notesGrid.isEmpty{
+  grid-template-columns:1fr !important;
+}
+
 .notesEmptyCard{
-  grid-column: 1 / -1;
-  wid
+  width:100% !important;
+  grid-column:1 / -1 !important;
+}
+
+.notesEmptyCard .cardBody{
+  width:100% !important;
+}

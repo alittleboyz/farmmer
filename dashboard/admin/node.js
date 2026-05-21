@@ -5288,12 +5288,7 @@ if(selected.length){
     </svg>
   `;
 
-clearBtn.addEventListener("pointerdown", (e)=>{
-  e.preventDefault();
-  e.stopPropagation();
-}, true);
-
-clearBtn.addEventListener("click", (e)=>{
+clearBtn.onpointerdown = (e)=>{
   e.preventDefault();
   e.stopPropagation();
 
@@ -5302,7 +5297,7 @@ clearBtn.addEventListener("click", (e)=>{
 
   render();
   renderStickyNotes();
-});
+};
 
   box.appendChild(clearBtn);
 }
@@ -5311,13 +5306,18 @@ clearBtn.addEventListener("click", (e)=>{
     });
   }
 
-  box.onclick = (e)=>{
-    e.stopPropagation();
-    document.querySelectorAll(".msType.open").forEach(x=>{
-      if(x !== root) x.classList.remove("open");
-    });
-    root.classList.toggle("open");
-  };
+box.onclick = (e)=>{
+  if(e.target.closest(".msClearBtn")) return;
+  if(e.target.closest(".msChip b")) return;
+
+  e.stopPropagation();
+
+  document.querySelectorAll(".msType.open").forEach(x=>{
+    if(x !== root) x.classList.remove("open");
+  });
+
+  root.classList.toggle("open");
+};
 
   menu.onclick = (e)=>{
     const opt = e.target.closest("[data-value]");

@@ -1233,6 +1233,14 @@ let txTabFilter = {
   type: ["all"]
 };
 let txTabPicker = null;
+let stickyNotes = [];
+let stickyNotesEditId = null;
+let stickyNotesFilter = ["all"];
+let stickyNotesUnsub = null;
+
+function stickyNotesRef(){
+  return ref(db, `sticky_notes/${me.uid}`);
+}
   // ===== RIGHT DRAWER GLOBAL (ONE-TIME) =====
 let btnDrawer = null;
 let drawer = null;
@@ -1817,10 +1825,12 @@ function setView(v, save = true){
   $("tabOpen")?.classList.toggle("active", v === "open");
   $("tabHistory")?.classList.toggle("active", v === "history");
   $("tabTransaction")?.classList.toggle("active", v === "transaction");
+  $("tabNotes")?.classList.toggle("active", v === "notes");
 
   $("viewOpen")?.classList.toggle("hide", v !== "open");
   $("viewHistory")?.classList.toggle("hide", v !== "history");
   $("viewTransaction")?.classList.toggle("hide", v !== "transaction");
+  $("viewNotes")?.classList.toggle("hide", v !== "notes");
 
   const openPager = document.getElementById("openVaultPager");
   const histPager = document.getElementById("historyVaultPager");
@@ -4063,6 +4073,12 @@ $("tabHistory").addEventListener("click", () => {
   setView("history");
 });
 
+$("tabNotes")?.addEventListener("click", () => {
+  flashPageLoader("Please wait while fetching...", 250);
+  setView("notes");
+  renderStickyNotes();
+});
+
 $("btnAddPoint").addEventListener("click", ()=>{
   if(!me.isAdmin){ toast("Limited user: tiada akses Add Point."); return; }
 
@@ -5035,6 +5051,263 @@ document.addEventListener("click", (e)=>{
 
   setActivePreset(vaultId, key);
 });
+function wireStickyNotes(){
+  if(!me.uid) return;
+
+  if(stickyNotesUnsub){
+    stickyNotesUnsub();
+    stickyNotesUnsub = null;
+  }
+
+  stickyNotesUnsub = onValue(stickyNotesRef(), (snap)=>{
+    const val = snap.exists() ? snap.val() : {};
+    stickyNotes = Object.entries(val).map(([id,n]) => ({ id, ...(n || {}) }));
+    renderStickyNotes();
+  });
+}
+
+function renderStickyNotes(){
+  const grid = $("notesGrid");
+  if(!grid) return;
+
+  const search = String($("notesSearch")?.value || "").trim().toLowerCase();
+  let rows = [...stickyNotes];
+
+  if(search){
+    rows = rows.filter(n => `${n.title||""} ${n.content||""} ${n.byUser||""}`.toLowerCase().includes(search));
+  }
+
+  const f = stickyNotesFilter || ["all"];
+
+  if(f.length === 0){
+    rows = [];
+  }else if(f.includes("all")){
+    rows = rows.filter(n => !n.archived);
+  }else{
+    rows = rows.filter(n => f.some(x => {
+      if(x === "pinned") return n.pinned && !n.archived;
+      if(x === "recent") return !n.archived;
+      if(x === "archived") return n.archived;
+      return false;
+    }));
+  }
+
+  rows.sort((a,b)=>{
+    if((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)){
+      return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+    }
+    return Number(b.updatedAtMs || 0) - Number(a.updatedAtMs || 0);
+  });
+
+  if(!rows.length){
+    grid.innerHTML = `<div class="card"><div class="cardBody"><div class="hint">No notes found.</div></div></div>`;
+    return;
+  }
+
+  grid.innerHTML = rows.map(n => `
+    <div class="noteCard ${n.archived ? "archived" : ""}">
+      <div class="noteTop">
+        <div class="noteTitle">${escapeHtml(n.title || "Untitled")}</div>
+        <div class="noteActions">
+          <button class="noteMiniBtn" data-note-pin="${n.id}" type="button">${n.pinned ? "📌" : "📍"}</button>
+          <button class="noteMiniBtn" data-note-archive="${n.id}" type="button">${n.archived ? "↩️" : "🗄️"}</button>
+        </div>
+      </div>
+
+      <div class="noteText">${escapeHtml(n.content || "")}</div>
+
+      <div class="noteMeta">
+        <span>👤 ${escapeHtml(n.byUser || "-")}</span>
+        <span>${fmtDT(n.updatedAtMs)}</span>
+      </div>
+
+      <div class="noteBottom">
+        <button class="btn-edit" data-note-edit="${n.id}" type="button">Edit</button>
+        <button class="btn-delete" data-note-delete="${n.id}" type="button">Delete</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function openStickyNoteModal(note = null){
+  stickyNotesEditId = note?.id || null;
+  $("stickyNoteModalTitle").textContent = stickyNotesEditId ? "Edit Note" : "Create Note";
+  $("stickyNoteTitle").value = note?.title || "";
+  $("stickyNoteContent").value = note?.content || "";
+  openModal("mStickyNote");
+}
+
+function closeStickyNoteModal(){
+  stickyNotesEditId = null;
+  $("stickyNoteTitle").value = "";
+  $("stickyNoteContent").value = "";
+  closeModal("mStickyNote");
+}
+
+async function saveStickyNote(){
+  if(!me.uid) throw new Error("Please login first.");
+
+  const title = String($("stickyNoteTitle")?.value || "").trim();
+  const content = String($("stickyNoteContent")?.value || "").trim();
+
+  if(!title && !content) throw new Error("Please write something.");
+
+  const now = Date.now();
+
+  const payload = {
+    title,
+    content,
+    updatedAt: serverTimestamp(),
+    updatedAtMs: now,
+    byUid: me.uid,
+    byUser: me.username || "user"
+  };
+
+  if(stickyNotesEditId){
+    await update(ref(db, `sticky_notes/${me.uid}/${stickyNotesEditId}`), payload);
+  }else{
+    const nr = push(stickyNotesRef());
+    await set(nr, {
+      ...payload,
+      pinned:false,
+      archived:false,
+      createdAt: serverTimestamp(),
+      createdAtMs: now
+    });
+  }
+
+  closeStickyNoteModal();
+  return "Note saved.";
+}
+
+function bindStickyNotesUI(){
+  $("btnCreateNote")?.addEventListener("click", () => openStickyNoteModal());
+
+  $("notesSearch")?.addEventListener("input", renderStickyNotes);
+
+  bindLoadingClick("stickyNoteSave", saveStickyNote);
+
+  $("notesGrid")?.addEventListener("click", async (e)=>{
+    const editId = e.target.closest("[data-note-edit]")?.dataset.noteEdit;
+    const delId = e.target.closest("[data-note-delete]")?.dataset.noteDelete;
+    const pinId = e.target.closest("[data-note-pin]")?.dataset.notePin;
+    const archiveId = e.target.closest("[data-note-archive]")?.dataset.noteArchive;
+
+    if(editId){
+      const note = stickyNotes.find(x => x.id === editId);
+      openStickyNoteModal(note);
+      return;
+    }
+
+    if(delId){
+      const ok = await confirmBox("Delete this note?", {
+        title:"Delete Note",
+        okText:"Delete",
+        okClass:"danger"
+      });
+
+      if(ok){
+        await remove(ref(db, `sticky_notes/${me.uid}/${delId}`));
+        toast("Note deleted.", "success");
+      }
+      return;
+    }
+
+    if(pinId){
+      const note = stickyNotes.find(x => x.id === pinId);
+      await update(ref(db, `sticky_notes/${me.uid}/${pinId}`), {
+        pinned: !note?.pinned,
+        updatedAt: serverTimestamp(),
+        updatedAtMs: Date.now()
+      });
+      return;
+    }
+
+    if(archiveId){
+      const note = stickyNotes.find(x => x.id === archiveId);
+      await update(ref(db, `sticky_notes/${me.uid}/${archiveId}`), {
+        archived: !note?.archived,
+        updatedAt: serverTimestamp(),
+        updatedAtMs: Date.now()
+      });
+      return;
+    }
+  });
+
+  initStickyNotesFilter();
+}
+
+function initStickyNotesFilter(){
+  const root = $("notesFilter");
+  if(!root || root.dataset.bound === "1") return;
+  root.dataset.bound = "1";
+
+  const box = root.querySelector(".msBox");
+  const menu = root.querySelector(".msMenu");
+
+  function render(){
+    box.innerHTML = "";
+    const selected = stickyNotesFilter || [];
+
+    box.classList.toggle("isEmpty", selected.length === 0);
+    box.classList.toggle("hasChip", selected.length > 0);
+
+    selected.forEach(val=>{
+      const label = menu.querySelector(`[data-value="${val}"]`)?.textContent || val;
+      const chip = document.createElement("span");
+      chip.className = "msChip";
+      chip.innerHTML = `${label} <b>×</b>`;
+
+      chip.querySelector("b").onclick = (e)=>{
+        e.stopPropagation();
+        stickyNotesFilter = stickyNotesFilter.filter(x => x !== val);
+        render();
+        renderStickyNotes();
+      };
+
+      box.appendChild(chip);
+    });
+
+    const arrow = document.createElement("span");
+    arrow.className = "msArrow";
+    arrow.textContent = "⌄";
+    box.appendChild(arrow);
+
+    menu.querySelectorAll("[data-value]").forEach(opt=>{
+      opt.classList.toggle("active", selected.includes(opt.dataset.value));
+    });
+  }
+
+  box.onclick = (e)=>{
+    e.stopPropagation();
+    document.querySelectorAll(".msType.open").forEach(x=>{
+      if(x !== root) x.classList.remove("open");
+    });
+    root.classList.toggle("open");
+  };
+
+  menu.onclick = (e)=>{
+    const opt = e.target.closest("[data-value]");
+    if(!opt) return;
+
+    const val = opt.dataset.value;
+
+    if(val === "all"){
+      stickyNotesFilter = ["all"];
+    }else{
+      let arr = stickyNotesFilter.filter(x => x !== "all");
+      arr = arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val];
+      stickyNotesFilter = arr;
+    }
+
+    render();
+    renderStickyNotes();
+  };
+
+  document.addEventListener("click", ()=>root.classList.remove("open"));
+
+  render();
+}
   // ===== AUTH BOOT =====
 onAuthStateChanged(auth, async (user)=>{
   if(!user){
@@ -5062,6 +5335,11 @@ onAuthStateChanged(auth, async (user)=>{
   wireBalanceListener();
   wireLastLedgerListener();
   wireVaultListeners();
+  if(!window.__stickyNotesBound){
+  window.__stickyNotesBound = true;
+  bindStickyNotesUI();
+}
+wireStickyNotes();
 const searchInput = document.getElementById("vaultSearch");
 if(searchInput){
   searchInput.addEventListener("input", e=>{
@@ -5074,7 +5352,7 @@ if(searchInput){
   const savedTab = localStorage.getItem(ACTIVE_TAB_KEY);
 
 setView(
-  ["open","history","transaction"].includes(savedTab)
+  ["open","history","transaction","notes"].includes(savedTab)
     ? savedTab
     : "open",
   false

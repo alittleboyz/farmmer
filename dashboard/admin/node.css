@@ -3306,7 +3306,7 @@ html.forceDesktop .desktopModeBtn .dmState{
   display:flex;
   align-items:center;
   justify-content:center;
-  color:rgba(255,255,255,.55);
+  color:var(--scroll);
   transition:.18s ease;
 }
 
@@ -3444,4 +3444,15 @@ html.forceDesktop .desktopModeBtn .dmState{
 
 .notesEmptyCard .cardBody{
   width:100% !important;
+}
+.msChip b{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.msChip b svg{
+  width:10px;
+  height:10px;
+  display:block;
 }

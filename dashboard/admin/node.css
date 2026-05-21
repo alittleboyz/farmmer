@@ -3257,6 +3257,16 @@ html.forceDesktop .desktopModeBtn .dmState{
 @media(max-width:720px){
   .notesToolbar{grid-template-columns:1fr}
 }
+@media(max-width:720px){
+  .notesGrid{
+    grid-template-columns:1fr !important;
+  }
+
+  .noteCard{
+    width:100% !important;
+    max-width:100% !important;
+  }
+}
 /* ===== NOTES FILTER CHIP ACTION ===== */
 #notesFilter .msBox{
   position:relative;

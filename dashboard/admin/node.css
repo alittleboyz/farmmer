@@ -3425,3 +3425,14 @@ html.forceDesktop .desktopModeBtn .dmState{
 .topRow{
   display:none;
 }
+#notesGrid > .card{
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+#notesGrid > .card .cardBody{
+  width: 100%;
+}
+.notesEmptyCard{
+  grid-column: 1 / -1;
+  wid

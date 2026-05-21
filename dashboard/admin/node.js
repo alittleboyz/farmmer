@@ -5086,20 +5086,19 @@ function renderStickyNotes(){
     rows = rows.filter(n => `${n.title||""} ${n.content||""} ${n.byUser||""}`.toLowerCase().includes(search));
   }
 
-  const f = stickyNotesFilter || ["all"];
+const f = stickyNotesFilter || ["all"];
 
-  if(f.length === 0){
-    rows = [];
-  }else if(f.includes("all")){
-    rows = rows.filter(n => !n.archived);
-  }else{
-    rows = rows.filter(n => f.some(x => {
-      if(x === "pinned") return n.pinned && !n.archived;
-      if(x === "recent") return !n.archived;
-      if(x === "archived") return n.archived;
-      return false;
-    }));
-  }
+if(f.length === 0){
+  rows = [];
+}else{
+  rows = rows.filter(n => f.some(x => {
+    if(x === "all") return !n.archived;
+    if(x === "pinned") return n.pinned && !n.archived;
+    if(x === "recent") return !n.archived;
+    if(x === "archived") return n.archived;
+    return false;
+  }));
+}
 
   rows.sort((a,b)=>{
     if((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)){
@@ -5333,23 +5332,28 @@ box.onclick = (e)=>{
   root.classList.toggle("open");
 };
 
-  menu.onclick = (e)=>{
-    const opt = e.target.closest("[data-value]");
-    if(!opt) return;
+menu.onclick = (e)=>{
+  const opt = e.target.closest("[data-value]");
+  if(!opt) return;
 
-    const val = opt.dataset.value;
+  const val = opt.dataset.value;
+  let arr = stickyNotesFilter || [];
 
-    if(val === "all"){
-      stickyNotesFilter = ["all"];
-    }else{
-      let arr = stickyNotesFilter.filter(x => x !== "all");
-      arr = arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val];
-      stickyNotesFilter = arr;
-    }
+  if(val === "all"){
+    arr = arr.includes("all")
+      ? arr.filter(x => x !== "all")
+      : ["all", ...arr];
+  }else{
+    arr = arr.includes(val)
+      ? arr.filter(x => x !== val)
+      : [...arr, val];
+  }
 
-    render();
-    renderStickyNotes();
-  };
+  stickyNotesFilter = arr;
+
+  render();
+  renderStickyNotes();
+};
 
   document.addEventListener("click", ()=>root.classList.remove("open"));
 

@@ -2680,14 +2680,14 @@ html.forceDesktop .desktopModeBtn .dmState{
   }
 
   .indoClock .clockTime{
-    font-size:18px;
-    font-weight:700;
+    font-size:12px;
+    font-weight:600;
     color:#fff;
   }
 
   .indoClock .clockDate{
-    font-size:10px;
-    font-weight:600;
+    font-size:8px;
+    font-weight:500;
     margin-left:4px;
   }
 
@@ -3297,12 +3297,92 @@ html.forceDesktop .desktopModeBtn .dmState{
   display:block;
 }
 
+#notesFilter .msBox{
+  position:relative;
+  padding-right:34px !important;
+}
+
+/* ===== ARROW ===== */
+#notesFilter .msArrow{
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  width:16px;
+  height:16px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  color:rgba(255,255,255,.45);
+
+  transition:
+    opacity .18s ease,
+    transform .18s ease,
+    color .18s ease;
+
+  pointer-events:none;
+}
+
+#notesFilter .msArrow svg{
+  width:14px;
+  height:14px;
+  display:block;
+}
+
+/* ===== CLOSE BTN ===== */
+#notesFilter .msClearBtn{
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%) scale(.85);
+
+  width:18px;
+  height:18px;
+
+  border:0;
+  background:none;
+  padding:0;
+  margin:0;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  color:rgba(255,255,255,.55);
+
+  opacity:0;
+  visibility:hidden;
+
+  transition:
+    opacity .18s ease,
+    transform .18s ease,
+    color .18s ease;
+
+  cursor:pointer;
+  z-index:5;
+}
+
+#notesFilter .msClearBtn svg{
+  width:14px;
+  height:14px;
+  display:block;
+}
+
+/* ===== HOVER INPUT FILTER ===== */
+#notesFilter:hover .msBox.hasChip .msArrow{
+  opacity:0;
+  transform:translateY(-50%) scale(.7);
+}
+
 #notesFilter:hover .msBox.hasChip .msClearBtn{
   opacity:1;
   visibility:visible;
-  pointer-events:auto;
+  transform:translateY(-50%) scale(1);
 }
 
-#notesFilter:hover .msBox.hasChip .msArrow{
-  opacity:0;
+/* hover icon */
+#notesFilter .msClearBtn:hover{
+  color:#fff;
 }

@@ -2575,12 +2575,12 @@ html.forceDesktop .desktopModeBtn .dmState{
     flex-direction:column;
     line-height:1.1;
     min-width:90px;
-    font-size:10px;
+    font-size:8px;
     color:rgba(255,255,255,0.85);
   }
 
   .indoClock .clockTime{
-    font-size:18px;
+    font-size:14px;
     font-weight:700;
     color:#fff;
   }

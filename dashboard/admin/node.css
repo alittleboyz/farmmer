@@ -3260,7 +3260,7 @@ html.forceDesktop .desktopModeBtn .dmState{
 
 .noteMeta{
   font-size:11px;
-  color:rgba(255,255,255,.9);
+  color:var(--colorInput);
 }
 
 .noteBottom{

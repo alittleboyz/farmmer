@@ -3178,57 +3178,25 @@ html.forceDesktop .desktopModeBtn .dmState{
   margin:14px 0;
 }
 
+#btnCreateNote{
+  grid-column:4;
+  justify-self:end;
+}
+
 .notesSearchWrap{
   display:grid;
   grid-template-columns:1fr 32px;
-  gap:0;
-  width:100%;
-}
-
-#notesSearch{
-  border-radius:6px 0 0 6px !important;
-  border-right:0 !important;
+  gap:3px;
 }
 
 .notesIconBtn{
   width:32px;
   height:32px;
   border:1px solid var(--borderTable);
-  border-left:0;
   background:var(--inputBg);
   color:var(--colorInput);
-  border-radius:0 6px 6px 0;
+  border-radius:6px;
   cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  transition:.2s;
-}
-
-.notesIconBtn:hover{
-  border-color:#3c89e8;
-  color:#3c89e8;
-}
-
-.notesIconBtn svg{
-  width:14px;
-  height:14px;
-  display:block;
-}
-
-#notesFilter{
-  width:100%;
-  min-width:0;
-}
-
-#btnCreateNote{
-  grid-column:4;
-  justify-self:end;
-  min-width:82px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
 }
 
 .notesGrid{
@@ -3252,6 +3220,32 @@ html.forceDesktop .desktopModeBtn .dmState{
   overflow:hidden;
 }
 
+.noteCard.archived{opacity:.55}
+
+.noteTop,.noteMeta{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.noteTitle{
+  font-weight:700;
+  font-size:14px;
+}
+
+.noteActions{
+  display:flex;
+  gap:6px;
+}
+
+.noteMiniBtn{
+  border:0;
+  background:transparent;
+  color:white;
+  cursor:pointer;
+  font-size:14px;
+}
+
 .noteText{
   border:1px solid rgba(255,255,255,.35);
   border-radius:6px;
@@ -3264,17 +3258,15 @@ html.forceDesktop .desktopModeBtn .dmState{
   overflow-wrap:anywhere;
 }
 
+.noteMeta{
+  font-size:11px;
+  color:rgba(255,255,255,.9);
+}
+
 .noteBottom{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:8px;
-}
-
-.noteBottom .btn-edit,
-.noteBottom .btn-delete{
-  width:100%;
-  justify-content:center;
-  text-align:center;
 }
 
 @media(max-width:1060px){
@@ -3287,7 +3279,6 @@ html.forceDesktop .desktopModeBtn .dmState{
     width:100%;
   }
 }
-
 @media(max-width:720px){
   .notesGrid{
     grid-template-columns:1fr !important;

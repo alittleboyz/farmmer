@@ -5120,7 +5120,13 @@ if(f.length === 0){
   });
 
   if(!rows.length){
-    grid.innerHTML = `<div class="card"><div class="cardBody"><div class="hint">No notes found.</div></div></div>`;
+    grid.innerHTML = `
+  <div class="card notesEmptyCard">
+    <div class="cardBody">
+      <div class="hint">No notes found.</div>
+    </div>
+  </div>
+`;
     return;
   }
 

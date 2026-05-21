@@ -145,7 +145,11 @@ input::placeholder{
       border-radius:6px; padding: 8px 10px; cursor:pointer;
       background: #2c1111;
       color: #ff4d4f; font-weight:400;
-      display:inline-flex; align-items:center; gap:8px;
+      display:inline-flex;
+align-items:center;
+justify-content:center;
+gap:8px;
+text-align:center;
       user-select:none;
       font-size: 14px;height: 32px;
       transition: all 0.2s;
@@ -157,7 +161,11 @@ input::placeholder{
       border-radius:6px; padding: 8px 10px; cursor:pointer;
       background: rgba(22, 104, 220, .18); 
       color:white; font-weight:400;
-      display:inline-flex; align-items:center; gap:8px;
+display:inline-flex;
+align-items:center;
+justify-content:center;
+gap:8px;
+text-align:center;
       user-select:none;
       font-size: 14px;height: 32px;
       transition: all 0.2s;

@@ -431,7 +431,7 @@ body.mobileSearchOpen #vaultSearch{
     }
     .sub{margin-top:4px; color:#1668dc; font-size:11px;}
     .vaultBtns{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
-    .cardBody{padding:12px 14px 14px; background:var(--panelBg);}
+    .cardBody{padding:12px 14px 14px; background:var(--panelBg);text-align: center;}
 .tblWrap table tfoot td{
   border-bottom:0 !important;
 }

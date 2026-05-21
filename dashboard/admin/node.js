@@ -5643,6 +5643,7 @@ const TEXT_EN_TO_ID = {
   "History": "Riwayat",
   "Add Point": "Tambah Poin",
   "New Vault": "Buat Vault",
+  "Notes": "Catatan",
 
   "My Wallet": "Dompet Saya",
   "Availabe Balance": "Saldo tersedia",

@@ -3206,18 +3206,18 @@ html.forceDesktop .desktopModeBtn .dmState{
 }
 
 .noteCard{
-  background:#0f777d;
-  border:1px solid rgba(255,255,255,.14);
+  background:var(--pagebg);
   border-radius:10px;
   padding:14px;
   width:280px;
   min-height:300px;
   max-height:300px;
-  color:white;
+  color:var(--colorInput);
   display:flex;
   flex-direction:column;
   gap:10px;
   overflow:hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .35);
 }
 
 .noteCard.archived{opacity:.55}
@@ -3375,7 +3375,7 @@ html.forceDesktop .desktopModeBtn .dmState{
   height:32px;
   padding:4px 11px;
   border:1px solid var(--borderTable);
-  border-right:0;
+  border-right:1px solid var(--borderTable);
   border-radius:6px 0 0 6px;
   background:var(--inputBg);
   color:var(--colorInput);
@@ -3395,7 +3395,7 @@ html.forceDesktop .desktopModeBtn .dmState{
   width:32px;
   height:32px;
   border:1px solid var(--borderTable);
-  border-left:0;
+  border-left:1px solid var(--borderTable);
   border-radius:0 6px 6px 0;
   background:var(--inputBg);
   color:var(--colorInput);

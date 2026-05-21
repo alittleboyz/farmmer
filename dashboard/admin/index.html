@@ -82,6 +82,13 @@
     </svg>
     <span>History Vault</span>
   </button>
+
+  <button class="tab" id="tabNotes">
+  <svg class="tabIcon" viewBox="0 0 24 24" aria-hidden="true">
+    <path fill="white" d="M19 3H5c-1.1 0-2 .9-2 2v14l4-4h12c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
+  </svg>
+  <span>Notes</span>
+</button>
 </div>
   
   <div class="right">
@@ -276,6 +283,28 @@
   <div id="viewOpen" class="grid"></div>
   <div id="viewTransaction" class="grid hide"></div>
   <div id="viewHistory" class="grid hide"></div>
+  <div id="viewNotes" class="hide">
+  <div class="notesToolbar">
+    <div class="notesSearchWrap">
+      <input id="notesSearch" type="text" placeholder="Search">
+      <button id="notesSearchBtn" class="notesIconBtn" type="button">⌕</button>
+    </div>
+
+    <div class="msType" id="notesFilter">
+      <div class="msBox" tabindex="0"></div>
+      <div class="msMenu">
+        <div data-value="all">All</div>
+        <div data-value="pinned">Pinned</div>
+        <div data-value="recent">Recent</div>
+        <div data-value="archived">Archived</div>
+      </div>
+    </div>
+
+    <button class="btn" id="btnCreateNote" type="button" data-clickfx>Create</button>
+  </div>
+
+  <div id="notesGrid" class="notesGrid"></div>
+</div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -681,6 +710,31 @@
     <div class="modalFoot">
       <button class="btn-cancel" data-close="mChange2ndPass" type="button">Cancel</button>
       <button class="btn" id="cp2Save" data-loading="Saving..." data-close-modal="mChange2ndPass" data-clickfx>Save</button>
+    </div>
+  </div>
+</div>
+  
+<div class="modalBack" id="mStickyNote" style="display:none;">
+  <div class="modal" style="max-width:520px;">
+    <div class="modalHead">
+      <div>
+        <div class="title" id="stickyNoteModalTitle">Create Note</div>
+        <div class="sub">Sticky notes saved by your login UID.</div>
+      </div>
+      <button class="x" data-close="mStickyNote" type="button">✕</button>
+    </div>
+
+    <div class="modalBody">
+      <label><span class="label-required"></span>Title</label>
+      <input id="stickyNoteTitle" type="text" placeholder="Title">
+
+      <label><span class="label-required"></span>Note</label>
+      <textarea id="stickyNoteContent" placeholder="Write something..."></textarea>
+    </div>
+
+    <div class="modalFoot">
+      <button class="btn-cancel" data-close="mStickyNote" type="button">Cancel</button>
+      <button class="btn" id="stickyNoteSave" type="button" data-loading="Saving..." data-clickfx>Save</button>
     </div>
   </div>
 </div>

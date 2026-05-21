@@ -1839,6 +1839,24 @@ function setView(v, save = true){
   if(openPager) openPager.style.display = (v === "open") ? "flex" : "none";
   if(histPager) histPager.style.display = (v === "history") ? "flex" : "none";
   if(txPager)   txPager.style.display   = (v === "transaction") ? "flex" : "none";
+  const btnAddPoint = $("btnAddPoint");
+const btnNewVault = $("btnNewVault");
+
+if(btnAddPoint){
+  btnAddPoint.style.setProperty(
+    "display",
+    (v === "open") ? "inline-flex" : "none",
+    "important"
+  );
+}
+
+if(btnNewVault){
+  btnNewVault.style.setProperty(
+    "display",
+    (v === "open") ? "inline-flex" : "none",
+    "important"
+  );
+}
 }
 // TAMPAAL DI SINI BRO
 renderTransactionTabShell();

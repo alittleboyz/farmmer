@@ -5065,7 +5065,16 @@ function wireStickyNotes(){
     renderStickyNotes();
   });
 }
+function noteIcon(type){
+  const icons = {
+    pinned: `M8 17h2v5l-2 2v-7zm2-11.5c0-2.319 1.219-4.35 3.047-5.5h-9.047c.068 1.911 2.429 2.097 2.429 5 0 3.771-3.429 3.291-3.429 10h12c0-1.358-.145-2.412-.369-3.276-2.678-.803-4.631-3.284-4.631-6.224zm6.5-4.5c-2.486 0-4.5 2.015-4.5 4.5s2.014 4.5 4.5 4.5c2.484 0 4.5-2.015 4.5-4.5s-2.016-4.5-4.5-4.5zm-.469 6.484l-1.688-1.637.695-.697.992.94 2.115-2.169.697.696-2.811 2.867z`,
+    unpin: `M8 17h2v5l-2 2v-7zm4.462-6.412c.246.625.437 1.39.506 2.412h-7.936c.297-4.36 2.757-4.163 2.757-7.65 0-1.605-.522-2.35-1.272-3.35h4.512c.518-.807 1.207-1.489 2.019-2h-9.048c0 3.656 1.789 2.979 1.789 5.351 0 1.073-.364 1.59-.915 2.373-1.782 2.532-1.874 4.148-1.874 7.276h12c0-1.27-.021-2.287-.159-3.222-.88-.232-1.688-.64-2.379-1.19zm8.538-5.088c0 2.485-2.018 4.5-4.5 4.5-2.484 0-4.5-2.015-4.5-4.5s2.016-4.5 4.5-4.5c2.482 0 4.5 2.015 4.5 4.5zm-2-.5h-5v1h5v-1z`,
+    archived: `M18.546 1l5.454 6.986v15.014h-24v-15.014l5.477-6.986h13.069zm-5.546 14v-3h-2v3h-3l4 4 4-4h-3zm8.474-7l-3.906-5h-11.085l-3.951 5h18.942z`,
+    unarchived: `M18.546 2h-13.069l-5.477 10.986v9.014h24v-9.014l-5.454-10.986zm-3.796 13h-5.5l-2.25-2h-4.666l4.266-9h10.82l4.249 9h-4.669l-2.25 2z`
+  };
 
+  return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${icons[type]}"></path></svg>`;
+}
 function renderStickyNotes(){
   const grid = $("notesGrid");
   if(!grid) return;
@@ -5109,8 +5118,13 @@ function renderStickyNotes(){
       <div class="noteTop">
         <div class="noteTitle">${escapeHtml(n.title || "Untitled")}</div>
         <div class="noteActions">
-          <button class="noteMiniBtn" data-note-pin="${n.id}" type="button">${n.pinned ? "📌" : "📍"}</button>
-          <button class="noteMiniBtn" data-note-archive="${n.id}" type="button">${n.archived ? "↩️" : "🗄️"}</button>
+<button class="noteMiniBtn" data-note-pin="${n.id}" type="button">
+  ${n.pinned ? noteIcon("pinned") : noteIcon("unpin")}
+</button>
+
+<button class="noteMiniBtn" data-note-archive="${n.id}" type="button">
+  ${n.archived ? noteIcon("unarchived") : noteIcon("archived")}
+</button>
         </div>
       </div>
 

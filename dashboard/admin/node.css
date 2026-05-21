@@ -3171,11 +3171,24 @@ html.forceDesktop .desktopModeBtn .dmState{
   }
 }
 .notesToolbar{
-  display:grid;
-  grid-template-columns:1fr minmax(180px,320px) auto;
-  gap:8px;
+  display:flex;
   align-items:center;
+  gap:8px;
   margin:14px 0;
+}
+
+.notesSearchWrap{
+  width:620px;
+  max-width:100%;
+}
+
+#notesFilter{
+  width:320px;
+  max-width:100%;
+}
+
+#btnCreateNote{
+  flex:0 0 auto;
 }
 
 .notesSearchWrap{
@@ -3265,7 +3278,16 @@ html.forceDesktop .desktopModeBtn .dmState{
 }
 
 @media(max-width:720px){
-  .notesToolbar{grid-template-columns:1fr}
+  .notesToolbar{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .notesSearchWrap,
+  #notesFilter,
+  #btnCreateNote{
+    width:100%;
+  }
 }
 @media(max-width:720px){
   .notesGrid{

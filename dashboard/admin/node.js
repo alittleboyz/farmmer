@@ -1817,46 +1817,48 @@ const ACTIVE_TAB_KEY = "farm_active_tab";
 function setView(v, save = true){
   activeView = v;
 
-  // simpan tab terakhir
   if(save){
     localStorage.setItem(ACTIVE_TAB_KEY, v);
   }
 
-  $("tabOpen")?.classList.toggle("active", v === "open");
+  const isOpen = v === "open";
+
+  $("tabOpen")?.classList.toggle("active", isOpen);
   $("tabHistory")?.classList.toggle("active", v === "history");
   $("tabTransaction")?.classList.toggle("active", v === "transaction");
   $("tabNotes")?.classList.toggle("active", v === "notes");
 
-  $("viewOpen")?.classList.toggle("hide", v !== "open");
+  $("viewOpen")?.classList.toggle("hide", !isOpen);
   $("viewHistory")?.classList.toggle("hide", v !== "history");
   $("viewTransaction")?.classList.toggle("hide", v !== "transaction");
   $("viewNotes")?.classList.toggle("hide", v !== "notes");
 
-  const openPager = document.getElementById("openVaultPager");
-  const histPager = document.getElementById("historyVaultPager");
-  const txPager = document.getElementById("txTabPager");
+  const openPager = $("openVaultPager");
+  const histPager = $("historyVaultPager");
+  const txPager   = $("txTabPager");
 
-  if(openPager) openPager.style.display = (v === "open") ? "flex" : "none";
+  if(openPager) openPager.style.display = isOpen ? "flex" : "none";
   if(histPager) histPager.style.display = (v === "history") ? "flex" : "none";
   if(txPager)   txPager.style.display   = (v === "transaction") ? "flex" : "none";
+
   const btnAddPoint = $("btnAddPoint");
-const btnNewVault = $("btnNewVault");
+  const btnNewVault = $("btnNewVault");
 
-if(btnAddPoint){
-  btnAddPoint.style.setProperty(
-    "display",
-    (v === "open") ? "inline-flex" : "none",
-    "important"
-  );
-}
+  if(btnAddPoint){
+    btnAddPoint.style.setProperty(
+      "display",
+      (isOpen && me.isAdmin) ? "inline-flex" : "none",
+      "important"
+    );
+  }
 
-if(btnNewVault){
-  btnNewVault.style.setProperty(
-    "display",
-    (v === "open") ? "inline-flex" : "none",
-    "important"
-  );
-}
+  if(btnNewVault){
+    btnNewVault.style.setProperty(
+      "display",
+      isOpen ? "inline-flex" : "none",
+      "important"
+    );
+  }
 }
 // TAMPAAL DI SINI BRO
 renderTransactionTabShell();

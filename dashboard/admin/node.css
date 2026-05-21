@@ -3269,7 +3269,7 @@ html.forceDesktop .desktopModeBtn .dmState{
   gap:8px;
 }
 
-@media(max-width:720px){
+@media(max-width:1060px){
   .notesToolbar{
     grid-template-columns:1fr;
   }

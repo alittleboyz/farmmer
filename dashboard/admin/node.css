@@ -3422,7 +3422,6 @@ html.forceDesktop .desktopModeBtn .dmState{
   height:14px;
   display:block;
 }
-#btnAddPoint,
-#btnNewVault{
-  display:none !important;
+.topRow{
+  display:none;
 }

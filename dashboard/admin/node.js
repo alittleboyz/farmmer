@@ -1841,21 +1841,13 @@ function setView(v, save = true){
   if(histPager) histPager.style.display = (v === "history") ? "flex" : "none";
   if(txPager)   txPager.style.display   = (v === "transaction") ? "flex" : "none";
 
-  const btnAddPoint = $("btnAddPoint");
-  const btnNewVault = $("btnNewVault");
+  // ✅ hide/show semua topRow
+  const topRow = document.querySelector(".topRow");
 
-  if(btnAddPoint){
-    btnAddPoint.style.setProperty(
+  if(topRow){
+    topRow.style.setProperty(
       "display",
-      (isOpen && me.isAdmin) ? "inline-flex" : "none",
-      "important"
-    );
-  }
-
-  if(btnNewVault){
-    btnNewVault.style.setProperty(
-      "display",
-      isOpen ? "inline-flex" : "none",
+      isOpen ? "flex" : "none",
       "important"
     );
   }

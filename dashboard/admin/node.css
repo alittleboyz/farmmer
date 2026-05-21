@@ -3252,3 +3252,57 @@ html.forceDesktop .desktopModeBtn .dmState{
 @media(max-width:720px){
   .notesToolbar{grid-template-columns:1fr}
 }
+#notesFilter .msBox{
+  position:relative;
+  padding-right:34px !important;
+}
+
+#notesFilter .msArrow{
+  position:absolute;
+  right:11px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--scroll);
+  pointer-events:none;
+  transition:.15s;
+}
+
+#notesFilter .msArrow svg{
+  width:14px;
+  height:14px;
+  display:block;
+}
+
+#notesFilter .msClearBtn{
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  border:0;
+  background:transparent;
+  color:var(--scroll);
+  padding:0;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:.15s;
+}
+
+#notesFilter .msClearBtn svg{
+  width:14px;
+  height:14px;
+  display:block;
+}
+
+#notesFilter:hover .msBox.hasChip .msClearBtn{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+}
+
+#notesFilter:hover .msBox.hasChip .msArrow{
+  opacity:0;
+}

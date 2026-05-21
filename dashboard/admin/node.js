@@ -5119,16 +5119,19 @@ if(f.length === 0){
     return Number(b.updatedAtMs || 0) - Number(a.updatedAtMs || 0);
   });
 
-  if(!rows.length){
-    grid.innerHTML = `
-  <div class="card notesEmptyCard">
-    <div class="cardBody">
-      <div class="hint">No notes found.</div>
+if(!rows.length){
+  grid.classList.add("isEmpty");
+  grid.innerHTML = `
+    <div class="card notesEmptyCard">
+      <div class="cardBody">
+        <div class="hint">No notes found.</div>
+      </div>
     </div>
-  </div>
-`;
-    return;
-  }
+  `;
+  return;
+}
+
+grid.classList.remove("isEmpty");
 
   grid.innerHTML = rows.map(n => `
     <div class="noteCard ${n.archived ? "archived" : ""}">

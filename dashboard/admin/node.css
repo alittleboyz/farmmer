@@ -3252,125 +3252,51 @@ html.forceDesktop .desktopModeBtn .dmState{
 @media(max-width:720px){
   .notesToolbar{grid-template-columns:1fr}
 }
+/* ===== NOTES FILTER CHIP ACTION ===== */
 #notesFilter .msBox{
   position:relative;
   padding-right:34px !important;
 }
 
-#notesFilter .msArrow{
-  position:absolute;
-  right:11px;
-  top:50%;
-  transform:translateY(-50%);
-  color:var(--scroll);
-  pointer-events:none;
-  transition:.15s;
-}
-
-#notesFilter .msArrow svg{
-  width:14px;
-  height:14px;
-  display:block;
-}
-
+#notesFilter .msArrow,
 #notesFilter .msClearBtn{
   position:absolute;
   right:8px;
   top:50%;
-  transform:translateY(-50%);
-  border:0;
-  background:transparent;
-  color:var(--scroll);
-  padding:0;
-  cursor:pointer;
-  display:grid;
-  place-items:center;
-  opacity:0;
-  visibility:hidden;
-  pointer-events:none;
-  transition:.15s;
-}
-
-#notesFilter .msClearBtn svg{
-  width:14px;
-  height:14px;
-  display:block;
-}
-
-#notesFilter .msBox{
-  position:relative;
-  padding-right:34px !important;
-}
-
-/* ===== ARROW ===== */
-#notesFilter .msArrow{
-  position:absolute;
-  right:10px;
-  top:50%;
-  transform:translateY(-50%);
-  width:16px;
-  height:16px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  color:rgba(255,255,255,.45);
-
-  transition:
-    opacity .18s ease,
-    transform .18s ease,
-    color .18s ease;
-
-  pointer-events:none;
-}
-
-#notesFilter .msArrow svg{
-  width:14px;
-  height:14px;
-  display:block;
-}
-
-/* ===== CLOSE BTN ===== */
-#notesFilter .msClearBtn{
-  position:absolute;
-  right:8px;
-  top:50%;
-  transform:translateY(-50%) scale(.85);
-
   width:18px;
   height:18px;
-
-  border:0;
-  background:none;
-  padding:0;
-  margin:0;
-
+  transform:translateY(-50%);
   display:flex;
   align-items:center;
   justify-content:center;
-
   color:rgba(255,255,255,.55);
-
-  opacity:0;
-  visibility:hidden;
-
-  transition:
-    opacity .18s ease,
-    transform .18s ease,
-    color .18s ease;
-
-  cursor:pointer;
-  z-index:5;
+  transition:.18s ease;
 }
 
+#notesFilter .msArrow{
+  right:10px;
+  pointer-events:none;
+}
+
+#notesFilter .msArrow svg,
 #notesFilter .msClearBtn svg{
   width:14px;
   height:14px;
   display:block;
 }
 
-/* ===== HOVER INPUT FILTER ===== */
+#notesFilter .msClearBtn{
+  border:0;
+  background:transparent;
+  padding:0;
+  margin:0;
+  cursor:pointer;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  z-index:50;
+}
+
 #notesFilter:hover .msBox.hasChip .msArrow{
   opacity:0;
   transform:translateY(-50%) scale(.7);
@@ -3379,10 +3305,10 @@ html.forceDesktop .desktopModeBtn .dmState{
 #notesFilter:hover .msBox.hasChip .msClearBtn{
   opacity:1;
   visibility:visible;
+  pointer-events:auto;
   transform:translateY(-50%) scale(1);
 }
 
-/* hover icon */
 #notesFilter .msClearBtn:hover{
   color:#fff;
 }

@@ -5288,12 +5288,21 @@ if(selected.length){
     </svg>
   `;
 
-  clearBtn.onclick = (e)=>{
-    e.stopPropagation();
-    stickyNotesFilter = [];
-    render();
-    renderStickyNotes();
-  };
+clearBtn.addEventListener("pointerdown", (e)=>{
+  e.preventDefault();
+  e.stopPropagation();
+}, true);
+
+clearBtn.addEventListener("click", (e)=>{
+  e.preventDefault();
+  e.stopPropagation();
+
+  stickyNotesFilter = [];
+  root.classList.remove("open");
+
+  render();
+  renderStickyNotes();
+});
 
   box.appendChild(clearBtn);
 }

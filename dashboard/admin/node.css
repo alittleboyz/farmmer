@@ -234,6 +234,8 @@ text-align:center;
       border:1px solid transparent; border-radius:6px; padding: 0px 15px; cursor:pointer;
       background:var(--btn); color:white;
       transition:.15s transform, .15s background;
+      justify-content:center;
+      text-align:center;
       display:inline-flex; align-items:center; gap:8px;
       user-select:none;
       font-size: 14px;height: 32px;

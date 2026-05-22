@@ -1160,30 +1160,39 @@ input[type="number"]{
 }
 
 .vaultSearchIcon{
-    width: 32px;
-    height: 32px;
-    border: 1px solid var(--borderTable);
-    border-left: 1px solid var(--borderTable);
-    border-radius: 0 6px 6px 0;
-    background: var(--inputBg);
-    color: var(--colorInput);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    padding: 0;
-    transition: .2s;
+  width:32px;
+  height:32px;
+  border:1px solid var(--borderTable);
+  border-left:1px solid var(--borderTable);
+  border-radius:0 6px 6px 0;
+  background:var(--inputBg);
+  color:var(--colorInput);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  padding:0;
+  transition:.2s;
+}
+
+.vaultSearchIcon:hover{
+  border-color:#3c89e8;
+  color:#3c89e8;
+}
+
+.vaultSearchIcon:active{
+  border-color:#1554ad;
+  color:#1554ad;
 }
 
 .vaultSearchIcon svg{
-    width: 14px;
-    height: 14px;
-    display: block;
+  width:14px;
+  height:14px;
+  display:block;
+  fill:currentColor;
 }
 #vaultSearch:hover{border-color:#3c89e8;}
 #vaultSearch:focus{border-color:#1668dc;}
-.vaultSearchIcon:hover{border:1px solid #3c89e8;color:#3c89e8}
-.vaultSearchIcon:focus{border:1px solid #1554ad;color:#1554ad}
 @media (max-width:600px){
   .vaultSearchBox{
     max-width:100%;

@@ -1160,28 +1160,25 @@ input[type="number"]{
 }
 
 .vaultSearchIcon{
-  position:static !important;
-  transform:none !important;
-  width:32px;
-  height:32px;
-  padding:0;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  border:1px solid var(--borderTable);
-  border-radius:0 6px 6px 0;
-  background:var(--inputBg);
-  color:var(--colorInput);
-  opacity:1;
-  pointer-events:auto;
-  transition:.2s;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--borderTable);
+    border-left: 1px solid var(--borderTable);
+    border-radius: 0 6px 6px 0;
+    background: var(--inputBg);
+    color: var(--colorInput);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: .2s;
 }
 
 .vaultSearchIcon svg{
-  width:14px;
-  height:14px;
+    width: 14px;
+    height: 14px;
+    display: block;
 }
 #vaultSearch:hover{border-color:#3c89e8;}
 #vaultSearch:focus{border-color:#1668dc;}

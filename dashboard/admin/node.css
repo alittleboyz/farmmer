@@ -2473,7 +2473,6 @@ html.forceDesktop .desktopModeBtn .dmState{
   flex-wrap:nowrap;
   height: 100%;
   align-items: stretch;
-  padding-inline: 12px;
 }
 
 .headerTabs .tab{
@@ -2500,9 +2499,9 @@ html.forceDesktop .desktopModeBtn .dmState{
   width:35px !important;
 }
   .headerTabs .tab{
-    width:35px !important;
-    min-width:35px !important;
-    max-width:35px !important;
+    width:40px !important;
+    min-width:40px !important;
+    max-width:40px !important;
     padding:0 !important;
     font-size:14px;
   }

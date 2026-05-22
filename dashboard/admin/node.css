@@ -1152,10 +1152,6 @@ input[type="number"]{
   display:flex;
   align-items:center;
   justify-content:flex-start;
-  flex:0 0 150px;
-  max-width:150px;
-  min-width:0;
-  margin: 0 12px;
 }
 
 .vaultSearchBox{

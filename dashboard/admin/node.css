@@ -1210,37 +1210,47 @@ input[type="number"]{
     margin-left:auto;
   }
 }
-/* ❌ clear button */
-.vaultSearchClear{
+/* ✅ CLEAR BUTTON DALAM INPUT SAHAJA */
+#clearSearch{
   position:absolute;
-    right:34px;
+  right:36px;
   top:50%;
   transform:translateY(-50%);
-  width:28px;
-  height:28px;
-  border:none;
+  width:24px;
+  height:24px;
+  border:0;
   border-radius:999px;
   background:transparent;
+  color:var(--colorInput);
   cursor:pointer;
   padding:0;
-  display:none;          /* default hidden */
-  color:var(--colorInput);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:5;
 }
 
-.vaultSearchClear svg{
+#clearSearch svg{
   width:14px;
   height:14px;
   display:block;
-  margin:auto;
-  opacity:.85;
-  transition: all .2s;
 }
 
-.vaultSearchClear:hover svg{ opacity:1; color:#3c89e8; }
-.vaultSearchClear:active svg{ transform: scale(.95); color:#1554ad; }
-/* =========================
-    RIGHT DRAWER (MOBILE MENU)
-   ========================= */
+#clearSearch:hover{
+  color:#3c89e8;
+}
+
+/* ✅ SEARCH BUTTON JANGAN HILANG */
+#searchIcon{
+  display:flex !important;
+  align-items:center;
+  justify-content:center;
+}
+
+/* ✅ BAGI INPUT ADA RUANG UNTUK X */
+#vaultSearch{
+  padding-right:38px !important;
+}
 
 /* Button drawer (guna iconBtn style kau) */
 .rightDrawerBtn{ display:none; }
@@ -3443,6 +3453,10 @@ html.forceDesktop .desktopModeBtn .dmState{
 
   .topRow #vaultSearch{
     display:block !important;
+  }
+
+  .topRow .vaultSearchIcon{
+    display:flex !important;
   }
 
   .topRow .vaultSearchMobileBtn{

@@ -349,91 +349,6 @@ text-align:center;
   display:block;
   color:currentColor;
 }
-.vaultSearchMobileBtn{
-  display:none;
-  width:44px;
-  height:100%;
-  border:0;
-  background:transparent;
-  color:rgba(255,255,255,.85);
-  cursor:pointer;
-  align-items:center;
-  justify-content:center;
-}
-
-.vaultSearchMobileBtn svg{
-  width:19.2px;
-  height:19.2px;
-  display:block;
-}
-/* ===== MOBILE TAB ICON ONLY ===== */
-@media (max-width:700px){
-  .headerTabs .tab{
-    gap:0;
-  }
-
-  .headerTabs .tab span{
-    display:none;   /* sorok text */
-  }
-
-  .headerTabs .tabIcon{
-    width:19.2px;
-    height:19.2px;
-    flex:0 0 19.2px;
-  }
-  .vaultSearchWrap{
-    flex:0 0 40px !important;
-    width:40px !important;
-    max-width:40px !important;
-    min-width:40px !important;
-    margin-right:0 !important;
-  }
-
-  .vaultSearchBox{
-    width:40px !important;
-    max-width:40px !important;
-    height:100%;
-  }
-
-  #vaultSearch,
-  .vaultSearchIcon,
-  .vaultSearchClear{
-    display:none !important;
-  }
-
-  .vaultSearchMobileBtn{
-    display:flex;
-  }
-
-body.mobileSearchOpen .vaultSearchWrap{
-  flex:0 0 150px !important;
-  width:150px !important;
-  max-width:150px !important;
-  min-width:150px !important;
-  margin:0 12px !important;
-}
-
-body.mobileSearchOpen .vaultSearchBox{
-  width:150px !important;
-  max-width:150px !important;
-}
-
-body.mobileSearchOpen #vaultSearch{
-  display:block !important;
-  width:150px !important;
-  max-width:150px !important;
-  padding-left:11px !important;
-  padding-right:34px !important;
-}
-
-  body.mobileSearchOpen .vaultSearchIcon{
-    display:block !important;
-  }
-
-  body.mobileSearchOpen .vaultSearchMobileBtn{
-    display:none !important;
-  }
-}
     .actions{display:flex; gap:5px; align-items:center; flex-wrap:wrap}
     .hint{color:var(--colorInput); font-size:12px; line-height:1.4}
     .create-vault{color:#1668dc; font-size:12px; line-height:1.4}
@@ -1189,8 +1104,6 @@ input[type="number"]{
   display:flex;
   align-items:center;
   justify-content:flex-start;
-  flex:0 0 150px;
-  max-width:150px;
   min-width:0;
   margin: 0 12px;
 }
@@ -1235,20 +1148,6 @@ input[type="number"]{
   header{
     flex-wrap: nowrap;
     gap:0;
-  }
-
-  .vaultSearchWrap{
-    flex:0 0 40px !important;
-    width:40px !important;
-    max-width:40px !important;
-    min-width:40px !important;
-    margin-right:0 !important;
-  }
-
-  .vaultSearchBox{
-    width:40px !important;
-    max-width:40px !important;
-    height:100%;
   }
 
   .right{
@@ -3486,11 +3385,6 @@ html.forceDesktop .desktopModeBtn .dmState{
     max-width:100% !important;
   }
 
-  .topRow #vaultSearch,
-  .topRow .vaultSearchIcon,
-  .topRow .vaultSearchClear{
-    display:block !important;
-  }
 
   .topRow .actions{
     width:100%;

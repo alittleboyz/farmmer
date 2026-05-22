@@ -1386,17 +1386,18 @@ function initRightDrawerOnce(){
   document.addEventListener("click", onOutsideDrawerClick, true);
 
   // logout button dalam drawer
-  if(drawerLogoutBtn){
-    drawerLogoutBtn.addEventListener("click", async ()=>{
-      try{
-        await signOut(auth);
-        location.replace("../login/");
-      }catch(e){
-        console.error(e);
-        toast(e?.message || "Logout failed");
-      }
-    });
-  }
+if(drawerLogoutBtn){
+  drawerLogoutBtn.addEventListener("click", async ()=>{
+    try{
+      localStorage.removeItem(ACTIVE_TAB_KEY); // ✅ reset tab balik Vault
+      await signOut(auth);
+      location.replace("../login/");
+    }catch(e){
+      console.error(e);
+      toast(e?.message || "Logout failed");
+    }
+  });
+}
 }
   // ===== MODAL helper =====
   function openModal(id){ $(id).style.display="flex"; }
@@ -4066,6 +4067,7 @@ document.addEventListener("keydown", (e)=>{
 // Logout (kekal fungsi asal)
 $("btnLogout").addEventListener("click", async ()=>{
   closeUserMenu();
+  localStorage.removeItem(ACTIVE_TAB_KEY); // ✅ reset tab balik Vault
   await signOut(auth);
   location.replace("../login/");
 });

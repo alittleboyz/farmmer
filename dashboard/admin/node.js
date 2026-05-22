@@ -1571,58 +1571,37 @@ function wireLastLedgerListener(){
     }
   });
 }
-async function changeBalance(delta, meta, atMsOverride){
+async function changeBalance(delta, meta = {}, atMsOverride){
   const now = Number(atMsOverride || Date.now());
+  const d = Math.round(Number(delta || 0)); // IDR bulat
 
-  const balanceRef   = ref(db, `finance/balance/${WALLET_ID}`);
-  const balAmountRef = ref(db, `finance/balance/${WALLET_ID}/amount`);
+  const balanceRef = ref(db, `finance/balance/${WALLET_ID}`);
+  const ledRef = push(ref(db, `finance/ledger/${WALLET_ID}`));
 
-const txRes = await runTransaction(balAmountRef, (cur)=>{
-  const n = safeNum(cur);
-  const d = safeNum(delta);
-  return Math.round(n + d);
-});
+  const txRes = await runTransaction(balanceRef, (cur)=>{
+    const old = cur || {};
+    const oldAmount = Math.round(Number(old.amount || 0));
+    const newAmount = oldAmount + d;
 
-  if(!txRes.committed) throw new Error("Balance update cancelled.");
-
-  const newAmount = safeNum(txRes.snapshot.val());
-
-  const balSnap = await get(balanceRef);
-  const oldBal = balSnap.exists() ? (balSnap.val() || {}) : {};
-  const oldLatestNote = oldBal.latestNote || null;
-
-  const ledRef  = push(ref(db, `finance/ledger/${WALLET_ID}`));
-  const updates = {};
-
-  const balancePayload = {
-    amount: newAmount,
-    updatedAt: serverTimestamp(),
-    updatedAtMs: now,
-    byUid: me.uid,
-    byUser: me.username
-  };
-
-  if(meta?.kind === "add_point"){
-    balancePayload.latestNote = {
-      note: String(meta?.note || "").trim(),
-      amount: Number(meta?.amount || 0),
-      delta: Number(delta || 0),
-      direction: String(meta?.direction || ""),
-      atMs: now,
+    return {
+      ...old,
+      amount: newAmount,
+      updatedAtMs: now,
       byUid: me.uid,
       byUser: me.username
     };
-  }else if(oldLatestNote){
-    balancePayload.latestNote = oldLatestNote;
-  }
+  });
 
-  updates[`finance/balance/${WALLET_ID}`] = balancePayload;
+  if(!txRes.committed) throw new Error("Balance update cancelled.");
+
+  const newAmount = Math.round(Number(txRes.snapshot.val()?.amount || 0));
+
+  const updates = {};
 
   updates[`finance/ledger/${WALLET_ID}/${ledRef.key}`] = {
     ...(meta || {}),
-    delta,
+    delta: d,
     balanceAfter: newAmount,
-    at: serverTimestamp(),
     atMs: now,
     byUid: me.uid,
     byUser: me.username
@@ -1630,12 +1609,10 @@ const txRes = await runTransaction(balAmountRef, (cur)=>{
 
   if(meta?.kind === "add_point" || meta?.kind === "cash"){
     const txRef = push(ref(db, `finance/transactions/${WALLET_ID}`));
-
     updates[`finance/transactions/${WALLET_ID}/${txRef.key}`] = {
       ...(meta || {}),
-      amount: Math.abs(Number(meta?.amount || delta || 0)),
-      delta: Number(delta || 0),
-      at: serverTimestamp(),
+      amount: Math.abs(Number(meta?.amount || d || 0)),
+      delta: d,
       atMs: now,
       byUid: me.uid,
       byUser: me.username,
@@ -1645,38 +1622,13 @@ const txRes = await runTransaction(balAmountRef, (cur)=>{
 
   await update(ref(db), updates);
 }
-
 // TAMBAH DI SINI BRO
 async function rollbackBalanceOnly(delta){
-  const now = Date.now();
-  const balRef = ref(db, `finance/balance/${WALLET_ID}`);
-  const amountRef = ref(db, `finance/balance/${WALLET_ID}/amount`);
-
-  const txRes = await runTransaction(amountRef, (cur)=>{
-    const n = Number(cur || 0);
-    return n + Number(delta || 0);
-  });
-
-  if(!txRes.committed){
-    throw new Error("Balance rollback cancelled.");
-  }
-
-  const newAmount = Number(txRes.snapshot.val() || 0);
-
-  await update(balRef, {
-    amount: newAmount,
-    updatedAt: serverTimestamp(),
-    updatedAtMs: now,
-    byUid: me.uid,
-    byUser: me.username
-  });
-
-  currentBalance = newAmount;
-  const el = $("walletAmt");
-  if(el) el.textContent = fmt(newAmount);
+  await changeBalance(Math.round(Number(delta || 0)), {
+    kind: "rollback_only",
+    note: "Balance rollback"
+  }, Date.now());
 }
-
-
   // ===== VAULTS =====
 async function createVault(title, note, createdAtMs){
   const now = Number(createdAtMs || Date.now());

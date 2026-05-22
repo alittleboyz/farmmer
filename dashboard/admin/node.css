@@ -1175,8 +1175,8 @@ input[type="number"]{
 
 #vaultSearch:hover{border-color:#3c89e8;}
 #vaultSearch:focus{border-color:#1668dc;}
-.vaultSearchIcon:hover{border-color:#3c89e8;}
-.vaultSearchIcon:focus{border-color:#1554ad;}
+.vaultSearchIcon:hover{border:1px solid:#3c89e8;color:#3c89e8}
+.vaultSearchIcon:focus{border:1px solid:#1554ad;color:#1554ad}
 @media (max-width:600px){
   .vaultSearchBox{
     max-width:100%;

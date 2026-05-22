@@ -276,9 +276,9 @@ text-align:center;
 }
 
 .topRow .vaultSearchWrap{
-  flex:0 0 320px;
-  width:320px;
-  max-width:100%;
+  flex:0 0 620px;
+  width:620px;
+  max-width:620px;
   margin:0 !important;
 }
 
@@ -3427,10 +3427,16 @@ html.forceDesktop .desktopModeBtn .dmState{
     max-width:100% !important;
   }
 
-  .topRow #vaultSearch,
-  .topRow .vaultSearchIcon,
-  .topRow .vaultSearchClear{
+  .topRow #vaultSearch{
     display:block !important;
+  }
+
+  .topRow .vaultSearchIcon{
+    display:block !important;
+  }
+
+  .topRow .vaultSearchMobileBtn{
+    display:none !important;
   }
 
   .topRow .actions{

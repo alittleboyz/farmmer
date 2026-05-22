@@ -1571,6 +1571,54 @@ function wireLastLedgerListener(){
   });
 }
 async function changeBalance(delta, meta = {}, atMsOverride){
+  const now = Number(atMsOverride || Date.now());
+  const d = Math.round(Number(delta || 0));
+
+  const amountRef = ref(db, `finance/balance/${WALLET_ID}/amount`);
+
+  const txRes = await runTransaction(amountRef, (cur)=>{
+    const oldAmount = Math.round(Number(cur || 0));
+    return oldAmount + d;
+  });
+
+  if(!txRes.committed){
+    throw new Error("Balance update cancelled.");
+  }
+
+  const newAmount = Math.round(Number(txRes.snapshot.val() || 0));
+  const ledRef = push(ref(db, `finance/ledger/${WALLET_ID}`));
+
+  const updates = {};
+
+  updates[`finance/balance/${WALLET_ID}/updatedAtMs`] = now;
+  updates[`finance/balance/${WALLET_ID}/byUid`] = me.uid;
+  updates[`finance/balance/${WALLET_ID}/byUser`] = me.username;
+
+  updates[`finance/ledger/${WALLET_ID}/${ledRef.key}`] = {
+    ...(meta || {}),
+    delta: d,
+    balanceAfter: newAmount,
+    atMs: now,
+    byUid: me.uid,
+    byUser: me.username
+  };
+
+  if(meta?.kind === "add_point" || meta?.kind === "cash"){
+    const txRef = push(ref(db, `finance/transactions/${WALLET_ID}`));
+
+    updates[`finance/transactions/${WALLET_ID}/${txRef.key}`] = {
+      ...(meta || {}),
+      amount: Math.abs(Math.round(Number(meta?.amount || d || 0))),
+      delta: d,
+      atMs: now,
+      byUid: me.uid,
+      byUser: me.username,
+      ledgerKey: ledRef.key
+    };
+  }
+
+  await update(ref(db), updates);
+}
 
 // TAMBAH DI SINI BRO
 async function rollbackBalanceOnly(delta){

@@ -312,11 +312,6 @@ text-align:center;
   align-items:center;
   flex-wrap:wrap;
 }
-
-.headerTabs{
-  height:100%;
-  align-items:stretch;
-}
 .tab {
   border:0;
   background:transparent;
@@ -2476,6 +2471,9 @@ html.forceDesktop .desktopModeBtn .dmState{
   margin-left:0;
   margin-right:0;
   flex-wrap:nowrap;
+  height: 100%;
+  align-items: stretch;
+  padding-inline: 12px;
 }
 
 .headerTabs .tab{

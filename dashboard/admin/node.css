@@ -1164,15 +1164,25 @@ input[type="number"]{
   transform:none !important;
   width:32px;
   height:32px;
-  padding:8px;
+  padding:0;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
   border:1px solid var(--borderTable);
   border-radius:0 6px 6px 0;
   background:var(--inputBg);
   color:var(--colorInput);
   opacity:1;
   pointer-events:auto;
+  transition:.2s;
 }
 
+.vaultSearchIcon svg{
+  width:14px;
+  height:14px;
+}
 #vaultSearch:hover{border-color:#3c89e8;}
 #vaultSearch:focus{border-color:#1668dc;}
 .vaultSearchIcon:hover{border:1px solid #3c89e8;color:#3c89e8}

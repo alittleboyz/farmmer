@@ -3445,10 +3445,6 @@ html.forceDesktop .desktopModeBtn .dmState{
     display:block !important;
   }
 
-  .topRow .vaultSearchIcon{
-    display:block !important;
-  }
-
   .topRow .vaultSearchMobileBtn{
     display:none !important;
   }

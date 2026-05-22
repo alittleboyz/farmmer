@@ -1200,14 +1200,6 @@ input[type="number"]{
     gap:0;
   }
 
-  .vaultSearchWrap{
-    flex:0 0 40px !important;
-    width:40px !important;
-    max-width:40px !important;
-    min-width:40px !important;
-    margin-right:0 !important;
-  }
-
   .vaultSearchBox{
     width:40px !important;
     max-width:40px !important;

@@ -269,10 +269,34 @@ text-align:center;
 .topRow{
   display:flex;
   align-items:center;
-  justify-content:flex-end; /* pergi kanan */
+  justify-content:space-between;
   gap:12px;
   flex-wrap:wrap;
   margin:14px 0 12px;
+}
+
+.topRow .vaultSearchWrap{
+  flex:0 0 320px;
+  width:320px;
+  max-width:100%;
+  margin:0 !important;
+}
+
+.topRow .vaultSearchBox{
+  width:100%;
+  max-width:100%;
+}
+
+.topRow .actions{
+  margin-left:auto;
+  display:flex;
+  gap:5px;
+  align-items:center;
+  justify-content:flex-end;
+}
+
+.topRow .vaultSearchMobileBtn{
+  display:none !important;
 }
 
 .actions{
@@ -3418,9 +3442,7 @@ html.forceDesktop .desktopModeBtn .dmState{
   height:14px;
   display:block;
 }
-.topRow{
-  display:none;
-}
+
 #notesGrid > .card{
   grid-column: 1 / -1;
   width: 100%;
@@ -3451,4 +3473,30 @@ html.forceDesktop .desktopModeBtn .dmState{
   width:10px;
   height:10px;
   display:block;
+}
+@media(max-width:700px){
+  .topRow .vaultSearchWrap{
+    flex:1 1 100% !important;
+    width:100% !important;
+    max-width:100% !important;
+  }
+
+  .topRow .vaultSearchBox{
+    width:100% !important;
+    max-width:100% !important;
+  }
+
+  .topRow #vaultSearch,
+  .topRow .vaultSearchIcon,
+  .topRow .vaultSearchClear{
+    display:block !important;
+  }
+
+  .topRow .actions{
+    width:100%;
+  }
+
+  .topRow .actions .btn{
+    flex:1;
+  }
 }

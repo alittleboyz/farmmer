@@ -5441,13 +5441,41 @@ onAuthStateChanged(auth, async (user)=>{
 }
 wireStickyNotes();
 const searchInput = document.getElementById("vaultSearch");
-if(searchInput){
-  searchInput.addEventListener("input", e=>{
-    vaultSearchTerm = e.target.value.trim();
-    historyVaultPaging.page = 1;
-    openVaultPaging.page = 1;
-    rerenderVaultLists();
+const clearBtn = document.getElementById("clearSearch");
+const searchIcon = document.getElementById("searchIcon");
+
+function syncVaultSearchUI(){
+  const q = searchInput.value.trim();
+
+  vaultSearchTerm = q;
+  historyVaultPaging.page = 1;
+  openVaultPaging.page = 1;
+
+  // ✅ icon search jangan hilang lagi
+  if(searchIcon) searchIcon.style.display = "flex";
+
+  // ✅ hanya X button show/hide
+  if(clearBtn) clearBtn.style.display = q ? "inline-flex" : "none";
+
+  rerenderVaultLists();
+}
+
+if(searchInput && searchInput.dataset.bound !== "1"){
+  searchInput.dataset.bound = "1";
+
+  searchInput.addEventListener("input", syncVaultSearchUI);
+
+  clearBtn?.addEventListener("click", ()=>{
+    searchInput.value = "";
+    syncVaultSearchUI();
+    searchInput.focus();
   });
+
+  searchIcon?.addEventListener("click", ()=>{
+    syncVaultSearchUI();
+  });
+
+  syncVaultSearchUI();
 }
   const savedTab = localStorage.getItem(ACTIVE_TAB_KEY);
 
@@ -5493,32 +5521,6 @@ window.addEventListener("resize", syncHeaderHeightVar);
 syncDrawer();
   applyLang(getLang());
   toast("Ready.");
-});
-// ===== SEARCH INPUT UI =====
-document.addEventListener("DOMContentLoaded", () => {
-  const searchInput = document.getElementById("vaultSearch");
-  const clearBtn = document.getElementById("clearSearch");
-  const searchIcon = document.getElementById("searchIcon");
-  if (!searchInput || !clearBtn || !searchIcon) {
-    console.warn("Search UI missing element:", { searchInput, clearBtn, searchIcon });
-    return;
-  }
-  function toggleSearchUI() {
-    const hasText = searchInput.value.trim().length > 0;
-    searchIcon.style.display = hasText ? "none" : "block";
-    clearBtn.style.display   = hasText ? "inline-flex" : "none";
-  }
-  searchInput.addEventListener("input", () => {
-    toggleSearchUI();
-    // filterVaults(searchInput.value);
-  });
-  clearBtn.addEventListener("click", () => {
-    searchInput.value = "";
-    toggleSearchUI();
-    searchInput.focus();
-    searchInput.dispatchEvent(new Event("input", { bubbles: true }));
-  });
-  toggleSearchUI();
 });
 document.addEventListener("keydown", function(e){
   if(e.key !== "Escape") return;

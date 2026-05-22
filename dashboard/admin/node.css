@@ -382,8 +382,6 @@ text-align:center;
     flex:0 0 19.2px;
   }
   .vaultSearchBox{
-    width:40px !important;
-    max-width:40px !important;
     height:100%;
   }
 
@@ -1156,8 +1154,6 @@ input[type="number"]{
 
 .vaultSearchBox{
   position:relative;
-  width:100%;
-  max-width:150px;
 }
 
 #vaultSearch{

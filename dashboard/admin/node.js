@@ -446,9 +446,9 @@ function safeNum(v){
   return Number.isFinite(n) ? n : 0;
 }
 
-const fmt = (n)=> safeNum(n).toLocaleString(undefined,{
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2
+const fmt = (n)=> safeNum(n).toLocaleString("id-ID",{
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0
 });
 // TX TIME (admin lock/unlock)
 function toTxInputValue(ms = Date.now()){
@@ -1109,7 +1109,10 @@ function moneyFormat(raw){
   if(raw === "" || raw === ".") return "";
   const n = Number(raw);
   if(!Number.isFinite(n)) return "";
-  return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return Math.round(n).toLocaleString("id-ID", {
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0
+});
 }
 function moneyVal(idOrEl){
   const el = (typeof idOrEl === "string") ? $(idOrEl) : idOrEl;
@@ -1574,9 +1577,10 @@ async function changeBalance(delta, meta, atMsOverride){
   const balanceRef   = ref(db, `finance/balance/${WALLET_ID}`);
   const balAmountRef = ref(db, `finance/balance/${WALLET_ID}/amount`);
 
-  const txRes = await runTransaction(balAmountRef, (cur)=>{
+const txRes = await runTransaction(balAmountRef, (cur)=>{
   const n = safeNum(cur);
-  return n + safeNum(delta);
+  const d = safeNum(delta);
+  return Math.round(n + d);
 });
 
   if(!txRes.committed) throw new Error("Balance update cancelled.");

@@ -1192,12 +1192,6 @@ input[type="number"]{
     gap:0;
   }
 
-  .vaultSearchBox{
-    width:40px !important;
-    max-width:40px !important;
-    height:100%;
-  }
-
   .right{
     flex:0 0 auto;
     flex-wrap:nowrap;

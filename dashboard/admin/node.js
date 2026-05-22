@@ -1842,16 +1842,35 @@ function setView(v, save = true){
   if(histPager) histPager.style.display = (v === "history") ? "flex" : "none";
   if(txPager)   txPager.style.display   = (v === "transaction") ? "flex" : "none";
 
-  // ✅ hide/show semua topRow
-  const topRow = document.querySelector(".topRow");
+// ✅ topRow
+const topRow = document.querySelector(".topRow");
+const btnAddPoint = $("btnAddPoint");
+const btnNewVault = $("btnNewVault");
 
-  if(topRow){
-    topRow.style.setProperty(
-      "display",
-      isOpen ? "flex" : "none",
-      "important"
-    );
-  }
+if(topRow){
+  topRow.style.setProperty(
+    "display",
+    (v === "open" || v === "history") ? "flex" : "none",
+    "important"
+  );
+}
+
+/* button hanya untuk OPEN */
+if(btnAddPoint){
+  btnAddPoint.style.setProperty(
+    "display",
+    (v === "open") ? "inline-flex" : "none",
+    "important"
+  );
+}
+
+if(btnNewVault){
+  btnNewVault.style.setProperty(
+    "display",
+    (v === "open") ? "inline-flex" : "none",
+    "important"
+  );
+}
 }
 // TAMPAAL DI SINI BRO
 renderTransactionTabShell();

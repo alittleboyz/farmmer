@@ -1150,7 +1150,7 @@ input[type="number"]{
   height:32px;
   padding:4px 11px;
   border:1px solid var(--borderTable);
-  border-right:0 !important;
+  border-right:1px solid var(--borderTable);
   border-radius:6px 0 0 6px;
   background:var(--inputBg);
   color:var(--colorInput);
@@ -1175,6 +1175,8 @@ input[type="number"]{
 
 #vaultSearch:hover{border-color:#3c89e8;}
 #vaultSearch:focus{border-color:#1668dc;}
+.vaultSearchIcon:hover{border-color:#3c89e8;}
+.vaultSearchIcon:focus{border-color:#1554ad;}
 @media (max-width:600px){
   .vaultSearchBox{
     max-width:100%;
@@ -1210,8 +1212,8 @@ input[type="number"]{
 }
 
 .vaultSearchClear svg{
-  width:20px;
-  height:20px;
+  width:14px;
+  height:14px;
   display:block;
   margin:auto;
   opacity:.85;

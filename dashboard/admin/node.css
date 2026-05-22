@@ -3301,8 +3301,6 @@ html.forceDesktop .desktopModeBtn .dmState{
   position:absolute;
   right:8px;
   top:50%;
-  width:18px;
-  height:18px;
   transform:translateY(-50%);
   display:flex;
   align-items:center;
@@ -3347,9 +3345,6 @@ html.forceDesktop .desktopModeBtn .dmState{
   transform:translateY(-50%) scale(1);
 }
 
-#notesFilter .msClearBtn:hover{
-  color:#fff;
-}
 .noteMiniBtn svg{
   width:14px;
   height:14px;

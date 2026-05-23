@@ -1036,20 +1036,7 @@ input[type="number"]{
   min-width:0 !important;
   width:100% !important;
 }
-@media (max-width:720px){
-  .txToolbarMain{
-    grid-template-columns:1fr;
-  }
 
-  .txPresetPanel{
-    grid-template-columns:repeat(3, 1fr);
-  }
-}
-@media(max-width:520px){
-  .txPresetPanel{
-    grid-template-columns:repeat(3, 1fr);
-  }
-}
 .txSearch{
   width:100%;
 }
@@ -2932,19 +2919,30 @@ html.forceDesktop .desktopModeBtn .dmState{
 .txPresetPanel{
   display:none;
   width:100%;
-  grid-template-columns:repeat(7, 1fr);
-  gap:8px;
+  gap:14px 18px;
 }
 
 .txPresetPanel.open{
   display:grid;
+  grid-template-columns:repeat(7, minmax(0, 1fr));
 }
 
 .txPresetPanel .pbtn{
   width:100%;
+  min-width:0;
   justify-content:center;
+  white-space:nowrap;
 }
 
+@media(max-width:720px){
+  .txToolbarMain{
+    grid-template-columns:1fr;
+  }
+
+  .txPresetPanel.open{
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+  }
+}
 /* ===== VAULT RANGE TOGGLE FINAL ===== */
 .vaultRangeRow{
   display:grid;

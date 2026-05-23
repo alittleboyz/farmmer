@@ -1070,55 +1070,69 @@ async function renderWalletPointKPI(){
     const snap = await get(ref(db, TX_ROOT));
     const val = snap.exists() ? snap.val() : {};
 
-    let addPointTotal = 0;
-    let outPointTotal = 0;
+    let allIn = 0;
+    let allOut = 0;
+
+    let todayIn = 0;
+    let todayOut = 0;
+
+    const todayStart = startOfDayMs(new Date());
+    const todayEnd   = endOfDayMs(new Date());
 
     Object.values(val).forEach(t => {
       if(!t || t.deleted) return;
       if(t.kind !== "add_point") return;
 
       const amt = Math.abs(Number(t.amount || 0));
+      const ms = Number(t.atMs || 0);
 
       if(t.direction === "in"){
-        addPointTotal += amt;
-      }else if(t.direction === "out"){
-        outPointTotal += amt;
+        allIn += amt;
+        if(ms >= todayStart && ms <= todayEnd) todayIn += amt;
+      }
+
+      if(t.direction === "out"){
+        allOut += amt;
+        if(ms >= todayStart && ms <= todayEnd) todayOut += amt;
       }
     });
 
-    const resultTotal = addPointTotal - outPointTotal;
+    const allResult = allIn - allOut;
+
+    // ✅ ini ikut hari ini sahaja
+    const todayNet = todayIn - todayOut;
+
+    const closingBalance = safeNum(currentBalance);
+    const openingBalance = closingBalance - todayNet;
+    const availableBalance = closingBalance;
 
     const addEl = $("walletAddPointTotal");
     const outEl = $("walletOutPointTotal");
     const resEl = $("walletPointResultTotal");
 
-    if(addEl) addEl.textContent = fmt(addPointTotal);
-    if(outEl) outEl.textContent = fmt(outPointTotal);
-if(addEl) addEl.textContent = fmt(addPointTotal);
-if(outEl) outEl.textContent = fmt(outPointTotal);
-if(resEl) resEl.textContent = fmt(resultTotal);
+    const openingEl = $("walletOpeningBalance");
+    const closingEl = $("walletClosingBalance");
+    const totalIOEl = $("walletTotalInOut");
+    const availEl   = $("walletAvailableBalance2");
 
-const openingEl  = $("walletOpeningBalance");
-const closingEl  = $("walletClosingBalance");
-const totalIOEl  = $("walletTotalInOut");
-const availEl    = $("walletAvailableBalance2");
+    // bawah lama punya Total In / Total Out / Total Result
+    if(addEl) addEl.textContent = fmt(allIn);
+    if(outEl) outEl.textContent = fmt(allOut);
+    if(resEl) resEl.textContent = fmt(allResult);
 
-const closingBalance = safeNum(currentBalance);
-const totalInOut = resultTotal;
-const openingBalance = closingBalance - totalInOut;
-const availableBalance = closingBalance;
+    // 4 row baru
+    if(openingEl) openingEl.textContent = fmt(openingBalance);
+    if(closingEl) closingEl.textContent = fmt(closingBalance);
+    if(totalIOEl) totalIOEl.textContent = fmt(todayNet);
+    if(availEl) availEl.textContent = fmt(availableBalance);
 
-if(openingEl) openingEl.textContent = fmt(openingBalance);
-if(closingEl) closingEl.textContent = fmt(closingBalance);
-if(totalIOEl) totalIOEl.textContent = fmt(totalInOut);
-if(availEl) availEl.textContent = fmt(availableBalance);
+    [resEl, openingEl, closingEl, totalIOEl, availEl].forEach(el=>{
+      if(!el) return;
+      const n = safeNum(el.textContent);
+      el.classList.remove("good","bad");
+      el.classList.add(n < 0 ? "bad" : "good");
+    });
 
-[resEl, openingEl, closingEl, totalIOEl, availEl].forEach(el=>{
-  if(!el) return;
-  const n = safeNum(el.textContent);
-  el.classList.remove("good","bad");
-  el.classList.add(n < 0 ? "bad" : "good");
-});
   }catch(err){
     console.error("renderWalletPointKPI error =", err);
   }

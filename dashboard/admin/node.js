@@ -447,8 +447,8 @@ function safeNum(v){
 }
 
 const fmt = (n)=> safeNum(n).toLocaleString("id-ID",{
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0
 });
 // TX TIME (admin lock/unlock)
 function toTxInputValue(ms = Date.now()){

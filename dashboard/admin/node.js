@@ -1126,12 +1126,23 @@ async function renderWalletPointKPI(){
     if(totalIOEl) totalIOEl.textContent = fmt(todayNet);
     if(availEl) availEl.textContent = fmt(availableBalance);
 
-    [resEl, openingEl, closingEl, totalIOEl, availEl].forEach(el=>{
-      if(!el) return;
-      const n = safeNum(el.textContent);
-      el.classList.remove("good","bad");
-      el.classList.add(n < 0 ? "bad" : "good");
-    });
+[
+  [resEl, allResult],
+  [openingEl, openingBalance],
+  [closingEl, closingBalance],
+  [totalIOEl, todayNet],
+  [availEl, availableBalance]
+].forEach(([el, n])=>{
+  if(!el) return;
+
+  el.classList.remove("good","bad");
+
+  if(n < 0){
+    el.classList.add("bad");
+  }else{
+    el.classList.add("good");
+  }
+});
 
   }catch(err){
     console.error("renderWalletPointKPI error =", err);

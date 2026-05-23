@@ -3876,8 +3876,8 @@ function filterVaultData(data){
 function rerenderVaultLists(){
   renderVaultList("viewOpen", filterVaultData(openVaultDataCache), "open");
   renderVaultList("viewHistory", filterVaultData(histVaultDataCache), "history");
-  // penting: lepas render dua-dua, baru tentukan pager mana patut nampak
-  setView(activeView);
+  // ✅ jangan overwrite localStorage masa rerender/listener
+  setView(activeView, false);
 
   applyLang(getLang());
 }
@@ -5427,9 +5427,17 @@ onAuthStateChanged(auth, async (user)=>{
   initTxTimeControl({ kind:"missing", inputId:"txTime_missing", toggleId:"txTimeToggle_missing" });
   initTxTimeControl({ kind:"sell",    inputId:"txTime_sell",    toggleId:"txTimeToggle_sell" });
 
-  wireBalanceListener();
-  wireLastLedgerListener();
-  wireVaultListeners();
+wireBalanceListener();
+wireLastLedgerListener();
+
+const savedTab = localStorage.getItem(ACTIVE_TAB_KEY);
+activeView = ["open","history","transaction","notes"].includes(savedTab)
+  ? savedTab
+  : "open";
+
+setView(activeView, false);
+
+wireVaultListeners();
   if(!window.__stickyNotesBound){
   window.__stickyNotesBound = true;
   bindStickyNotesUI();
@@ -5472,14 +5480,6 @@ if(searchInput && searchInput.dataset.bound !== "1"){
 
   syncVaultSearchUI();
 }
-  const savedTab = localStorage.getItem(ACTIVE_TAB_KEY);
-
-setView(
-  ["open","history","transaction","notes"].includes(savedTab)
-    ? savedTab
-    : "open",
-  false
-);
   initCustomSelects();
     // ===== LIVE FORMAT INPUTS =====
   attachMoney($("apAmount"));

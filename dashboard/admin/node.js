@@ -1101,49 +1101,34 @@ async function renderWalletPointKPI(){
 }
 // ===== LIVE MONEY FORMAT: 1000 -> 1,000.00 =====
 function _stripNum(s){
-  return String(s ?? "")
-    .replace(/[^\d.]/g, "")
-    .replace(/(\..*)\./g, "$1"); // only one dot
+  return String(s ?? "").replace(/[^\d]/g, "");
 }
+
 function moneyFormat(raw){
-  if(raw === "" || raw === ".") return "";
-  const n = Number(raw);
-  if(!Number.isFinite(n)) return "";
-  return Math.round(n).toLocaleString("id-ID", {
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 0
-});
+  const digits = _stripNum(raw);
+  if(!digits) return "";
+
+  return Number(digits).toLocaleString("id-ID", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  });
 }
+
 function moneyVal(idOrEl){
   const el = (typeof idOrEl === "string") ? $(idOrEl) : idOrEl;
   const raw = _stripNum(el?.value);
   const n = Number(raw);
   return Number.isFinite(n) ? n : 0;
 }
-function intVal(idOrEl){
-  const el = (typeof idOrEl === "string") ? $(idOrEl) : idOrEl;
-  const raw = String(el?.value ?? "").replace(/[^\d]/g, "");
-  const n = Number(raw);
-  return Number.isFinite(n) ? n : 0;
-}
+
 function formatMoneyTyping(raw){
-  raw = _stripNum(raw);
+  const digits = _stripNum(raw);
+  if(!digits) return "";
 
-  if(raw === "") return "";
-  if(raw === ".") return "0.";
-
-  // split integer & decimals
-  const parts = raw.split(".");
-  let intPart = parts[0] || "0";
-  let decPart = parts[1] ?? "";
-
-  intPart = intPart.replace(/^0+(?=\d)/, "");
-  if(decPart.length > 2) decPart = decPart.slice(0,2);
-  intPart = Number(intPart || "0").toLocaleString("en-US");
-  if(raw.endsWith(".") && parts.length === 2) return intPart + ".";
-  if(decPart.length > 0) return intPart + "." + decPart;
-
-  return intPart;
+  return Number(digits).toLocaleString("id-ID", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  });
 }
 
 function attachMoney(el){

@@ -1571,58 +1571,43 @@ function wireLastLedgerListener(){
     }
   });
 }
-async function changeBalance(delta, meta, atMsOverride){
+async function changeBalance(delta, meta = {}, atMsOverride){
   const now = Number(atMsOverride || Date.now());
+  const d = Math.round(safeNum(delta));
 
-  const balanceRef   = ref(db, `finance/balance/${WALLET_ID}`);
-  const balAmountRef = ref(db, `finance/balance/${WALLET_ID}/amount`);
+  const amountRef = ref(db, `finance/balance/${WALLET_ID}/amount`);
+  const ledRef = push(ref(db, `finance/ledger/${WALLET_ID}`));
+  const updates = {};
 
-const txRes = await runTransaction(balAmountRef, (cur)=>{
-  const n = safeNum(cur);
-  const d = safeNum(delta);
-  return Math.round(n + d);
-});
+  const txRes = await runTransaction(amountRef, (cur)=>{
+    return Math.round(safeNum(cur) + d);
+  });
 
   if(!txRes.committed) throw new Error("Balance update cancelled.");
 
-  const newAmount = safeNum(txRes.snapshot.val());
+  const newAmount = Math.round(safeNum(txRes.snapshot.val()));
 
-  const balSnap = await get(balanceRef);
-  const oldBal = balSnap.exists() ? (balSnap.val() || {}) : {};
-  const oldLatestNote = oldBal.latestNote || null;
-
-  const ledRef  = push(ref(db, `finance/ledger/${WALLET_ID}`));
-  const updates = {};
-
-  const balancePayload = {
-    amount: newAmount,
-    updatedAt: serverTimestamp(),
-    updatedAtMs: now,
-    byUid: me.uid,
-    byUser: me.username
-  };
+  updates[`finance/balance/${WALLET_ID}/updatedAtMs`] = now;
+  updates[`finance/balance/${WALLET_ID}/byUid`] = me.uid;
+  updates[`finance/balance/${WALLET_ID}/byUser`] = me.username;
 
   if(meta?.kind === "add_point"){
-    balancePayload.latestNote = {
+    updates[`finance/balance/${WALLET_ID}/latestNote`] = {
       note: String(meta?.note || "").trim(),
-      amount: Number(meta?.amount || 0),
-      delta: Number(delta || 0),
+      amount: Math.abs(safeNum(meta?.amount || d)),
+      delta: d,
       direction: String(meta?.direction || ""),
       atMs: now,
       byUid: me.uid,
       byUser: me.username
     };
-  }else if(oldLatestNote){
-    balancePayload.latestNote = oldLatestNote;
   }
-
-  updates[`finance/balance/${WALLET_ID}`] = balancePayload;
 
   updates[`finance/ledger/${WALLET_ID}/${ledRef.key}`] = {
     ...(meta || {}),
-    delta,
+    kind: String(meta?.kind || "adjust"),
+    delta: d,
     balanceAfter: newAmount,
-    at: serverTimestamp(),
     atMs: now,
     byUid: me.uid,
     byUser: me.username
@@ -1633,9 +1618,10 @@ const txRes = await runTransaction(balAmountRef, (cur)=>{
 
     updates[`finance/transactions/${WALLET_ID}/${txRef.key}`] = {
       ...(meta || {}),
-      amount: Math.abs(Number(meta?.amount || delta || 0)),
-      delta: Number(delta || 0),
-      at: serverTimestamp(),
+      kind: String(meta?.kind || "add_point"),
+      direction: String(meta?.direction || (d >= 0 ? "in" : "out")),
+      amount: Math.abs(safeNum(meta?.amount || d)),
+      delta: d,
       atMs: now,
       byUid: me.uid,
       byUser: me.username,
@@ -1648,32 +1634,10 @@ const txRes = await runTransaction(balAmountRef, (cur)=>{
 
 // TAMBAH DI SINI BRO
 async function rollbackBalanceOnly(delta){
-  const now = Date.now();
-  const balRef = ref(db, `finance/balance/${WALLET_ID}`);
-  const amountRef = ref(db, `finance/balance/${WALLET_ID}/amount`);
-
-  const txRes = await runTransaction(amountRef, (cur)=>{
-    const n = Number(cur || 0);
-    return n + Number(delta || 0);
-  });
-
-  if(!txRes.committed){
-    throw new Error("Balance rollback cancelled.");
-  }
-
-  const newAmount = Number(txRes.snapshot.val() || 0);
-
-  await update(balRef, {
-    amount: newAmount,
-    updatedAt: serverTimestamp(),
-    updatedAtMs: now,
-    byUid: me.uid,
-    byUser: me.username
-  });
-
-  currentBalance = newAmount;
-  const el = $("walletAmt");
-  if(el) el.textContent = fmt(newAmount);
+  return changeBalance(delta, {
+    kind: "rollback_only",
+    note: "Balance rollback"
+  }, Date.now());
 }
 
 

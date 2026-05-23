@@ -2768,6 +2768,7 @@ html.forceDesktop .desktopModeBtn .dmState{
   cursor:pointer;
   color:var(--colorInput);
   font-size:14px;
+  text-align: left;
 }
 
 .msMenu div:hover{

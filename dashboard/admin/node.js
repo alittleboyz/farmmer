@@ -450,6 +450,10 @@ const fmt = (n)=> safeNum(n).toLocaleString("id-ID",{
   minimumFractionDigits: 0,
   maximumFractionDigits: 0
 });
+const fmtBalanceBtn = (n)=> safeNum(n).toLocaleString("id-ID",{
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+});
 // TX TIME (admin lock/unlock)
 function toTxInputValue(ms = Date.now()){
   const d = new Date(ms);
@@ -1461,7 +1465,7 @@ function wireBalanceListener(){
     const v = snap.val() || {};
     currentBalance = safeNum(v.amount);
 
-    const txt = fmt(currentBalance);
+    const txt = fmtBalanceBtn(currentBalance);
     const isNeg = currentBalance < 0;
 
     const elSmall   = $("balanceText");

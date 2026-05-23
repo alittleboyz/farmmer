@@ -450,10 +450,6 @@ const fmt = (n)=> safeNum(n).toLocaleString("id-ID",{
   minimumFractionDigits: 0,
   maximumFractionDigits: 0
 });
-const fmtBalanceBtn = (n)=> safeNum(n).toLocaleString("id-ID",{
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2
-});
 // TX TIME (admin lock/unlock)
 function toTxInputValue(ms = Date.now()){
   const d = new Date(ms);
@@ -1105,34 +1101,49 @@ async function renderWalletPointKPI(){
 }
 // ===== LIVE MONEY FORMAT: 1000 -> 1,000.00 =====
 function _stripNum(s){
-  return String(s ?? "").replace(/[^\d]/g, "");
+  return String(s ?? "")
+    .replace(/[^\d.]/g, "")
+    .replace(/(\..*)\./g, "$1"); // only one dot
 }
-
 function moneyFormat(raw){
-  const digits = _stripNum(raw);
-  if(!digits) return "";
-
-  return Number(digits).toLocaleString("id-ID", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  });
+  if(raw === "" || raw === ".") return "";
+  const n = Number(raw);
+  if(!Number.isFinite(n)) return "";
+  return Math.round(n).toLocaleString("id-ID", {
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0
+});
 }
-
 function moneyVal(idOrEl){
   const el = (typeof idOrEl === "string") ? $(idOrEl) : idOrEl;
   const raw = _stripNum(el?.value);
   const n = Number(raw);
   return Number.isFinite(n) ? n : 0;
 }
-
+function intVal(idOrEl){
+  const el = (typeof idOrEl === "string") ? $(idOrEl) : idOrEl;
+  const raw = String(el?.value ?? "").replace(/[^\d]/g, "");
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : 0;
+}
 function formatMoneyTyping(raw){
-  const digits = _stripNum(raw);
-  if(!digits) return "";
+  raw = _stripNum(raw);
 
-  return Number(digits).toLocaleString("id-ID", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  });
+  if(raw === "") return "";
+  if(raw === ".") return "0.";
+
+  // split integer & decimals
+  const parts = raw.split(".");
+  let intPart = parts[0] || "0";
+  let decPart = parts[1] ?? "";
+
+  intPart = intPart.replace(/^0+(?=\d)/, "");
+  if(decPart.length > 2) decPart = decPart.slice(0,2);
+  intPart = Number(intPart || "0").toLocaleString("en-US");
+  if(raw.endsWith(".") && parts.length === 2) return intPart + ".";
+  if(decPart.length > 0) return intPart + "." + decPart;
+
+  return intPart;
 }
 
 function attachMoney(el){
@@ -1465,7 +1476,7 @@ function wireBalanceListener(){
     const v = snap.val() || {};
     currentBalance = safeNum(v.amount);
 
-    const txt = fmtBalanceBtn(currentBalance);
+    const txt = fmt(currentBalance);
     const isNeg = currentBalance < 0;
 
     const elSmall   = $("balanceText");

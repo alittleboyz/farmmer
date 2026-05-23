@@ -2269,20 +2269,20 @@ html.forceDesktop .desktopModeBtn .dmState{
   border-top: 1px solid rgba(255,255,255,.12);
 }
 .tblWrap table tfoot td{
-  border-bottom:0 !important;
+  border:0 !important;
 }
 
 .tblWrap table tfoot tr:last-child td{
-  border-bottom:0 !important;
+  border:0 !important;
 }
 .txTotalRow td{
-  border-bottom: 0 !important;
+  border:0 !important;
   box-shadow: none !important;
 }
 
 .txTableWrap,
 .tblWrap{
-  border-bottom: 0 !important;
+ border:0 !important;
 }
 .tblWrap table tfoot td {
   padding: 12px 10px;

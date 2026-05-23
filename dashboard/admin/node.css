@@ -1099,6 +1099,7 @@ input[type="number"]{
   flex-direction:column;
   gap:6px;
   min-width:0;
+  text-align: left;
 }
 
 .vaultFooterRight{
@@ -2868,8 +2869,6 @@ html.forceDesktop .desktopModeBtn .dmState{
   height:10px;
   display:block;
 }
-
-
 
 .txRangeRow{
   display:grid;

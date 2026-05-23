@@ -1094,11 +1094,31 @@ async function renderWalletPointKPI(){
 
     if(addEl) addEl.textContent = fmt(addPointTotal);
     if(outEl) outEl.textContent = fmt(outPointTotal);
-    if(resEl) resEl.textContent = fmt(resultTotal);
+if(addEl) addEl.textContent = fmt(addPointTotal);
+if(outEl) outEl.textContent = fmt(outPointTotal);
+if(resEl) resEl.textContent = fmt(resultTotal);
 
-    if(resEl){
-      resEl.style.color = resultTotal < 0 ? "red" : "#008000";
-    }
+const openingEl  = $("walletOpeningBalance");
+const closingEl  = $("walletClosingBalance");
+const totalIOEl  = $("walletTotalInOut");
+const availEl    = $("walletAvailableBalance2");
+
+const closingBalance = safeNum(currentBalance);
+const totalInOut = resultTotal;
+const openingBalance = closingBalance - totalInOut;
+const availableBalance = closingBalance;
+
+if(openingEl) openingEl.textContent = fmt(openingBalance);
+if(closingEl) closingEl.textContent = fmt(closingBalance);
+if(totalIOEl) totalIOEl.textContent = fmt(totalInOut);
+if(availEl) availEl.textContent = fmt(availableBalance);
+
+[resEl, openingEl, closingEl, totalIOEl, availEl].forEach(el=>{
+  if(!el) return;
+  const n = safeNum(el.textContent);
+  el.classList.remove("good","bad");
+  el.classList.add(n < 0 ? "bad" : "good");
+});
   }catch(err){
     console.error("renderWalletPointKPI error =", err);
   }

@@ -1078,9 +1078,14 @@ async function renderWalletPointKPI(){
 
     const todayStart = startOfDayMs(new Date());
     const todayEnd   = endOfDayMs(new Date());
-
+    const r = walletFilter.range;
+    
     Object.values(val).forEach(t => {
       if(!t || t.deleted) return;
+      if(r){
+  const ms = Number(t.atMs || 0);
+  if(ms < r.startMs || ms > r.endMs) return;
+}
       if(t.kind !== "add_point") return;
 
       const amt = Math.abs(Number(t.amount || 0));
@@ -1159,6 +1164,79 @@ function moneyFormat(raw){
   return Number(digits).toLocaleString("id-ID", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0
+  });
+}
+function initWalletRangeUI(){
+  const input = document.getElementById("walletRangeInput");
+  const toggle = document.getElementById("walletPresetToggle");
+  const panel = document.getElementById("walletPresetPanel");
+
+  if(!input || !toggle || !panel) return;
+
+  const r = walletFilter.range || presetRangeMs("today");
+  walletFilter.range = r;
+  input.value = `${ymd(r.startMs)} → ${ymd(r.endMs)}`;
+
+  if(toggle.dataset.bound !== "1"){
+    toggle.dataset.bound = "1";
+
+    toggle.addEventListener("click", (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      panel.classList.toggle("open");
+      toggle.classList.toggle("open", panel.classList.contains("open"));
+    });
+  }
+
+  panel.querySelectorAll("[data-wallet-preset]").forEach(btn=>{
+    if(btn.dataset.bound === "1") return;
+    btn.dataset.bound = "1";
+
+    btn.addEventListener("click", ()=>{
+      const key = btn.dataset.walletPreset;
+      const rr = presetRangeMs(key);
+      if(!rr) return;
+
+      walletFilter.range = rr;
+      input.value = `${ymd(rr.startMs)} → ${ymd(rr.endMs)}`;
+
+      panel.querySelectorAll(".pbtn").forEach(b=>{
+        b.classList.toggle("active", b === btn);
+      });
+
+      renderWalletPointKPI();
+    });
+  });
+
+  if(walletPicker){
+    try{ walletPicker.destroy(); }catch(_){}
+  }
+
+  walletPicker = flatpickr(input, {
+    mode: "range",
+    dateFormat: "Y-m-d",
+    showMonths: 2,
+    closeOnSelect: true,
+    disableMobile: true,
+    defaultDate: [new Date(r.startMs), new Date(r.endMs)],
+
+    onReady: (_, __, fp)=> setupStackFlatpickr(fp),
+    onOpen: (_, __, fp)=> setupStackFlatpickr(fp),
+    onMonthChange: (_, __, fp)=> setupStackFlatpickr(fp),
+    onYearChange: (_, __, fp)=> setupStackFlatpickr(fp),
+
+    onChange: (dates, dateStr, fp)=>{
+      if(dates.length === 2){
+        walletFilter.range = {
+          startMs: startOfDayMs(dates[0]),
+          endMs: endOfDayMs(dates[1])
+        };
+
+        input.value = `${ymd(walletFilter.range.startMs)} → ${ymd(walletFilter.range.endMs)}`;
+        renderWalletPointKPI();
+        fp.close();
+      }
+    }
   });
 }
 function moneyVal(idOrEl){
@@ -1361,8 +1439,13 @@ function closeDrawer(){
 }
 async function openWalletFromAnywhere(){
   try{ closeDrawer(); }catch(_){}
+
   openModal("mBalance");
-  await renderWalletPointKPI();
+
+  setTimeout(()=>{
+    initWalletRangeUI();
+    renderWalletPointKPI();
+  }, 0);
 }
 function toggleDrawer(){
   if(drawer && drawer.classList.contains("open")) closeDrawer();

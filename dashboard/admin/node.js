@@ -1137,16 +1137,16 @@ async function renderWalletPointKPI(){
     const lastEl    = $("balanceUpdated");
     const beforeEl  = $("balanceBefore");
 
-    if(addEl) addEl.textContent = fmt(allIn);
-    if(outEl) outEl.textContent = fmt(allOut);
-    if(resEl) resEl.textContent = fmt(allResult);
+    if(addEl) addEl.textContent = fmtBalanceBtn(allIn);
+    if(outEl) outEl.textContent = fmtBalanceBtn(allOut);
+    if(resEl) resEl.textContent = fmtBalanceBtn(allResult);
 
-    if(openingEl) openingEl.textContent = fmt(openingBalance);
-    if(closingEl) closingEl.textContent = fmt(closingBalance);
-    if(totalIOEl) totalIOEl.textContent = fmt(filteredNet);
-    if(availEl)   availEl.textContent = fmt(availableBalance);
-    if(updateEl)  updateEl.textContent = fmt(updateBalance);
-    if(beforeEl)  beforeEl.textContent = fmt(current);
+    if(openingEl) openingEl.textContent = fmtBalanceBtn(openingBalance);
+    if(closingEl) closingEl.textContent = fmtBalanceBtn(closingBalance);
+    if(totalIOEl) totalIOEl.textContent = fmtBalanceBtn(filteredNet);
+    if(availEl)   availEl.textContent = fmtBalanceBtn(availableBalance);
+    if(updateEl)  updateEl.textContent = fmtBalanceBtn(updateBalance);
+    if(beforeEl)  beforeEl.textContent = fmtBalanceBtn(current);
     if(lastEl)    lastEl.textContent = lastUpdateMs ? fmtDT(lastUpdateMs) : "-";
 
     [

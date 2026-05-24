@@ -2324,7 +2324,7 @@ html.forceDesktop .desktopModeBtn .dmState{
   color: var(--colorInput) !important;
 }
 .walletTableWrap{
-  border: 1px solid var(--borderTable);
+  border: 1px solid var(--borderBottom);
   border-radius: 0;
   overflow: hidden;
   background: var(--inputBg);

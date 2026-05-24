@@ -2544,12 +2544,9 @@ html.forceDesktop .desktopModeBtn .dmState{
   color:white;
   font-size:14px;
   white-space:nowrap;
-}
-.clockBottom{
-  display:inline-flex;
-  align-items:center;
   gap:4px;
 }
+
 /* phone */
 @media (max-width:700px){
   .indoClock{

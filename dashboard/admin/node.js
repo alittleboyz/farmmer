@@ -1070,11 +1070,9 @@ async function renderWalletPointKPI(){
     const snap = await get(ref(db, TX_ROOT));
     const val = snap.exists() ? snap.val() : {};
 
-    // ALL TIME: bawah Total In / Total Out / Total Result
     let allIn = 0;
     let allOut = 0;
 
-    // FILTERED: untuk Opening / Closing / Total In-Out / Balance Available / Last Update
     let filterIn = 0;
     let filterOut = 0;
     let lastUpdateMs = 0;
@@ -1088,18 +1086,13 @@ async function renderWalletPointKPI(){
       const amt = Math.abs(Number(t.amount || 0));
       const ms = Number(t.atMs || 0);
 
-      // ✅ ALL TIME jangan ikut date range
       if(t.direction === "in") allIn += amt;
       if(t.direction === "out") allOut += amt;
 
-      // ✅ Filtered ikut date range
       if(ms >= r.startMs && ms <= r.endMs){
         if(t.direction === "in") filterIn += amt;
         if(t.direction === "out") filterOut += amt;
-
-        if(ms > lastUpdateMs){
-          lastUpdateMs = ms;
-        }
+        if(ms > lastUpdateMs) lastUpdateMs = ms;
       }
     });
 
@@ -1109,27 +1102,28 @@ async function renderWalletPointKPI(){
     const closingBalance = safeNum(currentBalance);
     const openingBalance = closingBalance - filteredNet;
     const availableBalance = closingBalance;
+    const updateBalance = closingBalance - openingBalance;
 
-    // bawah lama: ALL TIME
     const addEl = $("walletAddPointTotal");
     const outEl = $("walletOutPointTotal");
     const resEl = $("walletPointResultTotal");
+
+    const openingEl = $("walletOpeningBalance");
+    const closingEl = $("walletClosingBalance");
+    const totalIOEl = $("walletTotalInOut");
+    const availEl   = $("walletAvailableBalance2");
+    const updateEl  = $("walletUpdateBalance");
+    const lastEl    = $("balanceUpdated");
 
     if(addEl) addEl.textContent = fmt(allIn);
     if(outEl) outEl.textContent = fmt(allOut);
     if(resEl) resEl.textContent = fmt(allResult);
 
-    // atas: ikut date range
-    const openingEl = $("walletOpeningBalance");
-    const closingEl = $("walletClosingBalance");
-    const totalIOEl = $("walletTotalInOut");
-    const availEl   = $("walletAvailableBalance2");
-    const lastEl    = $("balanceUpdated");
-
     if(openingEl) openingEl.textContent = fmt(openingBalance);
     if(closingEl) closingEl.textContent = fmt(closingBalance);
     if(totalIOEl) totalIOEl.textContent = fmt(filteredNet);
     if(availEl)   availEl.textContent = fmt(availableBalance);
+    if(updateEl)  updateEl.textContent = fmt(updateBalance);
     if(lastEl)    lastEl.textContent = lastUpdateMs ? fmtDT(lastUpdateMs) : "-";
 
     [
@@ -1137,7 +1131,8 @@ async function renderWalletPointKPI(){
       [openingEl, openingBalance],
       [closingEl, closingBalance],
       [totalIOEl, filteredNet],
-      [availEl, availableBalance]
+      [availEl, availableBalance],
+      [updateEl, updateBalance]
     ].forEach(([el, n])=>{
       if(!el) return;
       el.classList.remove("good","bad");

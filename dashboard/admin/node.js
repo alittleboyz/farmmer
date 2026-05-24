@@ -1070,84 +1070,79 @@ async function renderWalletPointKPI(){
     const snap = await get(ref(db, TX_ROOT));
     const val = snap.exists() ? snap.val() : {};
 
+    // ALL TIME: bawah Total In / Total Out / Total Result
     let allIn = 0;
     let allOut = 0;
 
-    let todayIn = 0;
-    let todayOut = 0;
+    // FILTERED: untuk Opening / Closing / Total In-Out / Balance Available / Last Update
+    let filterIn = 0;
+    let filterOut = 0;
+    let lastUpdateMs = 0;
 
-    const todayStart = startOfDayMs(new Date());
-    const todayEnd   = endOfDayMs(new Date());
-    const r = walletFilter.range;
-    
+    const r = walletFilter.range || presetRangeMs("today");
+
     Object.values(val).forEach(t => {
       if(!t || t.deleted) return;
-      if(r){
-  const ms = Number(t.atMs || 0);
-  if(ms < r.startMs || ms > r.endMs) return;
-}
       if(t.kind !== "add_point") return;
 
       const amt = Math.abs(Number(t.amount || 0));
       const ms = Number(t.atMs || 0);
 
-      if(t.direction === "in"){
-        allIn += amt;
-        if(ms >= todayStart && ms <= todayEnd) todayIn += amt;
-      }
+      // ✅ ALL TIME jangan ikut date range
+      if(t.direction === "in") allIn += amt;
+      if(t.direction === "out") allOut += amt;
 
-      if(t.direction === "out"){
-        allOut += amt;
-        if(ms >= todayStart && ms <= todayEnd) todayOut += amt;
+      // ✅ Filtered ikut date range
+      if(ms >= r.startMs && ms <= r.endMs){
+        if(t.direction === "in") filterIn += amt;
+        if(t.direction === "out") filterOut += amt;
+
+        if(ms > lastUpdateMs){
+          lastUpdateMs = ms;
+        }
       }
     });
 
     const allResult = allIn - allOut;
-
-    // ✅ ini ikut hari ini sahaja
-    const todayNet = todayIn - todayOut;
+    const filteredNet = filterIn - filterOut;
 
     const closingBalance = safeNum(currentBalance);
-    const openingBalance = closingBalance - todayNet;
+    const openingBalance = closingBalance - filteredNet;
     const availableBalance = closingBalance;
 
+    // bawah lama: ALL TIME
     const addEl = $("walletAddPointTotal");
     const outEl = $("walletOutPointTotal");
     const resEl = $("walletPointResultTotal");
 
-    const openingEl = $("walletOpeningBalance");
-    const closingEl = $("walletClosingBalance");
-    const totalIOEl = $("walletTotalInOut");
-    const availEl   = $("walletAvailableBalance2");
-
-    // bawah lama punya Total In / Total Out / Total Result
     if(addEl) addEl.textContent = fmt(allIn);
     if(outEl) outEl.textContent = fmt(allOut);
     if(resEl) resEl.textContent = fmt(allResult);
 
-    // 4 row baru
+    // atas: ikut date range
+    const openingEl = $("walletOpeningBalance");
+    const closingEl = $("walletClosingBalance");
+    const totalIOEl = $("walletTotalInOut");
+    const availEl   = $("walletAvailableBalance2");
+    const lastEl    = $("balanceUpdated");
+
     if(openingEl) openingEl.textContent = fmt(openingBalance);
     if(closingEl) closingEl.textContent = fmt(closingBalance);
-    if(totalIOEl) totalIOEl.textContent = fmt(todayNet);
-    if(availEl) availEl.textContent = fmt(availableBalance);
+    if(totalIOEl) totalIOEl.textContent = fmt(filteredNet);
+    if(availEl)   availEl.textContent = fmt(availableBalance);
+    if(lastEl)    lastEl.textContent = lastUpdateMs ? fmtDT(lastUpdateMs) : "-";
 
-[
-  [resEl, allResult],
-  [openingEl, openingBalance],
-  [closingEl, closingBalance],
-  [totalIOEl, todayNet],
-  [availEl, availableBalance]
-].forEach(([el, n])=>{
-  if(!el) return;
-
-  el.classList.remove("good","bad");
-
-  if(n < 0){
-    el.classList.add("bad");
-  }else{
-    el.classList.add("good");
-  }
-});
+    [
+      [resEl, allResult],
+      [openingEl, openingBalance],
+      [closingEl, closingBalance],
+      [totalIOEl, filteredNet],
+      [availEl, availableBalance]
+    ].forEach(([el, n])=>{
+      if(!el) return;
+      el.classList.remove("good","bad");
+      el.classList.add(n < 0 ? "bad" : "good");
+    });
 
   }catch(err){
     console.error("renderWalletPointKPI error =", err);

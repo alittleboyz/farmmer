@@ -6202,14 +6202,11 @@ function updateLocalClock(){
 
   const date = `${month} ${day}`;
 
-  el.innerHTML = `
-    <span class="clockLabel">${label}</span>
-
-    <span class="clockBottom">
-      <span class="clockTime">${time}</span>
-      <span class="clockDate">${date}</span>
-    </span>
-  `;
+el.innerHTML = `
+  <span class="clockLabel">${label}:</span>
+  <span class="clockTime">${time}</span>
+  <span class="clockDate">${date}</span>
+`;
 }
 
 updateLocalClock();

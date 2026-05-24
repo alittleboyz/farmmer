@@ -126,37 +126,7 @@ await ensureProfile(cred.user.uid, username);
 pendingUser = cred.user;
 pendingUsername = username;
 
-// ✅ ambil gmail sebenar dari database
-const emailSnap = await get(
-  ref(db, `profiles/${cred.user.uid}/realEmail`)
-);
-
-const realEmail = emailSnap.exists()
-  ? String(emailSnap.val() || "").trim()
-  : "";
-
-if(!realEmail){
-  throw new Error("Real Gmail belum setup.");
-}
-
-// ✅ generate OTP 6 digit
-const otp = String(
-  Math.floor(100000 + Math.random() * 900000)
-);
-
-// ✅ save OTP dalam database
-await set(
-  ref(db, `loginOtp/${cred.user.uid}`),
-  {
-    code: otp,
-    createdAt: Date.now()
-  }
-);
-
-// ✅ TEST MODE DULU
-alert("OTP CODE: " + otp);
-
-$("secondUsername").textContent = realEmail;
+$("secondUsername").textContent = username;
 
 $("loginStep1").classList.add("hide");
 $("loginStep2").classList.remove("hide");
@@ -324,58 +294,47 @@ function clearPin(){
   document.querySelector(".pinInput")?.focus();
 }
 
-async function verifyOtp(){
-  const otp = getPinValue();
+async function verifySecondPassword(){
+  const pin = getPinValue();
 
-  if(otp.length !== 6){
-    toast("Please enter OTP.");
+  if(pin.length !== 6){
+    toast("Please enter 6 digit 2nd password.");
     return;
   }
 
   if(!pendingUser){
-    toast("Session expired.");
+    toast("Session expired. Please login again.");
     return;
   }
 
-  showPageLoading("Verifying OTP...");
+  showPageLoading("Please wait while fetching...");
 
   try{
+    const snap = await get(ref(db, `profiles/${pendingUser.uid}/secondPassword`));
+    const savedPin = snap.exists() ? String(snap.val()) : "";
 
-    const snap = await get(
-      ref(db, `loginOtp/${pendingUser.uid}`)
-    );
-
-    if(!snap.exists()){
+    if(!savedPin){
       hidePageLoading();
-      toast("OTP expired.");
+      toast("2nd password belum setup. Sila hubungi admin.");
       return;
     }
 
-    const data = snap.val() || {};
-
-    if(String(data.code) !== String(otp)){
+    if(pin !== savedPin){
       hidePageLoading();
       clearPin();
-      toast("OTP salah.");
+      toast("2nd password salah.");
       return;
     }
 
-    // ✅ delete OTP lepas guna
-    await set(
-      ref(db, `loginOtp/${pendingUser.uid}`),
-      null
-    );
-
     location.replace("../admin/");
-
   }catch(e){
     console.error(e);
     hidePageLoading();
-    toast("Failed verify OTP.");
+    toast("Failed verify 2nd password.");
   }
 }
 
-$("btnVerify2nd")?.addEventListener("click", verifyOtp);
+$("btnVerify2nd")?.addEventListener("click", verifySecondPassword);
 
 $("btnBackLogin")?.addEventListener("click", async ()=>{
   pendingUser = null;
@@ -396,7 +355,7 @@ document.querySelectorAll(".pinInput").forEach((input, index, arr)=>{
     }
 
     if(getPinValue().length === 6){
-      verifyOtp();
+      verifySecondPassword();
     }
   });
 
@@ -407,7 +366,7 @@ document.querySelectorAll(".pinInput").forEach((input, index, arr)=>{
 
     if(e.key === "Enter"){
       e.preventDefault();
-      verifyOtp();
+      verifySecondPassword();
     }
   });
 });

@@ -1322,7 +1322,10 @@ function attachKg(el){
   const WALLET_ID = "main";
   let buyTotalManual = false;
   let latestWalletNoteData = null;
-
+let walletPicker = null;
+let walletFilter = {
+  range: presetRangeMs("today")
+};
   // UI state
   let activeView = "open";
 let activeMainTab = "vault";

@@ -28,8 +28,8 @@
   --colorInput:rgba(255,255,255,.85);
   --borderActive:#1668dc;
   --btnCard:#ffffff0f;
-  --borderBottom:#ffffff14;
-  --borderTable: #303030;
+  --borderBottom:#303030;
+  --borderTable: #424242;
   --BtnActive:rgba(255,255,255,.85);
   --btnheadHover:rgba(255,255,255,.10);
   --colorHover:rgba(255,255,255,.85);
@@ -76,8 +76,8 @@ html.theme-light{
   --borderColor:#d9d9d9;
   --borderActive:#424242;
   --btnCard:#ffffff;
-  --borderBottom:#000000e0;
-  --borderTable: #000000e0;
+  --borderBottom:#f0f0f0;
+  --borderTable: #d9d9d9;
   --btn:#1668dc;
   --BtnActive:#1668dc;
   --btnHead:#ffffff;
@@ -2324,7 +2324,6 @@ html.forceDesktop .desktopModeBtn .dmState{
   color: var(--colorInput) !important;
 }
 .walletTableWrap{
-  margin-top: 6px;
   border: 1px solid var(--borderTable);
   border-radius: 0;
   overflow: hidden;
@@ -3469,7 +3468,7 @@ html.forceDesktop .desktopModeBtn .dmState{
 }
 
 .walletRangeTop{
-  padding: 0 28px 12px;
+  padding: 0 28px 10px;
   flex: 0 0 auto;
 }
 

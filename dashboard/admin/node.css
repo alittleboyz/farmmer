@@ -3462,3 +3462,38 @@ html.forceDesktop .desktopModeBtn .dmState{
     display:none !important;
   }
 }
+#mBalance .modal{
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.walletRangeTop{
+  padding: 0 28px 12px;
+  flex: 0 0 auto;
+}
+
+.walletRangeTop .txToolbar{
+  margin-bottom: 0 !important;
+}
+
+.walletScrollBody{
+  max-height: 55vh;
+  overflow-y: auto;
+  padding-top: 0;
+  flex: 1 1 auto;
+}
+
+#mBalance .modalFoot{
+  flex: 0 0 auto;
+}
+
+@media (max-width: 600px){
+  .walletRangeTop{
+    padding: 0 16px 10px;
+  }
+
+  .walletScrollBody{
+    max-height: 50vh;
+  }
+}

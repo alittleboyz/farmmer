@@ -1112,7 +1112,7 @@ async function renderWalletPointKPI(){
     const closingEl = $("walletClosingBalance");
     const totalIOEl = $("walletTotalInOut");
     const availEl   = $("walletAvailableBalance2");
-    const updateEl  = $("walletUpdateBalance");
+    const updateEl  = $("balanceDelta");
     const lastEl    = $("balanceUpdated");
 
     if(addEl) addEl.textContent = fmt(allIn);

@@ -839,7 +839,7 @@ input[type="number"]{
 
 .kpiTable td{
   padding:10px 14px;
-  border-bottom: 1px solid #303030;
+  border-bottom: 1px solid var(--borderBottom);
 }
 
 .kpiTable tr:last-child td{ border-bottom:0; }

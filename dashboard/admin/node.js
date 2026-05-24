@@ -3948,33 +3948,33 @@ if(t.kind === "missing"){
   };
 
   // ✅ update CASH IN/OUT
-  setKpi("cashIn", fmt(cashIn));
+setKpi("cashIn", fmtMoney2(cashIn));
 
 const cashOutEl = card.querySelector(`[data-kpi="cashOut"]`);
 if(cashOutEl){
-  cashOutEl.textContent = fmt(cashOut);
+  cashOutEl.textContent = fmtMoney2(cashOut);
   cashOutEl.classList.remove("kpiBad");
   cashOutEl.classList.add("kpiGood");
 }
   // update BUY
-  setKpi("buyCost", fmt(buyCost));
+  setKpi("buyCost", fmtMoney2(buyCost));
   setKpi("buyQty", babyQty.toLocaleString());
-  setKpi("buyAvg", fmt(buyAvg));
-  setKpi("buyTotal", fmt(babyTotal));
-  setKpi("feedTotal", fmt(feedTotal));
-  setKpi("otherTotal", fmt(otherTotal));
+  setKpi("buyAvg", fmtMoney2(buyAvg));
+  setKpi("buyTotal", fmtMoney2(babyTotal));
+  setKpi("feedTotal", fmtMoney2(feedTotal));
+  setKpi("otherTotal", fmtMoney2(otherTotal));
 
   // update PROFIT & SALES + color
   const profitEl = card.querySelector(`[data-kpi="profit"]`);
   if(profitEl){
-    profitEl.textContent = fmt(profit);
+    profitEl.textContent = fmtMoney2(profit);
     profitEl.classList.toggle("kpiGood", profit >= 0);
     profitEl.classList.toggle("kpiBad", profit < 0);
   }
 
   const salesEl = card.querySelector(`[data-kpi="sales"]`);
   if(salesEl){
-    salesEl.textContent = fmt(sales);
+    salesEl.textContent = fmtMoney2(sales);
     salesEl.classList.toggle("kpiGood", sales >= 0);
     salesEl.classList.toggle("kpiBad", sales < 0);
   }
@@ -3983,14 +3983,14 @@ const cashNet = cashIn - cashOut;  // duit masuk tolak duit keluar
 
 const cashNetEl = card.querySelector(`[data-kpi="cashNet"]`);
 if(cashNetEl){
-  cashNetEl.textContent = fmt(cashNet);
+  cashNetEl.textContent = fmtMoney2(cashNet);
   cashNetEl.classList.toggle("kpiGood", cashNet >= 0);
   cashNetEl.classList.toggle("kpiBad",  cashNet < 0);
 }
   // update SELL
-  setKpi("sellRevenue", fmt(sellRevenue));
-  setKpi("sellAvgKg", fmt(sellAvgKg));
-  setKpi("sellKg", fmt(sellKg));
+  setKpi("sellRevenue", fmtMoney2(sellRevenue));  
+  setKpi("sellAvgKg", fmtMoney2(sellAvgKg));
+  setKpi("sellKg", fmtUnit0(sellKg));
   setKpi("sellEkor", sellEkor.toLocaleString());
 
   // missing & available
@@ -4005,7 +4005,7 @@ if(missQtyEl){
 const missTotalEl = card.querySelector(`[data-kpi="missingTotal"]`);
 if(missTotalEl){
   const showVal = (missingTotal > 0) ? -missingTotal : 0; // ✅ negatif bila ada
-  missTotalEl.textContent = fmt(showVal);
+  missTotalEl.textContent = fmtMoney2(showVal);
 
   missTotalEl.classList.toggle("kpiGood", missingTotal === 0);
   missTotalEl.classList.toggle("kpiBad",  missingTotal > 0);

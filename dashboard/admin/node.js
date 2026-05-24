@@ -1156,6 +1156,10 @@ function moneyFormat(raw){
     maximumFractionDigits: 0
   });
 }
+function walletRangeText(r){
+  return `${ymd(r.startMs)} → ${ymd(r.endMs)}`;
+}
+
 function initWalletRangeUI(){
   const input = document.getElementById("walletRangeInput");
   const toggle = document.getElementById("walletPresetToggle");
@@ -1165,7 +1169,7 @@ function initWalletRangeUI(){
 
   const r = walletFilter.range || presetRangeMs("today");
   walletFilter.range = r;
-  input.value = `${ymd(r.startMs)} → ${ymd(r.endMs)}`;
+  input.value = walletRangeText(r);
 
   if(toggle.dataset.bound !== "1"){
     toggle.dataset.bound = "1";
@@ -1188,7 +1192,11 @@ function initWalletRangeUI(){
       if(!rr) return;
 
       walletFilter.range = rr;
-      input.value = `${ymd(rr.startMs)} → ${ymd(rr.endMs)}`;
+      input.value = walletRangeText(rr);
+
+      if(walletPicker){
+        walletPicker.setDate([new Date(rr.startMs), new Date(rr.endMs)], false);
+      }
 
       panel.querySelectorAll(".pbtn").forEach(b=>{
         b.classList.toggle("active", b === btn);
@@ -1210,8 +1218,14 @@ function initWalletRangeUI(){
     disableMobile: true,
     defaultDate: [new Date(r.startMs), new Date(r.endMs)],
 
-    onReady: (_, __, fp)=> setupStackFlatpickr(fp),
-    onOpen: (_, __, fp)=> setupStackFlatpickr(fp),
+    onReady: (_, __, fp)=> {
+      setupStackFlatpickr(fp);
+      input.value = walletRangeText(walletFilter.range);
+    },
+    onOpen: (_, __, fp)=> {
+      setupStackFlatpickr(fp);
+      input.value = walletRangeText(walletFilter.range);
+    },
     onMonthChange: (_, __, fp)=> setupStackFlatpickr(fp),
     onYearChange: (_, __, fp)=> setupStackFlatpickr(fp),
 
@@ -1222,12 +1236,14 @@ function initWalletRangeUI(){
           endMs: endOfDayMs(dates[1])
         };
 
-        input.value = `${ymd(walletFilter.range.startMs)} → ${ymd(walletFilter.range.endMs)}`;
+        input.value = walletRangeText(walletFilter.range);
         renderWalletPointKPI();
         fp.close();
       }
     }
   });
+
+  input.value = walletRangeText(walletFilter.range);
 }
 function moneyVal(idOrEl){
   const el = (typeof idOrEl === "string") ? $(idOrEl) : idOrEl;

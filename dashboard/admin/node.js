@@ -450,15 +450,6 @@ const fmt = (n)=> safeNum(n).toLocaleString("id-ID",{
   minimumFractionDigits: 0,
   maximumFractionDigits: 0
 });
-const fmtMoney2 = (n)=> safeNum(n).toLocaleString("id-ID",{
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2
-});
-
-const fmtUnit0 = (n)=> safeNum(n).toLocaleString("id-ID",{
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 0
-});
 const fmtBalanceBtn = (n)=> safeNum(n).toLocaleString("id-ID",{
   minimumFractionDigits: 2,
   maximumFractionDigits: 2
@@ -2096,15 +2087,15 @@ ${!isHistory ? `
           <div class="kpiTableCard">
             <div class="kpiTableHead">Total Bought</div>
             <table class="kpiTable">
-<tr><td>Total Cash Out</td><td class="kpiGood" data-kpi="cashOut">0.00</td></tr>
-<tr><td>Total Expenses</td><td class="kpiGood" data-kpi="buyCost">${fmtMoney2(s.totalCost)}</td></tr>
-<tr><td>Total Pets</td><td data-kpi="buyQty">${fmtUnit0(s.babyPig?.qty || 0)}</td></tr>
-<tr><td>Total Price Quantity</td><td class="kpiGood" data-kpi="buyAvg">${fmtMoney2(s.babyPig?.avgPrice || 0)}</td></tr>
-<tr><td>Total Price</td><td class="kpiGood" data-kpi="buyTotal">${fmtMoney2(s.babyPig?.total || 0)}</td></tr>
-<tr><td>Total Feeding</td><td class="kpiGood" data-kpi="feedTotal">0.00</td></tr>
-<tr><td>Total Other</td><td class="kpiGood" data-kpi="otherTotal">0.00</td></tr>
-<tr><td>Total Cash In/Out</td><td class="kpiGood" data-kpi="cashNet">0.00</td></tr>
-<tr><td>Total Profit</td><td class="${salesClass}" data-kpi="sales">${fmtMoney2(salesValue)}</td></tr>
+              <tr><td>Total Cash Out</td><td class="kpiGood" data-kpi="cashOut">0.00</td></tr>
+              <tr><td>Total Expenses</td><td class="kpiGood" data-kpi="buyCost">${fmt(s.totalCost)}</td></tr>
+              <tr><td>Total Pets</td><td data-kpi="buyQty">${Number((s.babyPig?.qty||0)).toLocaleString()}</td></tr>
+              <tr><td>Total Price Quantity</td><td class="kpiGood" data-kpi="buyAvg">${fmt((s.babyPig?.avgPrice||0))}</td></tr>
+              <tr><td>Total Price</td><td class="kpiGood" data-kpi="buyTotal">${fmt((s.babyPig?.total||0))}</td></tr>
+              <tr><td>Total Feeding</td><td class="kpiGood" data-kpi="feedTotal">0.00</td></tr>
+              <tr><td>Total Other</td><td class="kpiGood" data-kpi="otherTotal">0.00</td></tr>
+              <tr><td>Total Cash In/Out</td><td class="kpiGood" data-kpi="cashNet">0.00</td></tr>
+              <tr><td>Total Profit</td><td class="${salesClass}" data-kpi="sales">${fmt(salesValue)}</td></tr>
             </table>
           </div>
 
@@ -2112,15 +2103,15 @@ ${!isHistory ? `
           <div class="kpiTableCard">
             <div class="kpiTableHead">Total Sold</div>
             <table class="kpiTable">
-<tr><td>Total Cash In</td><td class="kpiGood" data-kpi="cashIn">0.00</td></tr>
-<tr><td>Total Seller</td><td class="kpiGood" data-kpi="sellRevenue">${fmtMoney2(s.totalRevenue)}</td></tr>
-<tr><td>Total Quantity KG</td><td class="kpiGood" data-kpi="sellAvgKg">${fmtMoney2(s.sell?.avgPriceKg || 0)}</td></tr>
-<tr><td>Total KG</td><td class="kpiGood" data-kpi="sellKg">${fmtUnit0(s.totalKg)}</td></tr>
-<tr><td>Total Quantity</td><td class="kpiGood" data-kpi="sellEkor">${fmtUnit0(s.totalEkor)}</td></tr>
-<tr><td>Total Missing</td><td class="kpiBad" data-kpi="missingQty">${fmtUnit0(s.missing?.qty || 0)}</td></tr>
-<tr><td>Total Price Missing</td><td class="kpiGood" data-kpi="missingTotal">0.00</td></tr>
-<tr><td>Total Pets Available</td><td class="kpiGood" data-kpi="availablePig">${fmtUnit0(availablePig)}</td></tr>
-<tr><td>Total Sales</td><td class="${profitClass}" data-kpi="profit">${fmtMoney2(profitVal)}</td></tr>
+              <tr><td>Total Cash In</td><td class="kpiGood" data-kpi="cashIn">0.00</td></tr>
+              <tr><td>Total Seller</td><td class="kpiGood" data-kpi="sellRevenue">${fmt(s.totalRevenue)}</td></tr>
+              <tr><td>Total Quantity KG</td><td class="kpiGood" data-kpi="sellAvgKg">${fmt((s.sell?.avgPriceKg||0))}</td></tr>
+              <tr><td>Total KG</td><td class="kpiGood" data-kpi="sellKg">${fmt(s.totalKg)}</td></tr>
+              <tr><td>Total Quantity</td><td class="kpiGood" data-kpi="sellEkor">${Number(s.totalEkor||0).toLocaleString()}</td></tr>
+              <tr><td>Total Missing</td><td class="kpiBad" data-kpi="missingQty">${Number(s.missing?.qty||0).toLocaleString()}</td></tr>
+              <tr><td>Total Price Missing</td><td class="kpiGood" data-kpi="missingTotal">0.00</td></tr>
+              <tr><td>Total Pets Available</td><td class="kpiGood" data-kpi="availablePig">${availablePig.toLocaleString()}</td></tr>
+              <tr><td>Total Sales</td><td class="${profitClass}" data-kpi="profit">${fmt(profitVal)}</td></tr>
             </table>
           </div>
 
@@ -3948,33 +3939,33 @@ if(t.kind === "missing"){
   };
 
   // ✅ update CASH IN/OUT
-setKpi("cashIn", fmtMoney2(cashIn));
+  setKpi("cashIn", fmt(cashIn));
 
 const cashOutEl = card.querySelector(`[data-kpi="cashOut"]`);
 if(cashOutEl){
-  cashOutEl.textContent = fmtMoney2(cashOut);
+  cashOutEl.textContent = fmt(cashOut);
   cashOutEl.classList.remove("kpiBad");
   cashOutEl.classList.add("kpiGood");
 }
   // update BUY
-  setKpi("buyCost", fmtMoney2(buyCost));
+  setKpi("buyCost", fmt(buyCost));
   setKpi("buyQty", babyQty.toLocaleString());
-  setKpi("buyAvg", fmtMoney2(buyAvg));
-  setKpi("buyTotal", fmtMoney2(babyTotal));
-  setKpi("feedTotal", fmtMoney2(feedTotal));
-  setKpi("otherTotal", fmtMoney2(otherTotal));
+  setKpi("buyAvg", fmt(buyAvg));
+  setKpi("buyTotal", fmt(babyTotal));
+  setKpi("feedTotal", fmt(feedTotal));
+  setKpi("otherTotal", fmt(otherTotal));
 
   // update PROFIT & SALES + color
   const profitEl = card.querySelector(`[data-kpi="profit"]`);
   if(profitEl){
-    profitEl.textContent = fmtMoney2(profit);
+    profitEl.textContent = fmt(profit);
     profitEl.classList.toggle("kpiGood", profit >= 0);
     profitEl.classList.toggle("kpiBad", profit < 0);
   }
 
   const salesEl = card.querySelector(`[data-kpi="sales"]`);
   if(salesEl){
-    salesEl.textContent = fmtMoney2(sales);
+    salesEl.textContent = fmt(sales);
     salesEl.classList.toggle("kpiGood", sales >= 0);
     salesEl.classList.toggle("kpiBad", sales < 0);
   }
@@ -3983,14 +3974,14 @@ const cashNet = cashIn - cashOut;  // duit masuk tolak duit keluar
 
 const cashNetEl = card.querySelector(`[data-kpi="cashNet"]`);
 if(cashNetEl){
-  cashNetEl.textContent = fmtMoney2(cashNet);
+  cashNetEl.textContent = fmt(cashNet);
   cashNetEl.classList.toggle("kpiGood", cashNet >= 0);
   cashNetEl.classList.toggle("kpiBad",  cashNet < 0);
 }
   // update SELL
-  setKpi("sellRevenue", fmtMoney2(sellRevenue));  
-  setKpi("sellAvgKg", fmtMoney2(sellAvgKg));
-  setKpi("sellKg", fmtUnit0(sellKg));
+  setKpi("sellRevenue", fmt(sellRevenue));
+  setKpi("sellAvgKg", fmt(sellAvgKg));
+  setKpi("sellKg", fmt(sellKg));
   setKpi("sellEkor", sellEkor.toLocaleString());
 
   // missing & available
@@ -4005,7 +3996,7 @@ if(missQtyEl){
 const missTotalEl = card.querySelector(`[data-kpi="missingTotal"]`);
 if(missTotalEl){
   const showVal = (missingTotal > 0) ? -missingTotal : 0; // ✅ negatif bila ada
-  missTotalEl.textContent = fmtMoney2(showVal);
+  missTotalEl.textContent = fmt(showVal);
 
   missTotalEl.classList.toggle("kpiGood", missingTotal === 0);
   missTotalEl.classList.toggle("kpiBad",  missingTotal > 0);

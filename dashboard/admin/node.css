@@ -818,7 +818,7 @@ input[type="number"]{
 
 .kpiTableCard{
   background:var(--inputBg);                 /* match theme kau */
-  border:1px solid var(--borderTable);
+  border:1px solid var(--borderBottom);
   border-radius:8px 8px 0 0;
   overflow:hidden;
 }

@@ -1167,13 +1167,21 @@ function initWalletRangeUI(){
 
   if(!input || !toggle || !panel) return;
 
+  const forceText = ()=>{
+    requestAnimationFrame(()=>{
+      input.value = walletRangeText(walletFilter.range);
+    });
+    setTimeout(()=>{
+      input.value = walletRangeText(walletFilter.range);
+    }, 0);
+  };
+
   const r = walletFilter.range || presetRangeMs("today");
   walletFilter.range = r;
   input.value = walletRangeText(r);
 
   if(toggle.dataset.bound !== "1"){
     toggle.dataset.bound = "1";
-
     toggle.addEventListener("click", (e)=>{
       e.preventDefault();
       e.stopPropagation();
@@ -1192,7 +1200,6 @@ function initWalletRangeUI(){
       if(!rr) return;
 
       walletFilter.range = rr;
-      input.value = walletRangeText(rr);
 
       if(walletPicker){
         walletPicker.setDate([new Date(rr.startMs), new Date(rr.endMs)], false);
@@ -1202,6 +1209,7 @@ function initWalletRangeUI(){
         b.classList.toggle("active", b === btn);
       });
 
+      forceText();
       renderWalletPointKPI();
     });
   });
@@ -1218,13 +1226,13 @@ function initWalletRangeUI(){
     disableMobile: true,
     defaultDate: [new Date(r.startMs), new Date(r.endMs)],
 
-    onReady: (_, __, fp)=> {
+    onReady: (_, __, fp)=>{
       setupStackFlatpickr(fp);
-      input.value = walletRangeText(walletFilter.range);
+      forceText();
     },
-    onOpen: (_, __, fp)=> {
+    onOpen: (_, __, fp)=>{
       setupStackFlatpickr(fp);
-      input.value = walletRangeText(walletFilter.range);
+      forceText();
     },
     onMonthChange: (_, __, fp)=> setupStackFlatpickr(fp),
     onYearChange: (_, __, fp)=> setupStackFlatpickr(fp),
@@ -1236,14 +1244,18 @@ function initWalletRangeUI(){
           endMs: endOfDayMs(dates[1])
         };
 
-        input.value = walletRangeText(walletFilter.range);
+        forceText();
         renderWalletPointKPI();
         fp.close();
       }
+    },
+
+    onClose: ()=>{
+      forceText();
     }
   });
 
-  input.value = walletRangeText(walletFilter.range);
+  forceText();
 }
 function moneyVal(idOrEl){
   const el = (typeof idOrEl === "string") ? $(idOrEl) : idOrEl;

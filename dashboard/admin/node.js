@@ -1067,42 +1067,63 @@ function wireTransactionTab(){
 }
 async function renderWalletPointKPI(){
   try{
-    const snap = await get(ref(db, TX_ROOT));
-    const val = snap.exists() ? snap.val() : {};
+    const r = walletFilter.range || presetRangeMs("today");
+
+    // ✅ 1) Add Point total bawah table
+    const txSnap = await get(ref(db, TX_ROOT));
+    const txVal = txSnap.exists() ? txSnap.val() : {};
 
     let allIn = 0;
     let allOut = 0;
 
-    let filterIn = 0;
-    let filterOut = 0;
-    let lastUpdateMs = 0;
-
-    const r = walletFilter.range || presetRangeMs("today");
-
-    Object.values(val).forEach(t => {
+    Object.values(txVal).forEach(t=>{
       if(!t || t.deleted) return;
       if(t.kind !== "add_point") return;
 
       const amt = Math.abs(Number(t.amount || 0));
-      const ms = Number(t.atMs || 0);
-
       if(t.direction === "in") allIn += amt;
       if(t.direction === "out") allOut += amt;
+    });
+
+    // ✅ 2) Opening / Closing guna LEDGER, sebab ledger ada buy/sell/cash/add point
+    const ledSnap = await get(ref(db, `finance/ledger/${WALLET_ID}`));
+    const ledVal = ledSnap.exists() ? ledSnap.val() : {};
+
+    let beforeNet = 0;
+    let filteredNet = 0;
+    let allLedgerNet = 0;
+    let lastUpdateMs = 0;
+
+    Object.values(ledVal).forEach(x=>{
+      if(!x) return;
+
+      const ms = Number(x.atMs || 0);
+      const delta = Number(x.delta || 0);
+      if(!Number.isFinite(ms) || !Number.isFinite(delta)) return;
+
+      allLedgerNet += delta;
+
+      if(ms < r.startMs){
+        beforeNet += delta;
+      }
 
       if(ms >= r.startMs && ms <= r.endMs){
-        if(t.direction === "in") filterIn += amt;
-        if(t.direction === "out") filterOut += amt;
+        filteredNet += delta;
         if(ms > lastUpdateMs) lastUpdateMs = ms;
       }
     });
 
-    const allResult = allIn - allOut;
-    const filteredNet = filterIn - filterOut;
+    const current = safeNum(currentBalance);
 
-    const closingBalance = safeNum(currentBalance);
-    const openingBalance = closingBalance - filteredNet;
-    const availableBalance = closingBalance;
-    const updateBalance = closingBalance - openingBalance;
+    // ✅ kalau ada old balance yang bukan dari ledger, offset cover balik
+    const offset = current - allLedgerNet;
+
+    const openingBalance = offset + beforeNet;
+    const closingBalance = openingBalance + filteredNet;
+    const availableBalance = current;
+    const updateBalance = filteredNet;
+
+    const allResult = allIn - allOut;
 
     const addEl = $("walletAddPointTotal");
     const outEl = $("walletOutPointTotal");
@@ -1114,6 +1135,7 @@ async function renderWalletPointKPI(){
     const availEl   = $("walletAvailableBalance2");
     const updateEl  = $("balanceDelta");
     const lastEl    = $("balanceUpdated");
+    const beforeEl  = $("balanceBefore");
 
     if(addEl) addEl.textContent = fmt(allIn);
     if(outEl) outEl.textContent = fmt(allOut);
@@ -1124,6 +1146,7 @@ async function renderWalletPointKPI(){
     if(totalIOEl) totalIOEl.textContent = fmt(filteredNet);
     if(availEl)   availEl.textContent = fmt(availableBalance);
     if(updateEl)  updateEl.textContent = fmt(updateBalance);
+    if(beforeEl)  beforeEl.textContent = fmt(current);
     if(lastEl)    lastEl.textContent = lastUpdateMs ? fmtDT(lastUpdateMs) : "-";
 
     [
@@ -1132,7 +1155,8 @@ async function renderWalletPointKPI(){
       [closingEl, closingBalance],
       [totalIOEl, filteredNet],
       [availEl, availableBalance],
-      [updateEl, updateBalance]
+      [updateEl, updateBalance],
+      [beforeEl, current]
     ].forEach(([el, n])=>{
       if(!el) return;
       el.classList.remove("good","bad");
@@ -1637,6 +1661,7 @@ function wireBalanceListener(){
     if(upd) upd.textContent = v.updatedAtMs ? fmtDT(v.updatedAtMs) : "-";
 
     setWalletLatestNoteUI(v.latestNote || null);
+    renderWalletPointKPI();  
   });
 }
 function wireLastLedgerListener(){
@@ -5577,7 +5602,7 @@ onAuthStateChanged(auth, async (user)=>{
   initTxTimeControl({ kind:"sell",    inputId:"txTime_sell",    toggleId:"txTimeToggle_sell" });
 
 wireBalanceListener();
-wireLastLedgerListener();
+//wireLastLedgerListener();
 
 const savedTab = localStorage.getItem(ACTIVE_TAB_KEY);
 activeView = ["open","history","transaction","notes"].includes(savedTab)

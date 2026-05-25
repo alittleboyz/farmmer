@@ -1872,7 +1872,7 @@ input[type="number"]{
   font-size: 14px;
 }
 .langOpt:hover{ background: var(--bgDropdownhover);}
-.langOpt.active{ background: var(--bgDropdown);}
+.langOpt.active{ background: var(--bgDropdown);font-weight:600;}
 .miSvg{
   display:block;
 }

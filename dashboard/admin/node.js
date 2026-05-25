@@ -5932,6 +5932,11 @@ const TEXT_EN_TO_ID = {
   "Remark": "Catatan",
   "Total In": "Total Masuk",
   "Total Out": "Total Keluar",
+  "Available Balance": "Saldo Tersedia",
+  "Opening Balance": "Saldo Awal",
+  "Closing Balance": "Saldo Akhir",
+  "Balance Available": "Tersedia Saldo",
+  "Total In/Out": "Total Masuk/Keluar",
   "Total Result": "Total Hasil"
 };
 

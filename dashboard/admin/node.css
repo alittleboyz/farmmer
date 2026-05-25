@@ -3569,6 +3569,10 @@ html.forceDesktop .desktopModeBtn .dmState{
 }
 
 @media (max-width: 600px){
+    .walletRangeTop{
+    padding: 0 28px 10px;
+  }
+
   .walletScrollBody{
     max-height: 50vh;
   }

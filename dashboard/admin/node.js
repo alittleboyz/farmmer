@@ -3614,7 +3614,15 @@ if(p.page > totalPages) p.page = totalPages;
 // table kosong (lepas filter)
 if(total === 0){
   renderPagerButtons(vaultId, 0, 1);
-  tbody.innerHTML = `<tr><td colspan="7" class="hint">No transaction in this date range.</td></tr>`;
+  tbody.innerHTML = `
+  <tr class="emptyRow">
+    <td colspan="7">
+      <div class="emptyWrap">
+        ${emptyDataHTML("No data")}
+      </div>
+    </td>
+  </tr>
+`;
   updateVaultTableTotals(vaultId, []);
   initTableShadow();
   return;
@@ -5345,13 +5353,13 @@ if(f.length === 0){
 
 if(!rows.length){
   grid.classList.add("isEmpty");
-  grid.innerHTML = `
-    <div class="card notesEmptyCard">
-      <div class="cardBody">
-        <div class="hint">No notes found.</div>
-      </div>
+grid.innerHTML = `
+  <div class="card notesEmptyCard">
+    <div class="cardBody">
+      ${emptyDataHTML("No data")}
     </div>
-  `;
+  </div>
+`;
   return;
 }
 

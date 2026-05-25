@@ -3601,3 +3601,20 @@ html.forceDesktop .desktopModeBtn .dmState{
   font-size:14px;
   color:var(--xhoverx);
 }
+/* garis tepi macam gambar ke 3 */
+th{
+  position:relative;
+}
+
+/* garis kanan setiap column */
+th:not(:last-child)::after{
+  content:"";
+  position:absolute;
+  top:50%;
+  right:0;
+  transform:translateY(-50%);
+  width:1px;
+  height:18px;
+  background:var(--borderTable);
+  opacity:.9;
+}

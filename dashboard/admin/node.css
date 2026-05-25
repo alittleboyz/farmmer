@@ -3200,7 +3200,7 @@ html.forceDesktop .desktopModeBtn .dmState{
   grid-template-columns: 620px 320px 1fr auto;
   gap:8px;
   align-items:center;
-  margin:14px 0;
+  margin:14px 0 12px;
 }
 
 #btnCreateNote{

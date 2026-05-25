@@ -1425,6 +1425,7 @@ input[type="number"]{
 .rangeRight{ align-items:center; } 
 .rangeRight{ gap:6px 8px; }
 .txSearchWrap{
+  position:relative;
   display:grid;
   grid-template-columns:1fr 32px;
   gap:0;
@@ -1470,7 +1471,39 @@ input[type="number"]{
   height:14px;
   display:block;
 }
-  
+.txSearchClear{
+  position:absolute;
+  right:36px;
+  top:50%;
+  transform:translateY(-50%);
+  width:22px;
+  height:22px;
+  border:0;
+  border-radius:999px;
+  background:transparent;
+  color:var(--scroll);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  padding:0;
+  z-index:5;
+}
+
+.txSearchClear svg{
+  width:14px;
+  height:14px;
+  display:block;
+}
+
+.txSearchClear:hover{
+  color:var(--xhoverx);
+}
+
+/* bagi text tak masuk bawah clear icon */
+.txSearchWrap .txSearchInput{
+  padding-right:38px;
+}
 /* Pastikan backdrop kekal fixed */
 .modalBack{
   position: fixed;

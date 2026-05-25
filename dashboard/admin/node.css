@@ -1423,6 +1423,7 @@ input[type="number"]{
   color: var(--colorInput);
   outline:none;
   transition: all 0.2s;
+  font-size:14px;
 }
 .txSearchInput:hover{ border-color: #3c89e8; }
 .txSearchInput:focus{ border-color: #1668dc; }
@@ -3441,6 +3442,7 @@ html.forceDesktop .desktopModeBtn .dmState{
   color:var(--colorInput);
   outline:none;
   transition:.2s;
+  font-size:14px;
 }
 
 #notesSearch:hover{

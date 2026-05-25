@@ -952,7 +952,11 @@ if(tf.length === 0){
 }, 0);
 
 if(!pageRows.length){
-  tbody.innerHTML = `<tr><td colspan="5" class="hint">No transaction found.</td></tr>`;
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="5">${emptyDataHTML("No data")}</td>
+    </tr>
+  `;
 }else{
   const rowsHtml = pageRows.map(t => `
     <tr class="${t.deleted ? "txDeleted" : ""}">
@@ -2390,6 +2394,16 @@ function buildTxDesc(t){
       "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
     }[m]));
   }
+function emptyDataHTML(text = "No data"){
+  return `
+    <div class="emptyData">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="currentColor" d="M18.546 1h-13.069l-5.477 8.986v13.014h24v-13.014l-5.454-8.986zm-11.946 2h10.82l4.249 7h-5.083l-3 3h-3.172l-3-3h-5.08l4.266-7zm-4.6 18v-9h4.586l3 3h4.828l3-3h4.586v9h-20zm3-12l.607-1h12.786l.607 1h-14zm12.787-2h-11.572l.606-1h10.359l.607 1zm-1.215-2h-9.144l.607-1h7.931l.606 1z"/>
+      </svg>
+      <div>${escapeHtml(text)}</div>
+    </div>
+  `;
+}
   function txBalanceEffect(t){
   if(!t) return 0;
 
@@ -2511,8 +2525,14 @@ function renderVaultList(targetId, data, bucket){
   // sort: latest createdAtMs desc
   entries.sort((a,b)=> Number(b[1]?.createdAtMs || 0) - Number(a[1]?.createdAtMs || 0));
 
-  if(entries.length === 0){
-    el.innerHTML = `<div class="card"><div class="cardBody"><div class="hint">No vault yet.</div></div></div>`;
+if(entries.length === 0){
+  el.innerHTML = `
+    <div class="card">
+      <div class="cardBody">
+        ${emptyDataHTML("No data")}
+      </div>
+    </div>
+  `;
 
     if(bucket === "history"){
       const pager = document.getElementById("historyVaultPager");

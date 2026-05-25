@@ -404,13 +404,13 @@ text-align:center;
     }
     .sub{margin-top:4px; color:#1668dc; font-size:11px;}
     .vaultBtns{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
-    .cardBody{padding:12px 14px 14px; background:var(--panelBg);text-align: center;}
+    .cardBody{padding:12px 14px 14px; background:var(--inputBg);text-align: center;}
     /* Excel-like table */
     table{width:100%; border-collapse:separate; border-spacing:0}
     th,td{padding:10px 10px; border-bottom:1px solid var(--borderBottom); text-align: center;;}
     th{
       position:sticky; top:0;
-      background:var(--tableHeadBg);
+      background:var(--panelBg);
       border-bottom:1px solid var(--borderTable);
       text-align:left;
       font-size:12px; letter-spacing:.2px;

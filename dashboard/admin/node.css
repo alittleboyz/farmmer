@@ -2426,7 +2426,6 @@ html.forceDesktop .desktopModeBtn .dmState{
   background: transparent;
   color: var(--colorInput);
   font-size: 14px;
-  white-space: nowrap;
 }
 
 .walletTable td:first-child{
@@ -2434,6 +2433,9 @@ html.forceDesktop .desktopModeBtn .dmState{
   text-align: left;
   border-right: 1px solid var(--borderTable);
   font-weight: 400;
+    white-space: normal;
+  word-break: break-word;
+  line-height: 1.2;
 }
 
 .walletTable td:last-child{

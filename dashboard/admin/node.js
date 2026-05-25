@@ -704,7 +704,7 @@ function renderTransactionTabShell(){
       <div class="txToolbarMain">
 
         <div class="txSearchWrap">
-  <input id="txSearchInput" class="txSearchInput" placeholder="Search transaction..." />
+  <input id="txSearchInput" class="txSearchInput" placeholder="Search" />
 
   <button type="button" class="txSearchIcon" aria-label="Search">
     <svg viewBox="0 0 1024 1024" aria-hidden="true">
@@ -2157,7 +2157,7 @@ ${!isHistory ? `
 <div class="txSearchWrap">
   <input class="txSearchInput"
     type="text"
-    placeholder="Search transaction..."
+    placeholder="Search"
     data-txsearch="${vaultId}">
 
   <!-- search icon kanan -->
@@ -5843,7 +5843,7 @@ const TEXT_EN_TO_ID = {
   "Change Password": "Ubah Sandi",
   "Logout": "Keluar",
   "Searching...": "Pencarian...",
-  "Search transaction...": "Pencarian transaksi...",
+  "Search": "Pencarian",
   
   // KPI / Summary
 "Total Bought": "Total Beli",

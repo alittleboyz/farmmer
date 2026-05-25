@@ -1001,6 +1001,7 @@ input[type="number"]{
   width:100%;
 }
 
+.txToolbarMain .txSearchWrap,
 .txToolbarMain .txSearchInput,
 .txToolbarMain .msType,
 .txToolbarMain .txRangeRow{
@@ -1424,15 +1425,50 @@ input[type="number"]{
 .rangeRight{ align-items:center; } 
 .rangeRight{ gap:6px 8px; }
 .txSearchWrap{
-  position:relative;
-  display:inline-block;
+  display:grid;
+  grid-template-columns:1fr 32px;
+  gap:0;
   width:100%;
-  min-width: 220px;
+  min-width:0;
 }
 
 .txSearchWrap .txSearchInput{
   width:100%;
-  padding-right: 44px;
+  min-width:0;
+  border-radius:6px 0 0 6px;
+  border-right:1px solid var(--borderTable);
+}
+
+.txSearchIcon{
+  width:32px;
+  height:32px;
+  border:1px solid var(--borderTable);
+  border-left:1px solid var(--borderTable);
+  border-radius:0 6px 6px 0;
+  background:var(--inputBg);
+  color:var(--colorInput);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  padding:0;
+  transition:.2s;
+}
+
+.txSearchIcon:hover{
+  border-color:#3c89e8;
+  color:#3c89e8;
+}
+
+.txSearchIcon:active{
+  border-color:#1554ad;
+  color:#1554ad;
+}
+
+.txSearchIcon svg{
+  width:14px;
+  height:14px;
+  display:block;
 }
   
 /* Pastikan backdrop kekal fixed */

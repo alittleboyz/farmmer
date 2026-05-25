@@ -3534,3 +3534,23 @@ html.forceDesktop .desktopModeBtn .dmState{
     max-height: 50vh;
   }
 }
+.emptyData{
+  min-height:150px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  color:var(--scroll);
+}
+
+.emptyData svg{
+  width:56px;
+  height:56px;
+  opacity:.65;
+}
+
+.emptyData div{
+  font-size:14px;
+  color:var(--scroll);
+}

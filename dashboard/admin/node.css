@@ -1,6 +1,9 @@
 :root{
   --headerH:64px;
   --btn:#1668dc; --btnH:#3c89e8; --btnA:#1554ad;
+  --emptyIcon:#3e3e3e;
+--emptyIconFill:#1d1d1d;
+--emptyShadow:#272727;
 
   /* ===== THEME TOKENS ===== */
   --menuDropdown:#303030;
@@ -49,6 +52,9 @@
 
 /* ===== LIGHT MODE OVERRIDE ===== */
 html.theme-light{
+  --emptyIcon:rgba(0,0,0,.45);
+--emptyIconFill:rgba(0,0,0,.45);
+--emptyShadow:rgba(0,0,0,.08);
   --talbeHover:rgba(255, 255, 255, .03);
   --menuDropdown:#ffffff;
   --scroll:rgba(0, 0, 0, 0.25);
@@ -3577,7 +3583,6 @@ html.forceDesktop .desktopModeBtn .dmState{
 
 .emptyDataImage{
   height:40px;
-  margin-bottom:8px;
   opacity:1;
   display:flex;
   align-items:center;
@@ -3592,5 +3597,5 @@ html.forceDesktop .desktopModeBtn .dmState{
 
 .emptyDataText{
   font-size:14px;
-  color:var(--scroll);
+  color:var(--emptyIcon);
 }

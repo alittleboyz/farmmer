@@ -1416,7 +1416,7 @@ input[type="number"]{
 .txSearchInput{
   height:32px;
   min-width:200px;
-  padding:0px 15px;
+  padding:4px 11px;
   border-radius:6px;
   border:1px solid var(--borderTable);
   background: var(--inputBg);

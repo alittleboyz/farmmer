@@ -52,9 +52,9 @@
 
 /* ===== LIGHT MODE OVERRIDE ===== */
 html.theme-light{
-  --emptyIcon:rgba(0,0,0,.45);
---emptyIconFill:rgba(0,0,0,.45);
---emptyShadow:rgba(0,0,0,.08);
+  --emptyIcon:#d9d9d9;
+--emptyIconFill:#fafafa;
+--emptyShadow:#f5f5f5;
   --talbeHover:rgba(255, 255, 255, .03);
   --menuDropdown:#ffffff;
   --scroll:rgba(0, 0, 0, 0.25);

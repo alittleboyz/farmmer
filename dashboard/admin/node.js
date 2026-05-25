@@ -5770,10 +5770,17 @@ function getLang(){
   const v = localStorage.getItem(LANG_KEY);
   return (v === "id" || v === "en") ? v : "en";
 }
+function syncLangActive(lang = getLang()){
+  document.querySelectorAll(".langOpt").forEach(opt=>{
+    opt.classList.toggle("active", opt.dataset.lang === lang);
+  });
+}
+
 function setLang(lang){
   if(lang !== "en" && lang !== "id") return;
   localStorage.setItem(LANG_KEY, lang);
-  applyLang(lang); // apply terus
+  applyLang(lang);
+  syncLangActive(lang);
 }
 // ===== LANGUAGE DROPDOWN (OPEN/CLOSE + PICK) =====
 function wireLangDropdown(btnId, menuId, wrapId){
@@ -6006,12 +6013,18 @@ if(themeDrawer)  themeDrawer.textContent  = show;
 
 // init apply on load
 document.addEventListener("DOMContentLoaded", ()=>{
-  applyLang(getLang());
+  const lang = getLang();
+  applyLang(lang);
+  syncLangActive(lang);
 });
 
 // sync kalau tab lain tukar
 window.addEventListener("storage", (e)=>{
-  if(e.key === LANG_KEY) applyLang(getLang());
+  if(e.key === LANG_KEY){
+    const lang = getLang();
+    applyLang(lang);
+    syncLangActive(lang);
+  }
 });
 // ===== THEME TOGGLE =====
 const THEME_KEY = "farm_theme"; // "dark" | "light"
@@ -6022,6 +6035,7 @@ function applyTheme(theme){
 
   document.documentElement.classList.toggle("theme-light", isLight);
   applyLang(getLang());
+  syncLangActive(getLang());
   const d1 = document.getElementById("themeToggleDesktop");
   const d2 = document.getElementById("themeToggleDrawer");
 

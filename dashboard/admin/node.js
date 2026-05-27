@@ -757,16 +757,13 @@ function renderTransactionTabShell(){
         <div class="tblWrap txTableWrap">
           <table>
             <thead>
-<tr>
-  <th style="width:120px">Type</th>
-  <th style="width:150px">Opening Balance</th>
-  <th style="width:150px">Closing Balance</th>
-  <th style="width:140px">Amount</th>
-  <th style="width:150px">Total</th>
-  <th>Remark</th>
-  <th style="width:180px">Date & Time</th>
-  <th style="width:220px">Actions</th>
-</tr>
+              <tr>
+                <th style="width:140px">Type</th>
+                <th>Remark</th>
+                <th style="width:140px">Amount</th>
+                <th style="width:180px">Date & Time</th>
+                <th style="width:220px">Actions</th>
+              </tr>
             </thead>
             <tbody id="txTabTbody">
               <tr><td colspan="5" class="hint">Loading...</td></tr>
@@ -964,14 +961,9 @@ if(!pageRows.length){
   const rowsHtml = pageRows.map(t => `
     <tr class="${t.deleted ? "txDeleted" : ""}">
       <td><span class="tag ${t.direction === "out" ? "out" : "in"}">${txTypeLabel(t)}</span></td>
-<td class="num">${t.openingBalance == null ? "-" : fmt(t.openingBalance)}</td>
-<td class="num">${t.closingBalance == null ? "-" : fmt(t.closingBalance)}</td>
-<td class="num ${t.direction === "out" ? "amtNeg" : "amtPos"}">
-  ${t.direction === "out" ? "-" + fmt(Math.abs(t.amount || 0)) : fmt(t.amount || 0)}
-</td>
-<td class="num">${t.totalBalance == null ? "-" : fmt(t.totalBalance)}</td>
-<td>${escapeHtml(String(t.note || "-"))}</td>
-<td class="num">${fmtDT(t.atMs)}</td>
+      <td>${escapeHtml(String(t.note || "-"))}</td>
+      <td class="num ${t.direction === "out" ? "amtNeg" : "amtPos"}">${t.direction === "out"? "-" + fmt(Math.abs(t.amount || 0)): fmt(t.amount || 0)}</td>
+      <td class="num">${fmtDT(t.atMs)}</td>
       <td>
         <div style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap">
           <button class="btn-view" data-act="finTxView" data-id="${t.id}">View</button>
@@ -984,7 +976,7 @@ if(!pageRows.length){
 
   const totalRowHtml = `
     <tr class="txTotalRow">
-      <td colspan="3" style="text-align:center; font-weight:700;color:var(--colorInput);">Total Sunmary</td>
+      <td colspan="2" style="text-align:center; font-weight:700;color:var(--colorInput);">Total Sunmary</td>
       <td class="num ${pageTotal < 0 ? "amtNeg" : ""} "> ${fmt(pageTotal)}</td>
       <td></td>
       <td></td>
@@ -1765,7 +1757,7 @@ const txRes = await runTransaction(balAmountRef, (cur)=>{
   if(!txRes.committed) throw new Error("Balance update cancelled.");
 
   const newAmount = safeNum(txRes.snapshot.val());
-  const beforeAmount = newAmount - safeNum(delta);
+
   const balSnap = await get(balanceRef);
   const oldBal = balSnap.exists() ? (balSnap.val() || {}) : {};
   const oldLatestNote = oldBal.latestNote || null;
@@ -1810,21 +1802,16 @@ const txRes = await runTransaction(balAmountRef, (cur)=>{
   if(meta?.kind === "add_point" || meta?.kind === "cash"){
     const txRef = push(ref(db, `finance/transactions/${WALLET_ID}`));
 
-updates[`finance/transactions/${WALLET_ID}/${txRef.key}`] = {
-  ...(meta || {}),
-  amount: Math.abs(Number(meta?.amount || delta || 0)),
-  delta: Number(delta || 0),
-
-  openingBalance: beforeAmount,
-  closingBalance: newAmount,
-  totalBalance: newAmount,
-
-  at: serverTimestamp(),
-  atMs: now,
-  byUid: me.uid,
-  byUser: me.username,
-  ledgerKey: ledRef.key
-};
+    updates[`finance/transactions/${WALLET_ID}/${txRef.key}`] = {
+      ...(meta || {}),
+      amount: Math.abs(Number(meta?.amount || delta || 0)),
+      delta: Number(delta || 0),
+      at: serverTimestamp(),
+      atMs: now,
+      byUid: me.uid,
+      byUser: me.username,
+      ledgerKey: ledRef.key
+    };
   }
 
   await update(ref(db), updates);

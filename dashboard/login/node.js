@@ -99,6 +99,45 @@ $("btnLogin").disabled = true;
       await set(roleRef, { isAdmin, username, updatedAt: serverTimestamp() });
     }
   }
+function clearFieldErrors(){
+  document.querySelectorAll(".inputWrap").forEach(w=>{
+    w.classList.remove("hasError");
+  });
+
+  document.querySelectorAll(".fieldError").forEach(e=>{
+    e.textContent = "";
+    e.style.display = "none";
+  });
+
+  $("pinWrap")?.classList.remove("hasError");
+
+  if($("pinError")){
+    $("pinError").textContent = "";
+    $("pinError").classList.remove("show");
+  }
+}
+
+function setInputError(inputId, errorId, msg){
+  const input = $(inputId);
+  const wrap = input?.closest(".inputWrap");
+  const err = $(errorId);
+
+  wrap?.classList.add("hasError");
+
+  if(err){
+    err.textContent = msg;
+    err.style.display = "block";
+  }
+}
+
+function setPinError(msg){
+  $("pinWrap")?.classList.add("hasError");
+
+  if($("pinError")){
+    $("pinError").textContent = msg;
+    $("pinError").classList.add("show");
+  }
+}
 // ✅ Convert Firebase auth error -> mesej toast sendiri
 function authMsg(err){
   const code = String(err?.code || "");
@@ -112,6 +151,7 @@ function authMsg(err){
   return "Login gagal. Sila cuba lagi.";
 }
 async function doLogin(){
+  clearFieldErrors();
   const username = $("username").value.trim().toLowerCase();
   const password = $("password").value;
  const turnstileToken = window.turnstileToken || "";
@@ -124,17 +164,29 @@ if(!turnstileToken){
   setLoading(true);
   showPageLoading("Please wait while fetching...");
   // ✅ kalau validation fail, STOP spinner juga
-  if(username.length < 3){
+if(username.length < 3){
   setLoading(false);
   hidePageLoading();
-  toast("Username terlalu pendek.");
+
+  setInputError(
+    "username",
+    "usernameError",
+    "Username does not exist."
+  );
+
   return;
 }
 
 if(password.length < 6){
   setLoading(false);
   hidePageLoading();
-  toast("Password minimum 6 karakter.");
+
+  setInputError(
+    "password",
+    "passwordError",
+    "Password does not exist."
+  );
+
   return;
 }
 
@@ -160,12 +212,35 @@ setLoading(false);
 hidePageLoading();
 
 document.querySelector(".pinInput")?.focus();
-  }catch(e){
-    console.error(e);
-    toast(authMsg(e));
-    setLoading(false); // ✅ STOP spinner bila gagal
-    hidePageLoading();
+}catch(e){
+  console.error(e);
+
+  const code = String(e?.code || "");
+
+  if(
+    code === "auth/user-not-found" ||
+    code === "auth/invalid-email"
+  ){
+
+    setInputError(
+      "username",
+      "usernameError",
+      "Username does not exist."
+    );
+
+  }else{
+
+    setInputError(
+      "password",
+      "passwordError",
+      "Password does not exist."
+    );
+
   }
+
+  setLoading(false);
+  hidePageLoading();
+}
 }
 
 // ✅ click login
@@ -173,13 +248,22 @@ $("btnLogin").addEventListener("click", doLogin);
 ["username","password"].forEach(id=>{
   const el = $(id);
   if(!el) return;
+
   el.addEventListener("keydown", (e)=>{
     if(e.key === "Enter"){
       e.preventDefault();
+
       if($("btnLogin")?.disabled) return;
+
       doLogin();
     }
   });
+
+  el.addEventListener("input", ()=>{
+    clearFieldErrors();
+  });
+});
+  
 });
 const toggle = $("togglePass");
 const passInput = $("password");
@@ -322,10 +406,10 @@ function clearPin(){
 async function verifySecondPassword(){
   const pin = getPinValue();
 
-  if(pin.length !== 6){
-    toast("Please enter 6 digit 2nd password.");
-    return;
-  }
+if(pin.length !== 6){
+  setPinError("2nd password does not exist.");
+  return;
+}
 
   if(!pendingUser){
     toast("Session expired. Please login again.");
@@ -338,18 +422,18 @@ async function verifySecondPassword(){
     const snap = await get(ref(db, `profiles/${pendingUser.uid}/secondPassword`));
     const savedPin = snap.exists() ? String(snap.val()) : "";
 
-    if(!savedPin){
-      hidePageLoading();
-      toast("2nd password belum setup. Sila hubungi admin.");
-      return;
-    }
+if(!savedPin){
+  hidePageLoading();
+  setPinError("2nd password does not exist.");
+  return;
+}
 
-    if(pin !== savedPin){
-      hidePageLoading();
-      clearPin();
-      toast("2nd password salah.");
-      return;
-    }
+if(pin !== savedPin){
+  hidePageLoading();
+  clearPin();
+  setPinError("2nd password does not exist.");
+  return;
+}
 
     location.replace("../admin/");
   }catch(e){
@@ -374,6 +458,8 @@ clearPin();
 
 document.querySelectorAll(".pinInput").forEach((input, index, arr)=>{
   input.addEventListener("input", ()=>{
+    $("pinWrap")?.classList.remove("hasError");
+    $("pinError")?.classList.remove("show");
     input.value = input.value.replace(/\D/g, "").slice(0,1);
 
     if(input.value && arr[index + 1]){

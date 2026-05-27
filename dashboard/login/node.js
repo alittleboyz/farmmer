@@ -184,7 +184,7 @@ if(password.length < 6){
   setInputError(
     "password",
     "passwordError",
-    "Password does not exist."
+    "Username & Password does not exist."
   );
 
   return;
@@ -233,7 +233,7 @@ document.querySelector(".pinInput")?.focus();
     setInputError(
       "password",
       "passwordError",
-      "Password does not exist."
+      "Username & Password does not exist."
     );
 
   }

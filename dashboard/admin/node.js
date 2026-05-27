@@ -1154,19 +1154,20 @@ async function renderWalletPointKPI(){
     if(availEl)   availEl.textContent = fmtBalanceBtn(availableBalance);
     if(beforeEl)  beforeEl.textContent = fmtBalanceBtn(current);
 
-    [
-      [resEl, allResult],
-      [openingEl, openingBalance],
-      [closingEl, closingBalance],
-      [totalIOEl, filteredNet],
-      [availEl, availableBalance],
-      [updateEl, updateBalance],
-      [beforeEl, current]
-    ].forEach(([el, n])=>{
-      if(!el) return;
-      el.classList.remove("good","bad");
-      el.classList.add(n < 0 ? "bad" : "good");
-    });
+[
+  [addEl, allIn],
+  [outEl, -allOut],
+  [resEl, allResult],
+  [openingEl, openingBalance],
+  [closingEl, closingBalance],
+  [totalIOEl, filteredNet],
+  [availEl, availableBalance],
+  [beforeEl, current]
+].forEach(([el, n])=>{
+  if(!el) return;
+  el.classList.remove("good","bad");
+  el.classList.add(n < 0 ? "bad" : "good");
+});
 
   }catch(err){
     console.error("renderWalletPointKPI error =", err);

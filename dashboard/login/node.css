@@ -1,4 +1,5 @@
     :root{
+        --error:#dc4446;
       --btn:#1668dc; --btnH:#3c89e8; --btnA:#1554ad;
       --bg:#0b1220; --card:rgba(255,255,255,.06);
       --stroke:rgba(255,255,255,.12); --txt:rgba(255,255,255,0.85); --muted:rgba(255,255,255,.85);--toast:rgba(255,255,255,.85);
@@ -422,4 +423,45 @@ body{
     transform-origin:center top;
     height:70px;
   }
+}
+.fieldError{
+  display:none;
+  color:var(--error);
+  font-size:12px;
+  line-height:1.2;
+  margin-top:6px;
+}
+
+.inputWrap.hasError input{
+  border-color:var(--error) !important;
+}
+
+.inputWrap.hasError input:focus{
+  border-color:var(--error) !important;
+}
+
+.inputWrap.hasError .inputIcon,
+.inputWrap.hasError .inputRight{
+  color:var(--error);
+}
+
+.pinWrap.hasError .pinInput{
+  border-color:var(--error) !important;
+}
+
+.pinWrap.hasError .pinInput:focus{
+  border-color:var(--error) !important;
+}
+
+.pinError{
+  display:none;
+  color:var(--error);
+  font-size:12px;
+  line-height:1.2;
+  margin-top:-18px;
+  margin-bottom:24px;
+}
+
+.pinError.show{
+  display:block;
 }

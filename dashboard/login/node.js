@@ -264,7 +264,6 @@ $("btnLogin").addEventListener("click", doLogin);
   });
 });
   
-});
 const toggle = $("togglePass");
 const passInput = $("password");
 const eyePath = document.getElementById("eyePath");

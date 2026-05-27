@@ -1142,8 +1142,6 @@ async function renderWalletPointKPI(){
     const closingEl = $("walletClosingBalance");
     const totalIOEl = $("walletTotalInOut");
     const availEl   = $("walletAvailableBalance2");
-    const updateEl  = $("balanceDelta");
-    const lastEl    = $("balanceUpdated");
     const beforeEl  = $("balanceBefore");
 
     if(addEl) addEl.textContent = fmtBalanceBtn(allIn);
@@ -1154,9 +1152,7 @@ async function renderWalletPointKPI(){
     if(closingEl) closingEl.textContent = fmtBalanceBtn(closingBalance);
     if(totalIOEl) totalIOEl.textContent = fmtBalanceBtn(filteredNet);
     if(availEl)   availEl.textContent = fmtBalanceBtn(availableBalance);
-    if(updateEl)  updateEl.textContent = fmtBalanceBtn(updateBalance);
     if(beforeEl)  beforeEl.textContent = fmtBalanceBtn(current);
-    if(lastEl)    lastEl.textContent = lastUpdateMs ? fmtDT(lastUpdateMs) : "-";
 
     [
       [resEl, allResult],

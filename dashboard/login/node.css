@@ -165,8 +165,7 @@ html.theme-light input{
 .inputIcon{
   position:absolute;
   left:12px;
-  top:50%;
-  transform:translateY(-50%);
+  top:12px;
   width:16px;
   height:16px;
   opacity:.7;
@@ -176,8 +175,7 @@ html.theme-light input{
 .inputRight{
   position:absolute;
   right:12px;
-  top:50%;
-  transform:translateY(-50%);
+  top:12px;
   width:16px;
   height:16px;
   cursor:pointer;

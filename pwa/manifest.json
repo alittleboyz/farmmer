@@ -1,28 +1,26 @@
 {
-  "id": "/",
+  "id": "/farmmer/pwa/",
   "name": "Farmmer",
   "short_name": "Farmmer",
   "description": "Farmmer dashboard mobile app",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": "/farmmer/pwa/",
+  "scope": "/farmmer/pwa/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#000000",
   "theme_color": "#000000",
-  "categories": ["business", "productivity"],
-  "lang": "en",
   "icons": [
     {
       "src": "/farmmer/dashboard/image.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "/farmmer/dashboard/image.png",
+      "src": "/farmmer/dashboard/image1.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }

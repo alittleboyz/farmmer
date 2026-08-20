@@ -2010,7 +2010,6 @@ async function uncloseVault(vaultId){
 
   await update(ref(db), updates);
 }
-  // ===== RENDER =====
 // ===== RENDER =====
 const ACTIVE_TAB_KEY = "farm_active_tab";
 
@@ -2056,9 +2055,13 @@ if(topRow){
 
 /* button hanya untuk OPEN */
 if(btnAddPoint){
+  const showAddPoint =
+    (v === "open") &&
+    me.isAdmin;
+
   btnAddPoint.style.setProperty(
     "display",
-    (v === "open") ? "inline-flex" : "none",
+    showAddPoint ? "inline-flex" : "none",
     "important"
   );
 }

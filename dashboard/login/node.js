@@ -50,7 +50,8 @@ let pendingUsername = "";
 
 // ===== FIXED LOGIN SESSION: 24 HOURS =====
 const SESSION_EXPIRE_KEY = "farm_session_expires_at";
-const SESSION_DURATION_MS = 1 * 60 * 1000;
+const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
+// ==== =const SESSION_DURATION_MS = 1 * 60 * 1000; =====
 
 function create24HourSession(){
   const expiresAt = Date.now() + SESSION_DURATION_MS;

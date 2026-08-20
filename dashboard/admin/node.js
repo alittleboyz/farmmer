@@ -1389,6 +1389,60 @@ function attachKg(el){
   let me = { uid:null, username:null, isAdmin:false };
   let currentBalance = 0;
   const WALLET_ID = "main";
+// ===== AUTO LOGOUT AFTER 24 HOURS =====
+const SESSION_EXPIRE_KEY = "farm_session_expires_at";
+
+let sessionExpiryTimer = null;
+
+async function checkSessionExpiry(){
+
+  const expiresAt = Number(
+    localStorage.getItem(SESSION_EXPIRE_KEY) || 0
+  );
+
+  // Kalau tiada expiry, biarkan dulu
+  if(!expiresAt){
+    return;
+  }
+
+  // Belum cukup 24 jam
+  if(Date.now() < expiresAt){
+    return;
+  }
+
+  // ===== SUDAH EXPIRED =====
+  localStorage.removeItem(SESSION_EXPIRE_KEY);
+  localStorage.removeItem(ACTIVE_TAB_KEY);
+
+  if(sessionExpiryTimer){
+    clearInterval(sessionExpiryTimer);
+    sessionExpiryTimer = null;
+  }
+
+  try{
+    await signOut(auth);
+  }catch(err){
+    console.error("Auto logout error:", err);
+  }
+
+  location.replace("../login/");
+}
+
+function startSessionExpiryWatcher(){
+
+  if(sessionExpiryTimer){
+    clearInterval(sessionExpiryTimer);
+  }
+
+  // check terus bila admin page dibuka
+  checkSessionExpiry();
+
+  // check setiap 5 saat
+  sessionExpiryTimer = setInterval(
+    checkSessionExpiry,
+    5000
+  );
+}
   let buyTotalManual = false;
   let latestWalletNoteData = null;
 let walletPicker = null;
@@ -1584,6 +1638,12 @@ if(drawerLogoutBtn){
   drawerLogoutBtn.addEventListener("click", async ()=>{
     try{
       localStorage.removeItem(ACTIVE_TAB_KEY); // ✅ reset tab balik Vault
+      localStorage.removeItem(SESSION_EXPIRE_KEY);
+
+if(sessionExpiryTimer){
+  clearInterval(sessionExpiryTimer);
+  sessionExpiryTimer = null;
+}
       await signOut(auth);
       location.replace("../login/");
     }catch(e){
@@ -4327,9 +4387,21 @@ document.addEventListener("keydown", (e)=>{
 
 // Logout (kekal fungsi asal)
 $("btnLogout").addEventListener("click", async ()=>{
+
   closeUserMenu();
-  localStorage.removeItem(ACTIVE_TAB_KEY); // ✅ reset tab balik Vault
+
+  localStorage.removeItem(ACTIVE_TAB_KEY);
+
+  // ✅ buang session 24 jam juga
+  localStorage.removeItem(SESSION_EXPIRE_KEY);
+
+  if(sessionExpiryTimer){
+    clearInterval(sessionExpiryTimer);
+    sessionExpiryTimer = null;
+  }
+
   await signOut(auth);
+
   location.replace("../login/");
 });
 
@@ -5719,6 +5791,7 @@ onAuthStateChanged(auth, async (user)=>{
   $("usernameText").textContent = me.username;
 
   await loadRole(me.uid);
+  startSessionExpiryWatcher();
   initTxTimeControl({ kind:"newVault", inputId:"txTime_newVault", toggleId:"txTimeToggle_newVault" });
   initTxTimeControl({ kind:"cash",    inputId:"txTime_cash",    toggleId:"txTimeToggle_cash" });
   initTxTimeControl({ kind:"buy",     inputId:"txTime_buy",     toggleId:"txTimeToggle_buy" });

@@ -48,6 +48,21 @@ function setLoginHead(mode){
 let pendingUser = null;
 let pendingUsername = "";
 
+// ===== FIXED LOGIN SESSION: 24 HOURS =====
+const SESSION_EXPIRE_KEY = "farm_session_expires_at";
+const SESSION_DURATION_MS = 1 * 60 * 1000;
+
+function create24HourSession(){
+  const expiresAt = Date.now() + SESSION_DURATION_MS;
+
+  localStorage.setItem(
+    SESSION_EXPIRE_KEY,
+    String(expiresAt)
+  );
+
+  return expiresAt;
+}
+
 function showPageLoading(text = "Please wait while fetching..."){
   const el = $("pageLoading");
   if(!el) return;
@@ -433,8 +448,8 @@ if(pin !== savedPin){
   setPinError("2nd password does not exist.");
   return;
 }
-
-    location.replace("../admin/");
+  create24HourSession();
+  location.replace("../admin/");
   }catch(e){
     console.error(e);
     hidePageLoading();

@@ -1654,10 +1654,13 @@ async function loadRole(uid){
   if(usernameText){
     usernameText.textContent = me.username;
   }
-  const btnAddPoint = $("btnAddPoint");
-  if(btnAddPoint){
-    btnAddPoint.classList.toggle("hide", !me.isAdmin);
-  }
+const btnAddPoint = $("btnAddPoint");
+
+if(btnAddPoint){
+  btnAddPoint.classList.toggle("hide", !me.isAdmin);
+}
+// ✅ render semula transaction selepas role selesai load
+renderTransactionRows();
 }
 
 function wireBalanceListener(){

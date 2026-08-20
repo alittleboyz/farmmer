@@ -965,11 +965,32 @@ if(!pageRows.length){
       <td class="num ${t.direction === "out" ? "amtNeg" : "amtPos"}">${t.direction === "out"? "-" + fmt(Math.abs(t.amount || 0)): fmt(t.amount || 0)}</td>
       <td class="num">${fmtDT(t.atMs)}</td>
       <td>
-        <div style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap">
-          <button class="btn-view" data-act="finTxView" data-id="${t.id}">View</button>
-          <button class="btn-edit" data-act="finTxEdit" data-id="${t.id}">Edit</button>
-          <button class="btn-delete" data-act="finTxDel" data-id="${t.id}">Delete</button>
-        </div>
+<div style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap">
+
+  <button
+    class="btn-view"
+    data-act="finTxView"
+    data-id="${t.id}">
+    View
+  </button>
+
+  ${me.isAdmin ? `
+    <button
+      class="btn-edit"
+      data-act="finTxEdit"
+      data-id="${t.id}">
+      Edit
+    </button>
+
+    <button
+      class="btn-delete"
+      data-act="finTxDel"
+      data-id="${t.id}">
+      Delete
+    </button>
+  ` : ``}
+
+</div>
       </td>
     </tr>
   `).join("");
@@ -4742,6 +4763,11 @@ if(act === "finTxView"){
   return;
 }
 if(act === "finTxEdit"){
+    // 🔒 ADMIN ONLY
+  if(!me.isAdmin){
+    toast("No access. Admin sahaja boleh edit transaction.", "error");
+    return;
+  }
   const id = btn.dataset.id;
   const snap = await get(ref(db, `${TX_ROOT}/${id}`));
   if(!snap.exists()){
@@ -4771,43 +4797,89 @@ if(act === "finTxEdit"){
   return;
 }
 if(act === "finTxDel"){
+
+  // 🔒 ADMIN ONLY
+  // CHECK DULU SEBELUM BALANCE / DATABASE DISENTUH
+  if(!me.isAdmin){
+    toast(
+      "No access. Admin sahaja boleh delete transaction.",
+      "error"
+    );
+    return;
+  }
+
   const id = btn.dataset.id;
+
   const yes = await confirmBox("Delete transaction?", {
     title: "Delete",
     okText: "Delete",
     cancelText: "Cancel",
     okClass: "danger"
   });
+
   if(!yes) return;
 
   try{
-    const txSnap = await get(ref(db, `${TX_ROOT}/${id}`));
+
+    const txRef = ref(db, `${TX_ROOT}/${id}`);
+    const txSnap = await get(txRef);
+
     if(!txSnap.exists()){
-      toast("Transaction not found.");
+      toast("Transaction not found.", "error");
       return;
     }
 
     const t = txSnap.val() || {};
-    const amount = Math.abs(Number(t.amount || 0));
+
+    const amount = Math.abs(
+      Number(t.amount || 0)
+    );
 
     let reverseDelta = 0;
-    if(t.direction === "in") reverseDelta = -amount;
-    if(t.direction === "out") reverseDelta = amount;
+
+    if(t.direction === "in"){
+      reverseDelta = -amount;
+    }
+
+    if(t.direction === "out"){
+      reverseDelta = amount;
+    }
+
+    // =====================================================
+    // ADMIN SUDAH LEPAS CHECK
+    // BARU BOLEH UBAH BALANCE
+    // =====================================================
 
     if(reverseDelta !== 0){
       await rollbackBalanceOnly(reverseDelta);
     }
 
-    await remove(ref(db, `${TX_ROOT}/${id}`));
+    // delete transaction
+    await remove(txRef);
 
+    // delete ledger transaction asal
     if(t.ledgerKey){
-      await remove(ref(db, `finance/ledger/${WALLET_ID}/${t.ledgerKey}`));
+      await remove(
+        ref(
+          db,
+          `finance/ledger/${WALLET_ID}/${t.ledgerKey}`
+        )
+      );
     }
 
     toast("Deleted and balance rolled back.");
+
   }catch(err){
-    console.error("finTxDel error =", err);
-    toast(err?.message || "Delete failed", "error");
+
+    console.error(
+      "finTxDel error =",
+      err
+    );
+
+    toast(
+      err?.message || "Delete failed",
+      "error"
+    );
   }
 
   return;

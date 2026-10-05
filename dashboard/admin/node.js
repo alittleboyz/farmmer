@@ -2618,6 +2618,8 @@ function updateTablePing(shell){
 
 function renderVaultList(targetId, data, bucket){
   const el = $(targetId);
+  if(!el) return;
+
   let entries = Object.entries(data || {});
 
   window.__vaultOwner = window.__vaultOwner || {};

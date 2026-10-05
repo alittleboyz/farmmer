@@ -4732,7 +4732,7 @@ $("btnNewVault")?.addEventListener("click", ()=>{
 
 async function onApSave(){
   if(!me.isAdmin) throw new Error("No access.");
-
+  const siteId = requireWriteSiteId();
   const type = ($("apType")?.value || "in");
   const amount = moneyVal("apAmount");
   const note = ($("apNote")?.value || "").trim();

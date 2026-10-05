@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>Site Management</title>
+
+  <link rel="stylesheet" href="./node.css">
+  <link rel="stylesheet" href="./new-ui.css">
+</head>
+
+<body>
+
+  <header>
+
+    <div class="headerSiteSelector" data-admin-site-selector></div>
+
+    <div class="tabs headerTabs">
+
+      <a class="tab" href="./index.html">
+        Vault
+      </a>
+
+      <a class="tab" href="./index.html?tab=transaction">
+        Transaction
+      </a>
+
+      <a class="tab" href="./index.html?tab=history">
+        History Vault
+      </a>
+
+      <a class="tab" href="./index.html?tab=notes">
+        Notes
+      </a>
+
+      <a class="tab active" href="./site-management.html">
+        Site Management
+      </a>
+
+    </div>
+
+    <div class="right">
+      <span class="pill" id="rolePill">...</span>
+      <span class="pill" id="usernameText">...</span>
+    </div>
+
+  </header>
+
+
+  <main class="wrap">
+
+    <div class="bar">
+
+      <div>
+        <h2 style="margin:0;">Site Management</h2>
+        <div class="muted">
+          Manage sites and Site Admin assignments.
+        </div>
+      </div>
+
+      <button
+        class="btn primary"
+        id="btnCreateSite"
+        type="button"
+      >
+        + Create Site
+      </button>
+
+    </div>
+
+
+    <div class="card" style="margin-top:16px;">
+
+      <div style="overflow:auto;">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Site</th>
+              <th>Site Admin</th>
+              <th>Wallet / Modal</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody id="siteRows">
+
+            <tr>
+              <td colspan="5" class="muted">
+                Loading sites...
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <script src="./admin-access.js"></script>
+  <script type="module" src="./site-management.js"></script>
+  <script src="./new-ui.js"></script>
+
+</body>
+</html>

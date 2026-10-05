@@ -1,0 +1,353 @@
+/* ==========================================================
+   FARMMER ADMIN - SHARED NEW UI
+   File: dashboard/admin/new-ui.css
+   ========================================================== */
+
+
+/* ==========================================================
+   SITE SELECTOR
+   ========================================================== */
+
+.admin-site-selector{
+  position:relative;
+
+  width:180px;
+  min-width:180px;
+
+  font-family:inherit;
+  font-size:14px;
+
+  z-index:1000;
+}
+
+
+/* ==========================================================
+   MAIN CONTROL
+   ========================================================== */
+
+.site-select-control{
+  width:100%;
+  height:38px;
+
+  display:flex;
+  align-items:center;
+
+  border:1px solid #3a414a;
+  border-radius:6px;
+
+  background:#111417;
+  color:#fff;
+
+  cursor:pointer;
+
+  box-sizing:border-box;
+
+  transition:
+    border-color .15s ease,
+    background .15s ease;
+}
+
+.site-select-control:hover{
+  border-color:#5a6470;
+}
+
+.admin-site-selector.open
+.site-select-control{
+  border-color:#1677ff;
+}
+
+
+/* ==========================================================
+   VALUE AREA
+   ========================================================== */
+
+.site-select-values{
+  min-width:0;
+  flex:1;
+
+  display:flex;
+  align-items:center;
+
+  gap:5px;
+
+  padding-left:10px;
+
+  overflow:hidden;
+}
+
+.site-select-placeholder{
+  color:#8b949e;
+
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+
+/* ==========================================================
+   CHIP
+   ========================================================== */
+
+.site-select-chip{
+  min-width:0;
+  max-width:115px;
+
+  display:inline-flex;
+  align-items:center;
+
+  border-radius:4px;
+
+  background:#252b32;
+
+  color:#fff;
+
+  overflow:hidden;
+}
+
+.site-select-chip-text{
+  min-width:0;
+
+  padding:3px 4px 3px 7px;
+
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.site-select-chip-remove{
+  width:24px;
+  height:24px;
+
+  flex:0 0 24px;
+
+  border:0;
+  outline:0;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:transparent;
+  color:#9da7b3;
+
+  font-size:17px;
+  line-height:1;
+
+  cursor:pointer;
+}
+
+.site-select-chip-remove:hover{
+  color:#fff;
+  background:rgba(255,255,255,.08);
+}
+
+
+/* ==========================================================
+   +N
+   ========================================================== */
+
+.site-select-more{
+  flex:0 0 auto;
+
+  padding:3px 6px;
+
+  border-radius:4px;
+
+  background:#252b32;
+
+  color:#c9d1d9;
+
+  font-size:12px;
+}
+
+
+/* ==========================================================
+   ARROW
+   ========================================================== */
+
+.site-select-arrow{
+  width:36px;
+  height:100%;
+
+  flex:0 0 36px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border:0;
+  outline:0;
+
+  background:transparent;
+  color:#8b949e;
+
+  cursor:pointer;
+}
+
+.site-select-arrow svg{
+  width:12px;
+  height:12px;
+
+  transition:
+    transform .18s ease;
+}
+
+.admin-site-selector.open
+.site-select-arrow svg{
+  transform:rotate(180deg);
+}
+
+
+/* ==========================================================
+   PANEL
+   ========================================================== */
+
+.site-select-panel{
+  position:absolute;
+
+  top:calc(100% + 5px);
+  left:0;
+
+  width:100%;
+  max-height:260px;
+
+  overflow:auto;
+
+  padding:5px;
+
+  box-sizing:border-box;
+
+  border:1px solid #30363d;
+  border-radius:6px;
+
+  background:#161b22;
+
+  box-shadow:
+    0 8px 24px rgba(0,0,0,.45);
+
+  display:none;
+}
+
+.admin-site-selector.open
+.site-select-panel{
+  display:block;
+}
+
+
+/* ==========================================================
+   OPTION
+   ========================================================== */
+
+.site-select-option{
+  width:100%;
+  min-height:34px;
+
+  display:flex;
+  align-items:center;
+
+  gap:8px;
+
+  padding:6px 8px;
+
+  border:0;
+  border-radius:4px;
+
+  background:transparent;
+  color:#c9d1d9;
+
+  font-family:inherit;
+  font-size:13px;
+
+  text-align:left;
+
+  cursor:pointer;
+}
+
+.site-select-option:hover{
+  background:#21262d;
+}
+
+.site-select-option.selected{
+  color:#fff;
+  background:#1f6feb;
+}
+
+
+/* ==========================================================
+   CHECK
+   ========================================================== */
+
+.site-select-check{
+  width:17px;
+  height:17px;
+
+  flex:0 0 17px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border:1px solid #484f58;
+  border-radius:3px;
+
+  font-size:11px;
+}
+
+.site-select-option.selected
+.site-select-check{
+  border-color:rgba(255,255,255,.65);
+}
+
+
+/* ==========================================================
+   LABEL
+   ========================================================== */
+
+.site-select-option-label{
+  min-width:0;
+
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+
+
+/* ==========================================================
+   EMPTY
+   ========================================================== */
+
+.site-select-empty{
+  padding:12px 10px;
+
+  color:#8b949e;
+
+  font-size:13px;
+  text-align:center;
+}
+
+
+/* ==========================================================
+   HEADER INTEGRATION
+   ========================================================== */
+
+header .admin-site-selector{
+  flex:0 0 180px;
+}
+
+
+/* ==========================================================
+   MOBILE
+   ========================================================== */
+
+@media(max-width:700px){
+
+  .admin-site-selector{
+    width:150px;
+    min-width:150px;
+  }
+
+  header .admin-site-selector{
+    flex-basis:150px;
+  }
+
+}

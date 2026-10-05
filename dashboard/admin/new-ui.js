@@ -324,12 +324,12 @@ function renderSharedSites(){
 
   select.innerHTML = "";
 
-const all = document.createElement("option");
+  const all = document.createElement("option");
 
-all.value = "";
-all.textContent = "All Sites";
+  all.value = "";
+  all.textContent = "All Sites";
 
-select.appendChild(all);
+  select.appendChild(all);
 
   adminUIState.sites.forEach(site=>{
 

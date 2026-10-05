@@ -4405,7 +4405,8 @@ $("btnLogout").addEventListener("click", async ()=>{
   location.replace("../login/");
 });
 
-$("tabOpen").addEventListener("click", () => {
+// ===== LEGACY TAB BINDING =====
+$("tabOpen")?.addEventListener("click", () => {
   flashPageLoader("Please wait while fetching...", 350);
   setView("open");
 });
@@ -4415,7 +4416,7 @@ $("tabTransaction")?.addEventListener("click", () => {
   setView("transaction");
 });
 
-$("tabHistory").addEventListener("click", () => {
+$("tabHistory")?.addEventListener("click", () => {
   flashPageLoader("Please wait while fetching...", 350);
   setView("history");
 });
@@ -4426,7 +4427,7 @@ $("tabNotes")?.addEventListener("click", () => {
   renderStickyNotes();
 });
 
-$("btnAddPoint").addEventListener("click", ()=>{
+$("btnAddPoint")?.addEventListener("click", ()=>{
   if(!me.isAdmin){ toast("Limited user: tiada akses Add Point."); return; }
 
   finTxEditId = null;
@@ -4441,7 +4442,7 @@ $("btnAddPoint").addEventListener("click", ()=>{
   openModal("mAddPoint");
 });
 
-  $("btnNewVault").addEventListener("click", ()=>{
+$("btnNewVault")?.addEventListener("click", ()=>{
     $("nvTitle").value=""; $("nvNote").value="";
     resetTxTimeInput("txTime_newVault");
     openModal("mNewVault");

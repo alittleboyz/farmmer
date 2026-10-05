@@ -1706,6 +1706,24 @@ async function loadRole(uid){
   const role = r.exists() ? r.val() : {};
   me.isAdmin = role?.isAdmin === true;
   me.username = role?.username || me.username || "user";
+  
+  // ===== SYNC SHARED ADMIN ACCESS =====
+if(typeof window.setAdminAccess === "function"){
+  window.setAdminAccess({
+    uid,
+    username: me.username,
+
+    isAdmin: me.isAdmin,
+
+    role: me.isAdmin
+      ? "superadmin"
+      : "site_admin",
+
+    siteIds: [],
+
+    permissions: {}
+  });
+}
   const rolePill = $("rolePill");
   if(rolePill){
     rolePill.textContent = me.isAdmin ? "Admin" : "Client";

@@ -20,9 +20,122 @@
   <meta name="twitter:description" content=""This site personally build farming link page.">
   <meta name="twitter:image" content="https://farmmer-dashboard.vercel.app/image.png">
   <link rel="stylesheet" href="./node.css">
+  <link rel="stylesheet" href="./new-ui.css">
 </head>
 
 <body>
+<!-- ===== SHARED ADMIN HEADER ===== -->
+
+<header class="sharedAdminHeader">
+
+  <div class="sharedAdminHeaderInner">
+
+    <button
+      class="sharedMenuBtn"
+      id="sharedMenuBtn"
+      type="button"
+      aria-label="Open menu"
+    >
+      <svg viewBox="0 0 24 24">
+        <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
+      </svg>
+    </button>
+
+    <a
+      href="./index.html"
+      class="sharedAdminBrand"
+    >
+      <span class="sharedAdminBrandLogo">
+        FARM
+      </span>
+
+      <span>
+        Admin
+      </span>
+    </a>
+
+
+    <!-- SITE / OWNER -->
+
+    <div class="sharedAdminContext">
+
+      <div id="sharedSiteWrap">
+        <select
+          id="sharedSiteSelector"
+          class="sharedContextSelect"
+        >
+          <option value="">
+            All Sites
+          </option>
+        </select>
+      </div>
+
+      <div
+        id="sharedOwnerWrap"
+        class="hide"
+      >
+        <select
+          id="sharedOwnerSelector"
+          class="sharedContextSelect"
+        >
+          <option value="">
+            All Site Admins
+          </option>
+        </select>
+      </div>
+
+    </div>
+
+
+    <!-- USER -->
+
+    <div class="sharedAdminUser">
+
+      <div class="sharedAdminAvatar">
+        A
+      </div>
+
+      <div class="sharedAdminUserText">
+
+        <span
+          id="sharedUsername"
+          class="sharedAdminUsername"
+        >
+          Admin
+        </span>
+
+        <span
+          id="sharedRole"
+          class="sharedAdminRole"
+        >
+          Super Admin
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<!-- ===== SHARED NAV ===== -->
+
+<div class="sharedAdminNavBar">
+
+  <nav
+    id="sharedAdminNav"
+    class="sharedAdminNav"
+  ></nav>
+
+</div>
+
+
+<div
+  id="sharedMenuOverlay"
+  class="sharedMenuOverlay"
+></div>
 <!-- 🔥 LOADING PAGE -->
 <div id="pageLoader" class="login-loading">
   <div class="loading-box">
@@ -852,6 +965,7 @@
 </div>
 <script src="../daterange/flatpick.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script type="module" src="./new-ui.js"></script>
 <script type="module" src="./node.js"></script>
 </body>
 </html>

@@ -1582,12 +1582,6 @@ async function loadSitesForContext(){
   try{
     const snap = await get(ref(db, "sites"));
     const allSites = snap.exists() ? snap.val() : {};
-console.log("========== SITE DEBUG ==========");
-console.log("DEBUG auth uid:", auth.currentUser?.uid);
-console.log("DEBUG /sites exists:", snap.exists());
-console.log("DEBUG /sites raw:", snap.val());
-console.log("DEBUG databaseURL:", db.app.options.databaseURL);
-console.log("================================");
     const sites = [];
 
     // ==============================

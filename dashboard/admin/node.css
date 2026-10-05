@@ -3622,14 +3622,4 @@ th:not(:last-child)::after{
   background:var(--borderTable);
   opacity:.9;
 }
-/* ==========================================================
-   PREVENT SITE SELECTOR FLASH ON REFRESH
-   ========================================================== */
 
-[data-admin-site-selector]{
-  visibility:hidden;
-}
-
-[data-admin-site-selector].site-selector-ready{
-  visibility:visible;
-}

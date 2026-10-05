@@ -4865,6 +4865,12 @@ bindLoadingClick("nvCreate", onNvCreate);
     }
 
     if(act==="buy"){
+        try{
+    requireWriteSiteId();
+  }catch(err){
+    toast(err.message, "error");
+    return;
+  }
       ctxVaultId = vid;
       const vSnap = await get(ref(db, `vaults/open/${vid}`));
       $("buyVaultTitle").textContent = vSnap.exists()? `Vault: ${vSnap.val().title}` : "Vault";

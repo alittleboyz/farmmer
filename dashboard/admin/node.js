@@ -1650,11 +1650,86 @@ async function loadSitesForContext(){
 
   }
 }
+async function loadOwnersForContext(){
+
+  // Site Admin owner sentiasa diri sendiri
+  if(!isSuperAdmin()){
+
+    me.selectedOwnerUid = me.uid;
+
+    window.setAdminUIContext?.({
+      owners: [],
+      selectedOwnerUid: me.uid
+    });
+
+    return;
+  }
+
+  try{
+
+    const snap =
+      await get(ref(db, "adminUsers"));
+
+    const allUsers =
+      snap.exists() ? snap.val() : {};
+
+    const owners = [];
+
+    Object.entries(allUsers).forEach(
+      ([uid, user])=>{
+
+        if(!user) return;
+
+        // Owner selector hanya Site Admin
+        if(user.role !== "site_admin"){
+          return;
+        }
+
+        if(user.enabled === false){
+          return;
+        }
+
+        // Kalau Superadmin pilih site tertentu,
+        // hanya Site Admin site tersebut ditampilkan
+        if(me.currentSiteId){
+
+          const userSites =
+            normalizeSiteIds(user.sites);
+
+          if(!userSites.includes(me.currentSiteId)){
+            return;
+          }
+        }
+
+        owners.push({
+          uid,
+          username: user.username || uid
+        });
+
+      }
+    );
+
+    me.selectedOwnerUid = "";
+
+    window.setAdminUIContext?.({
+      owners,
+      selectedOwnerUid: ""
+    });
+
+    console.log("Owners loaded:", owners);
+
+  }catch(err){
+
+    console.error(
+      "loadOwnersForContext error:",
+      err
+    );
+
+  }
+}
 async function initAdminContext(){
-
-  // Load sites dari Firebase dan hantar ke new-ui.js
   await loadSitesForContext();
-
+  await loadOwnersForContext();
   // ==========================================
   // DENGAR SITE SELECTOR MILIK new-ui.js
   // ==========================================
@@ -1671,7 +1746,7 @@ async function initAdminContext(){
 
         // Bila tukar site, reset owner
         me.selectedOwnerUid = "";
-
+        await loadOwnersForContext();
         console.log("Admin scope changed:", {
           role: me.role,
           siteId: getCurrentSiteId(),
@@ -1681,6 +1756,26 @@ async function initAdminContext(){
       }
     );
   }
+  if(!window.__adminOwnerChangeBound){
+
+  window.__adminOwnerChangeBound = true;
+
+  window.addEventListener(
+    "admin-owner-change",
+    (e)=>{
+
+      me.selectedOwnerUid =
+        e.detail?.ownerUid || "";
+
+      console.log("Owner scope changed:", {
+        role: me.role,
+        siteId: getCurrentSiteId(),
+        ownerUid: getCurrentOwnerUid()
+      });
+
+    }
+  );
+}
 }
   // ===== RIGHT DRAWER GLOBAL (ONE-TIME) =====
 let btnDrawer = null;

@@ -560,6 +560,4 @@ html[data-theme="dark"] .sharedAdminAvatar{
     padding: 12px;
   }
 }
-.sharedAdminHeader{
-  display: none !important;
-}
+

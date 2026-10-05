@@ -5355,6 +5355,12 @@ if(!yes) return;
   }
 }
 if(act==="vaultUnclose"){
+    try{
+    requireWriteSiteId();
+  }catch(err){
+    toast(err.message, "error");
+    return;
+  }
   // ambil data history untuk check owner
   const hs = await get(ref(db, `vaults/history/${vid}`));
   if(!hs.exists()){

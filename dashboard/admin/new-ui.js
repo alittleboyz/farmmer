@@ -445,22 +445,28 @@ function setOptions(options) {
           )
       : [];
 
+
   /*
-   * PENTING:
-   * Kalau site belum selesai load / hasil masih kosong,
-   * jangan buang selected site dari localStorage.
+   * Site belum ready.
+   * Jangan buang saved selection.
    */
   if (!nextOptions.length) {
 
     siteOptions = [];
 
-    renderValue();
     renderOptions();
 
     return;
   }
 
+
   siteOptions = nextOptions;
+
+
+  /*
+   * Validate saved site hanya selepas
+   * options benar-benar tersedia.
+   */
   const allowed =
     new Set(
       siteOptions.map(
@@ -468,6 +474,7 @@ function setOptions(options) {
           String(option.value)
       )
     );
+
 
   currentSites =
     currentSites.filter(
@@ -477,10 +484,14 @@ function setOptions(options) {
         )
     );
 
+
   saveSites(currentSites);
 
   renderValue();
   renderOptions();
+  target.classList.add(
+    "site-selector-ready"
+  );
 }
     /* ========================================================
        EVENTS
@@ -551,70 +562,107 @@ function setOptions(options) {
      LOAD SITE LIST
      ========================================================== */
 
-  async function loadAdminSites() {
+async function loadAdminSites() {
 
-    let options = [];
-    if (
-      typeof window.getAdminSites ===
-      "function"
-    ) {
+  let options = [];
 
-      try {
 
-        const sites =
-          await window.getAdminSites(false);
+  /* ========================================================
+     GET ADMIN SITES BELUM READY
+     ======================================================== */
 
-        options =
-          Array.isArray(sites)
-            ? sites.map(site => ({
-                value:
-                  String(
-                    site.value ??
-                    site.id ??
-                    ""
-                  ),
+  if (
+    typeof window.getAdminSites !==
+    "function"
+  ) {
 
-                label:
-                  String(
-                    site.label ??
-                    site.name ??
-                    site.value ??
-                    site.id ??
-                    ""
-                  )
-              }))
-            : [];
-      }
-      catch (error) {
+    return false;
+  }
 
-        console.error(
-          "[new-ui] Failed loading sites:",
-          error
+
+  /* ========================================================
+     LOAD SITE LIST
+     ======================================================== */
+
+  try {
+
+    const sites =
+      await window.getAdminSites(false);
+
+
+    options =
+      Array.isArray(sites)
+        ? sites
+            .map(site => ({
+              value:
+                String(
+                  site.value ??
+                  site.id ??
+                  ""
+                ),
+
+              label:
+                String(
+                  site.label ??
+                  site.name ??
+                  site.value ??
+                  site.id ??
+                  ""
+                )
+            }))
+            .filter(
+              option =>
+                option.value
+            )
+        : [];
+
+  }
+  catch (error) {
+
+    console.error(
+      "[new-ui] Failed loading sites:",
+      error
+    );
+
+    return false;
+  }
+
+
+  /* ========================================================
+     SITE LIST MASIH KOSONG
+     Jangan reset saved selection
+     ======================================================== */
+
+  if (!options.length) {
+
+    return false;
+  }
+
+
+  /* ========================================================
+     APPLY OPTIONS KE SELECTOR
+     ======================================================== */
+
+  document
+    .querySelectorAll(
+      "[data-admin-site-selector]"
+    )
+    .forEach(target => {
+
+      const selector =
+        createAdminSiteSelector(
+          target
         );
-      }
-    }
-
-document
-  .querySelectorAll(
-    "[data-admin-site-selector]"
-  )
-  .forEach(target => {
-
-    const selector =
-      createAdminSiteSelector(
-        target
-      );
-
-    if (options.length > 0) {
 
       selector?.setOptions(
         options
       );
 
-    }
+    });
 
-  });
-  }
+
+  return true;
+}
 
   /* ==========================================================
      INIT

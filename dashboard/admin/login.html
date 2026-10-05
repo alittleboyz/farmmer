@@ -728,14 +728,7 @@ async function ensureProfile(uid, username){
     });
   }
 }
-    // set role (simple)
-    const isAdmin = ADMIN_USERNAMES.has(username);
-    const roleRef = ref(db, `roles/${uid}`);
-    const rSnap = await get(roleRef);
-    if(!rSnap.exists()){
-      await set(roleRef, { isAdmin, username, updatedAt: serverTimestamp() });
-    }
-  }
+
 function clearFieldErrors(){
   document.querySelectorAll(".inputWrap").forEach(w=>{
     w.classList.remove("hasError");

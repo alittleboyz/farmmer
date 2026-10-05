@@ -1,1 +1,274 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Transaction</title><link rel="stylesheet" href="./admin.css"></head><body><header><div class="tabs"><a class="tab" data-page="vault" href="./vault.html">Vault</a><a class="tab" data-page="transaction" href="./transaction.html">Transaction</a><a class="tab" data-page="history" href="./history.html">History</a><a class="tab" data-page="notice" href="./notice.html">Notice</a></div><span data-user></span><button class="btn" id="logout">Logout</button></header><main class="wrap"><div class="bar"><h2>Transactions</h2><input id="search" class="input" placeholder="Search"></div><div style="overflow:auto"><table class="table"><thead><tr><th>Date</th><th>Vault</th><th>Type</th><th>Note</th><th>Amount</th></tr></thead><tbody id="rows"></tbody></table></div></main><script type="module">import{db,ref,onValue,$,esc,fmt,dt,ready,nav}from"./admin.js";await ready;nav("transaction");let O={},H={};function C(x,b){let a=[];Object.entries(x||{}).forEach(([vi,v])=>Object.entries(v.transactions||{}).forEach(([ti,t])=>a.push({vault:v.title||"Untitled",bucket:b,...t})));return a}function R(){let q=$("search").value.toLowerCase(),a=[...C(O,"open"),...C(H,"history")].filter(x=>JSON.stringify(x).toLowerCase().includes(q)).sort((a,b)=>(b.atMs||0)-(a.atMs||0));$("rows").innerHTML=a.map(t=>`<tr><td>${dt(t.atMs)}</td><td>${esc(t.vault)}</td><td>${esc((t.kind||"TX").toUpperCase())}</td><td>${esc(t.note||"")}</td><td>RM ${fmt(t.total??t.amount??0)}</td></tr>`).join("")||'<tr><td colspan="5">No transaction.</td></tr>'}onValue(ref(db,"vaults/open"),s=>{O=s.exists()?s.val():{};R()});onValue(ref(db,"vaults/history"),s=>{H=s.exists()?s.val():{};R()});$("search").oninput=R</script></body></html>
+<!doctype html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>Transaction</title>
+
+  <link
+    rel="stylesheet"
+    href="./admin.css"
+  >
+</head>
+
+
+<body>
+
+  <header>
+
+    <div class="tabs">
+
+      <a
+        class="tab"
+        data-page="vault"
+        href="./vault.html"
+      >
+        Vault
+      </a>
+
+      <a
+        class="tab"
+        data-page="transaction"
+        href="./transaction.html"
+      >
+        Transaction
+      </a>
+
+      <a
+        class="tab"
+        data-page="history"
+        href="./history.html"
+      >
+        History
+      </a>
+
+      <a
+        class="tab"
+        data-page="notice"
+        href="./notice.html"
+      >
+        Notice
+      </a>
+
+    </div>
+
+
+    <span data-user></span>
+
+
+    <button
+      class="btn"
+      id="logout"
+    >
+      Logout
+    </button>
+
+  </header>
+
+
+  <main class="wrap">
+
+    <div class="bar">
+
+      <h2>
+        Transactions
+      </h2>
+
+
+      <input
+        id="search"
+        class="input"
+        placeholder="Search"
+      >
+
+    </div>
+
+
+    <div style="overflow:auto;">
+
+      <table class="table">
+
+        <thead>
+
+          <tr>
+            <th>Date</th>
+            <th>Vault</th>
+            <th>Type</th>
+            <th>Note</th>
+            <th>Amount</th>
+          </tr>
+
+        </thead>
+
+
+        <tbody id="rows"></tbody>
+
+      </table>
+
+    </div>
+
+  </main>
+
+
+  <script type="module">
+
+    import {
+      db,
+      ref,
+      onValue,
+      $,
+      esc,
+      fmt,
+      dt,
+      ready,
+      nav
+    } from "./admin.js";
+
+
+    await ready;
+
+    nav("transaction");
+
+
+    let O = {};
+
+    let H = {};
+
+
+    function C(x, b) {
+
+      let a = [];
+
+
+      Object.entries(x || {}).forEach(
+        ([vi, v]) => {
+
+          Object.entries(
+            v.transactions || {}
+          ).forEach(
+            ([ti, t]) => {
+
+              a.push({
+                vault: v.title || "Untitled",
+                bucket: b,
+                ...t
+              });
+
+            }
+          );
+
+        }
+      );
+
+
+      return a;
+    }
+
+
+    function R() {
+
+      let q =
+        $("search").value.toLowerCase();
+
+
+      let a = [
+        ...C(O, "open"),
+        ...C(H, "history")
+      ]
+        .filter(
+          x =>
+            JSON.stringify(x)
+              .toLowerCase()
+              .includes(q)
+        )
+        .sort(
+          (a, b) =>
+            (b.atMs || 0) -
+            (a.atMs || 0)
+        );
+
+
+      $("rows").innerHTML =
+        a.map(
+          t => `
+            <tr>
+
+              <td>
+                ${dt(t.atMs)}
+              </td>
+
+              <td>
+                ${esc(t.vault)}
+              </td>
+
+              <td>
+                ${esc(
+                  (t.kind || "TX")
+                    .toUpperCase()
+                )}
+              </td>
+
+              <td>
+                ${esc(t.note || "")}
+              </td>
+
+              <td>
+                RM ${fmt(
+                  t.total ??
+                  t.amount ??
+                  0
+                )}
+              </td>
+
+            </tr>
+          `
+        )
+        .join("") ||
+        `
+          <tr>
+            <td colspan="5">
+              No transaction.
+            </td>
+          </tr>
+        `;
+    }
+
+
+    onValue(
+      ref(db, "vaults/open"),
+      s => {
+
+        O = s.exists()
+          ? s.val()
+          : {};
+
+        R();
+      }
+    );
+
+
+    onValue(
+      ref(db, "vaults/history"),
+      s => {
+
+        H = s.exists()
+          ? s.val()
+          : {};
+
+        R();
+      }
+    );
+
+
+    $("search").oninput = R;
+
+  </script>
+
+</body>
+</html>

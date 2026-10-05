@@ -1416,7 +1416,53 @@ function isAdminUser(){
 function getCurrentSiteId(){
   return me.currentSiteId || "";
 }
+// =====================================================
+// MULTI-SITE SCOPE HELPERS
+// =====================================================
+function getAllowedSiteIds(){
+  if(isSuperAdmin()){
+    return null;
+  }
 
+  return [...me.assignedSites];
+}
+
+function getReadSiteIds(){
+
+  const siteId = getCurrentSiteId();
+
+  if(siteId){
+    return [siteId];
+  }
+  
+  if(isSiteAdmin()){
+    return [...me.assignedSites];
+  }
+  return null;
+}
+
+function requireWriteSiteId(){
+
+  const siteId = getCurrentSiteId();
+
+  if(!siteId){
+    throw new Error(
+      "Please select a site first. You cannot create or update data while All Sites is selected."
+    );
+  }
+
+  // Extra protection untuk Site Admin
+  if(
+    isSiteAdmin() &&
+    !me.assignedSites.includes(siteId)
+  ){
+    throw new Error(
+      "You do not have permission to access this site."
+    );
+  }
+
+  return siteId;
+}
 let currentBalance = 0;
 const WALLET_ID = "main";
 // ===== AUTO LOGOUT AFTER 24 HOURS =====

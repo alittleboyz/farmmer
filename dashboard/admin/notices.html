@@ -335,10 +335,71 @@
     <div id="notesGrid" class="notesGrid"></div>
 
   </div>
-
-  <div class="toast" id="toast"></div>
-  
 <div class="toast" id="toast"></div>
+
+<!-- ===== CREATE / EDIT NOTE MODAL ===== -->
+<div class="modalBack" id="mStickyNote">
+  <div class="modal">
+
+    <div class="modalHead">
+      <div>
+        <div class="title" id="stickyNoteModalTitle">Create Note</div>
+        <div class="sub">Create or edit your notice.</div>
+      </div>
+
+      <button
+        class="x"
+        type="button"
+        data-close="mStickyNote"
+      >✕</button>
+    </div>
+
+    <div class="modalBody">
+
+      <label>Title</label>
+      <input
+        id="stickyNoteTitle"
+        type="text"
+        placeholder="Enter title"
+        autocomplete="off"
+      />
+
+      <label>Content</label>
+      <textarea
+        id="stickyNoteContent"
+        rows="6"
+        placeholder="Write your note..."
+      ></textarea>
+
+    </div>
+
+    <div class="modalFoot">
+
+      <button
+        class="btn-cancel"
+        type="button"
+        data-close="mStickyNote"
+      >
+        Cancel
+      </button>
+
+      <button
+        class="btn"
+        id="stickyNoteSave"
+        type="button"
+        data-loading="Saving..."
+        data-close-modal="mStickyNote"
+        data-clickfx
+      >
+        Save
+      </button>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- MODALS -->
 
 <!-- MODALS -->
 <div class="modalBack" id="mBalance">

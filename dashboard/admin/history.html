@@ -1,1 +1,235 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>History</title><link rel="stylesheet" href="./admin.css"></head><body><header><div class="tabs"><a class="tab" data-page="vault" href="./vault.html">Vault</a><a class="tab" data-page="transaction" href="./transaction.html">Transaction</a><a class="tab" data-page="history" href="./history.html">History</a><a class="tab" data-page="notice" href="./notice.html">Notice</a></div><span data-user></span><button class="btn" id="logout">Logout</button></header><main class="wrap"><div class="bar"><h2>History / Closing</h2></div><div id="grid" class="grid"></div></main><script type="module">import{db,ref,get,update,onValue,serverTimestamp,me,$,esc,fmt,dt,ready,nav}from"./admin.js";await ready;nav("history");let D={};function R(){$("grid").innerHTML=Object.entries(D).map(([i,v])=>{let s=v.summary||{};return`<div class="card"><h3>${esc(v.title)}</h3><div class="muted">Closed ${dt(v.closedAtMs)}</div><p>Cost RM ${fmt(s.totalCost)} · Revenue RM ${fmt(s.totalRevenue)} · Profit RM ${fmt(s.profit)}</p><button class="btn reopen" data-id="${i}">REOPEN</button></div>`}).join("")||"<p>No history.</p>"}onValue(ref(db,"vaults/history"),s=>{D=s.exists()?s.val():{};R()});document.addEventListener("click",async e=>{let b=e.target.closest(".reopen");if(!b||!confirm("Reopen vault?"))return;let i=b.dataset.id,s=await get(ref(db,`vaults/history/${i}`)),u={};if(!s.exists())return;u[`vaults/open/${i}`]={...s.val(),status:"open",reopenedAt:serverTimestamp(),reopenedAtMs:Date.now(),reopenedByUid:me.uid,reopenedBy:me.username};u[`vaults/history/${i}`]=null;await update(ref(db),u);location.href="./vault.html"})</script></body></html>
+<!doctype html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>History</title>
+
+  <link
+    rel="stylesheet"
+    href="./admin.css"
+  >
+</head>
+
+
+<body>
+
+  <header>
+
+    <div class="tabs">
+
+      <a
+        class="tab"
+        data-page="vault"
+        href="./vault.html"
+      >
+        Vault
+      </a>
+
+      <a
+        class="tab"
+        data-page="transaction"
+        href="./transaction.html"
+      >
+        Transaction
+      </a>
+
+      <a
+        class="tab"
+        data-page="history"
+        href="./history.html"
+      >
+        History
+      </a>
+
+      <a
+        class="tab"
+        data-page="notice"
+        href="./notice.html"
+      >
+        Notice
+      </a>
+
+    </div>
+
+
+    <span data-user></span>
+
+
+    <button
+      class="btn"
+      id="logout"
+    >
+      Logout
+    </button>
+
+  </header>
+
+
+  <main class="wrap">
+
+    <div class="bar">
+      <h2>History / Closing</h2>
+    </div>
+
+
+    <div
+      id="grid"
+      class="grid"
+    ></div>
+
+  </main>
+
+
+  <script type="module">
+
+    import {
+      db,
+      ref,
+      get,
+      update,
+      onValue,
+      serverTimestamp,
+      me,
+      $,
+      esc,
+      fmt,
+      dt,
+      ready,
+      nav
+    } from "./admin.js";
+
+
+    await ready;
+
+    nav("history");
+
+
+    let D = {};
+
+
+    function R() {
+
+      $("grid").innerHTML =
+        Object.entries(D)
+          .map(([i, v]) => {
+
+            let s = v.summary || {};
+
+            return `
+              <div class="card">
+
+                <h3>
+                  ${esc(v.title)}
+                </h3>
+
+                <div class="muted">
+                  Closed ${dt(v.closedAtMs)}
+                </div>
+
+                <p>
+                  Cost RM ${fmt(s.totalCost)}
+                  · Revenue RM ${fmt(s.totalRevenue)}
+                  · Profit RM ${fmt(s.profit)}
+                </p>
+
+                <button
+                  class="btn reopen"
+                  data-id="${i}"
+                >
+                  REOPEN
+                </button>
+
+              </div>
+            `;
+
+          })
+          .join("") || "<p>No history.</p>";
+    }
+
+
+    onValue(
+      ref(db, "vaults/history"),
+      s => {
+
+        D = s.exists()
+          ? s.val()
+          : {};
+
+        R();
+      }
+    );
+
+
+    document.addEventListener(
+      "click",
+      async e => {
+
+        let b = e.target.closest(".reopen");
+
+
+        if (
+          !b ||
+          !confirm("Reopen vault?")
+        ) {
+          return;
+        }
+
+
+        let i = b.dataset.id;
+
+
+        let s = await get(
+          ref(
+            db,
+            `vaults/history/${i}`
+          )
+        );
+
+
+        let u = {};
+
+
+        if (!s.exists()) {
+          return;
+        }
+
+
+        u[`vaults/open/${i}`] = {
+          ...s.val(),
+
+          status: "open",
+
+          reopenedAt: serverTimestamp(),
+
+          reopenedAtMs: Date.now(),
+
+          reopenedByUid: me.uid,
+
+          reopenedBy: me.username
+        };
+
+
+        u[`vaults/history/${i}`] = null;
+
+
+        await update(
+          ref(db),
+          u
+        );
+
+
+        location.href = "./vault.html";
+      }
+    );
+
+  </script>
+
+</body>
+</html>

@@ -4846,6 +4846,12 @@ bindLoadingClick("nvCreate", onNvCreate);
     const vid = btn.dataset.id;
 
     if(act==="cash"){
+            try{
+        requireWriteSiteId();
+      }catch(err){
+        toast(err.message, "error");
+        return;
+      }
       ctxVaultId = vid;
       const vSnap = await get(ref(db, `vaults/open/${vid}`));
       $("cashVaultTitle").textContent = vSnap.exists()? `Vault: ${vSnap.val().title}` : "Vault";

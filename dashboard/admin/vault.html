@@ -1,1 +1,744 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vault</title><link rel="stylesheet" href="./admin.css"></head><body><header><div class="tabs"><a class="tab" data-page="vault" href="./vault.html">Vault</a><a class="tab" data-page="transaction" href="./transaction.html">Transaction</a><a class="tab" data-page="history" href="./history.html">History</a><a class="tab" data-page="notice" href="./notice.html">Notice</a></div><span data-user></span><button class="btn" id="logout">Logout</button></header><main class="wrap"><div class="bar"><h2>Open Vault</h2><input id="search" class="input" placeholder="Search"><button id="new" class="btn primary">New Vault</button></div><div id="grid" class="grid"></div><div id="mv" class="modal"><div class="box"><h3>New Vault</h3><input id="title" class="input" placeholder="Title"><textarea id="note" class="input" placeholder="Note"></textarea><div class="actions"><button id="create" class="btn primary">Create</button><button id="cancelv" class="btn">Cancel</button></div></div></div><div id="mt" class="modal"><div class="box"><h3 id="th">Transaction</h3><select id="kind" class="input"><option value="buy">BUY</option><option value="sell">SELL</option><option value="missing">MISSING</option></select><input id="qty" type="number" class="input" placeholder="Qty / Ekor"><input id="price" type="number" class="input" placeholder="Price / Price KG"><input id="kg" type="number" class="input" placeholder="KG for sell"><input id="tnote" class="input" placeholder="Note"><div class="actions"><button id="savet" class="btn primary">Save</button><button id="cancelt" class="btn">Cancel</button></div></div></div></main><script type="module">import{db,ref,get,set,push,update,onValue,serverTimestamp,query,orderByChild,limitToLast,me,$,esc,fmt,dt,ready,nav,recompute}from"./admin.js";await ready;nav("vault");let D={},id=null;function R(){let q=$("search").value.toLowerCase();$("grid").innerHTML=Object.entries(D).filter(x=>(x[1].title||"").toLowerCase().includes(q)).map(([i,v])=>{let s=v.summary||{};return`<div class="card"><h3>${esc(v.title)}</h3><div class="muted">${dt(v.createdAtMs)}</div><p>${esc(v.note||"")}</p><p>Available <b>${+s.availablePig||0}</b> · Cost RM ${fmt(s.totalCost)} · Revenue RM ${fmt(s.totalRevenue)} · Profit RM ${fmt(s.profit)}</p><div class="actions"><button class="btn tx" data-id="${i}" data-k="buy">BUY</button><button class="btn tx" data-id="${i}" data-k="sell">SELL</button><button class="btn tx" data-id="${i}" data-k="missing">MISSING</button><button class="btn close" data-id="${i}">CLOSING</button></div></div>`}).join("")||"<p>No open vault.</p>"}onValue(query(ref(db,"vaults/open"),orderByChild("createdAtMs"),limitToLast(120)),s=>{D=s.exists()?s.val():{};R()});$("search").oninput=R;$("new").onclick=()=>$("mv").classList.add("open");$("cancelv").onclick=()=>$("mv").classList.remove("open");$("create").onclick=async()=>{let t=$("title").value.trim();if(!t)return;await set(push(ref(db,"vaults/open")),{title:t,note:$("note").value.trim(),status:"open",createdAt:serverTimestamp(),createdAtMs:Date.now(),createdByUid:me.uid,createdBy:me.username,summary:{totalCost:0,totalKg:0,totalEkor:0,totalRevenue:0,profit:0}});$("mv").classList.remove("open")};document.addEventListener("click",async e=>{let b=e.target.closest(".tx,.close");if(!b)return;id=b.dataset.id;if(b.classList.contains("tx")){$("kind").value=b.dataset.k;$("th").textContent=b.dataset.k.toUpperCase();$("mt").classList.add("open");return}if(!confirm("Closing vault?"))return;let s=await get(ref(db,`vaults/open/${id}`)),u={};if(!s.exists())return;u[`vaults/history/${id}`]={...s.val(),status:"closed",closedAt:serverTimestamp(),closedAtMs:Date.now(),closedByUid:me.uid,closedBy:me.username};u[`vaults/open/${id}`]=null;await update(ref(db),u);location.href="./history.html"});$("cancelt").onclick=()=>$("mt").classList.remove("open");$("savet").onclick=async()=>{let k=$("kind").value,q=+$("qty").value||0,p=+$("price").value||0,kg=+$("kg").value||0,t={kind:k,note:$("tnote").value,at:serverTimestamp(),atMs:Date.now(),byUid:me.uid,byUser:me.username};if(k==="buy")Object.assign(t,{category:"baby_pig",qty:q,price:p,total:q*p});if(k==="missing")Object.assign(t,{qty:q,price:p,total:q*p});if(k==="sell")Object.assign(t,{ekor:q,kg,priceKg:p,total:kg*p});await set(push(ref(db,`vaults/open/${id}/transactions`)),t);await recompute(id,"open");$("mt").classList.remove("open")}</script></body></html>
+<!doctype html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>Vault</title>
+
+  <link
+    rel="stylesheet"
+    href="./admin.css"
+  >
+</head>
+
+
+<body>
+
+  <header>
+
+    <div class="tabs">
+
+      <a
+        class="tab"
+        data-page="vault"
+        href="./vault.html"
+      >
+        Vault
+      </a>
+
+      <a
+        class="tab"
+        data-page="transaction"
+        href="./transaction.html"
+      >
+        Transaction
+      </a>
+
+      <a
+        class="tab"
+        data-page="history"
+        href="./history.html"
+      >
+        History
+      </a>
+
+      <a
+        class="tab"
+        data-page="notice"
+        href="./notice.html"
+      >
+        Notice
+      </a>
+
+    </div>
+
+
+    <span data-user></span>
+
+
+    <button
+      class="btn"
+      id="logout"
+    >
+      Logout
+    </button>
+
+  </header>
+
+
+  <main class="wrap">
+
+    <div class="bar">
+
+      <h2>
+        Open Vault
+      </h2>
+
+
+      <input
+        id="search"
+        class="input"
+        placeholder="Search"
+      >
+
+
+      <button
+        id="new"
+        class="btn primary"
+      >
+        New Vault
+      </button>
+
+    </div>
+
+
+    <div
+      id="grid"
+      class="grid"
+    ></div>
+
+
+    <!-- NEW VAULT MODAL -->
+
+    <div
+      id="mv"
+      class="modal"
+    >
+
+      <div class="box">
+
+        <h3>
+          New Vault
+        </h3>
+
+
+        <input
+          id="title"
+          class="input"
+          placeholder="Title"
+        >
+
+
+        <textarea
+          id="note"
+          class="input"
+          placeholder="Note"
+        ></textarea>
+
+
+        <div class="actions">
+
+          <button
+            id="create"
+            class="btn primary"
+          >
+            Create
+          </button>
+
+
+          <button
+            id="cancelv"
+            class="btn"
+          >
+            Cancel
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- TRANSACTION MODAL -->
+
+    <div
+      id="mt"
+      class="modal"
+    >
+
+      <div class="box">
+
+        <h3 id="th">
+          Transaction
+        </h3>
+
+
+        <select
+          id="kind"
+          class="input"
+        >
+
+          <option value="buy">
+            BUY
+          </option>
+
+          <option value="sell">
+            SELL
+          </option>
+
+          <option value="missing">
+            MISSING
+          </option>
+
+        </select>
+
+
+        <input
+          id="qty"
+          type="number"
+          class="input"
+          placeholder="Qty / Ekor"
+        >
+
+
+        <input
+          id="price"
+          type="number"
+          class="input"
+          placeholder="Price / Price KG"
+        >
+
+
+        <input
+          id="kg"
+          type="number"
+          class="input"
+          placeholder="KG for sell"
+        >
+
+
+        <input
+          id="tnote"
+          class="input"
+          placeholder="Note"
+        >
+
+
+        <div class="actions">
+
+          <button
+            id="savet"
+            class="btn primary"
+          >
+            Save
+          </button>
+
+
+          <button
+            id="cancelt"
+            class="btn"
+          >
+            Cancel
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <script type="module">
+
+    import {
+      db,
+      ref,
+      get,
+      set,
+      push,
+      update,
+      onValue,
+      serverTimestamp,
+      query,
+      orderByChild,
+      limitToLast,
+      me,
+      $,
+      esc,
+      fmt,
+      dt,
+      ready,
+      nav,
+      recompute
+    } from "./admin.js";
+
+
+    await ready;
+
+    nav("vault");
+
+
+    let D = {};
+
+    let id = null;
+
+
+    function R() {
+
+      let q =
+        $("search").value.toLowerCase();
+
+
+      $("grid").innerHTML =
+        Object.entries(D)
+
+          .filter(
+            x =>
+              (x[1].title || "")
+                .toLowerCase()
+                .includes(q)
+          )
+
+          .map(([i, v]) => {
+
+            let s =
+              v.summary || {};
+
+
+            return `
+              <div class="card">
+
+                <h3>
+                  ${esc(v.title)}
+                </h3>
+
+
+                <div class="muted">
+                  ${dt(v.createdAtMs)}
+                </div>
+
+
+                <p>
+                  ${esc(v.note || "")}
+                </p>
+
+
+                <p>
+                  Available
+                  <b>
+                    ${+s.availablePig || 0}
+                  </b>
+
+                  · Cost RM
+                  ${fmt(s.totalCost)}
+
+                  · Revenue RM
+                  ${fmt(s.totalRevenue)}
+
+                  · Profit RM
+                  ${fmt(s.profit)}
+                </p>
+
+
+                <div class="actions">
+
+                  <button
+                    class="btn tx"
+                    data-id="${i}"
+                    data-k="buy"
+                  >
+                    BUY
+                  </button>
+
+
+                  <button
+                    class="btn tx"
+                    data-id="${i}"
+                    data-k="sell"
+                  >
+                    SELL
+                  </button>
+
+
+                  <button
+                    class="btn tx"
+                    data-id="${i}"
+                    data-k="missing"
+                  >
+                    MISSING
+                  </button>
+
+
+                  <button
+                    class="btn close"
+                    data-id="${i}"
+                  >
+                    CLOSING
+                  </button>
+
+                </div>
+
+              </div>
+            `;
+          })
+
+          .join("") ||
+        "<p>No open vault.</p>";
+    }
+
+
+    onValue(
+      query(
+        ref(
+          db,
+          "vaults/open"
+        ),
+        orderByChild("createdAtMs"),
+        limitToLast(120)
+      ),
+
+      s => {
+
+        D = s.exists()
+          ? s.val()
+          : {};
+
+        R();
+      }
+    );
+
+
+    $("search").oninput = R;
+
+
+    // ==============================
+    // NEW VAULT
+    // ==============================
+
+    $("new").onclick = () => {
+
+      $("mv").classList.add(
+        "open"
+      );
+    };
+
+
+    $("cancelv").onclick = () => {
+
+      $("mv").classList.remove(
+        "open"
+      );
+    };
+
+
+    $("create").onclick = async () => {
+
+      let t =
+        $("title").value.trim();
+
+
+      if (!t) {
+        return;
+      }
+
+
+      await set(
+        push(
+          ref(
+            db,
+            "vaults/open"
+          )
+        ),
+        {
+          title: t,
+
+          note:
+            $("note").value.trim(),
+
+          status:
+            "open",
+
+          createdAt:
+            serverTimestamp(),
+
+          createdAtMs:
+            Date.now(),
+
+          createdByUid:
+            me.uid,
+
+          createdBy:
+            me.username,
+
+          summary: {
+            totalCost: 0,
+            totalKg: 0,
+            totalEkor: 0,
+            totalRevenue: 0,
+            profit: 0
+          }
+        }
+      );
+
+
+      $("mv").classList.remove(
+        "open"
+      );
+    };
+
+
+    // ==============================
+    // TRANSACTION / CLOSING
+    // ==============================
+
+    document.addEventListener(
+      "click",
+      async e => {
+
+        let b =
+          e.target.closest(
+            ".tx,.close"
+          );
+
+
+        if (!b) {
+          return;
+        }
+
+
+        id =
+          b.dataset.id;
+
+
+        // TRANSACTION
+
+        if (
+          b.classList.contains("tx")
+        ) {
+
+          $("kind").value =
+            b.dataset.k;
+
+
+          $("th").textContent =
+            b.dataset.k.toUpperCase();
+
+
+          $("mt").classList.add(
+            "open"
+          );
+
+
+          return;
+        }
+
+
+        // CLOSING
+
+        if (
+          !confirm("Closing vault?")
+        ) {
+          return;
+        }
+
+
+        let s =
+          await get(
+            ref(
+              db,
+              `vaults/open/${id}`
+            )
+          );
+
+
+        let u = {};
+
+
+        if (!s.exists()) {
+          return;
+        }
+
+
+        u[`vaults/history/${id}`] = {
+          ...s.val(),
+
+          status:
+            "closed",
+
+          closedAt:
+            serverTimestamp(),
+
+          closedAtMs:
+            Date.now(),
+
+          closedByUid:
+            me.uid,
+
+          closedBy:
+            me.username
+        };
+
+
+        u[`vaults/open/${id}`] =
+          null;
+
+
+        await update(
+          ref(db),
+          u
+        );
+
+
+        location.href =
+          "./history.html";
+      }
+    );
+
+
+    // ==============================
+    // CANCEL TRANSACTION
+    // ==============================
+
+    $("cancelt").onclick = () => {
+
+      $("mt").classList.remove(
+        "open"
+      );
+    };
+
+
+    // ==============================
+    // SAVE TRANSACTION
+    // ==============================
+
+    $("savet").onclick = async () => {
+
+      let k =
+        $("kind").value;
+
+
+      let q =
+        +$("qty").value || 0;
+
+
+      let p =
+        +$("price").value || 0;
+
+
+      let kg =
+        +$("kg").value || 0;
+
+
+      let t = {
+
+        kind:
+          k,
+
+        note:
+          $("tnote").value,
+
+        at:
+          serverTimestamp(),
+
+        atMs:
+          Date.now(),
+
+        byUid:
+          me.uid,
+
+        byUser:
+          me.username
+      };
+
+
+      // BUY
+
+      if (k === "buy") {
+
+        Object.assign(
+          t,
+          {
+            category:
+              "baby_pig",
+
+            qty:
+              q,
+
+            price:
+              p,
+
+            total:
+              q * p
+          }
+        );
+      }
+
+
+      // MISSING
+
+      if (k === "missing") {
+
+        Object.assign(
+          t,
+          {
+            qty:
+              q,
+
+            price:
+              p,
+
+            total:
+              q * p
+          }
+        );
+      }
+
+
+      // SELL
+
+      if (k === "sell") {
+
+        Object.assign(
+          t,
+          {
+            ekor:
+              q,
+
+            kg:
+              kg,
+
+            priceKg:
+              p,
+
+            total:
+              kg * p
+          }
+        );
+      }
+
+
+      await set(
+        push(
+          ref(
+            db,
+            `vaults/open/${id}/transactions`
+          )
+        ),
+        t
+      );
+
+
+      await recompute(
+        id,
+        "open"
+      );
+
+
+      $("mt").classList.remove(
+        "open"
+      );
+    };
+
+  </script>
+
+</body>
+</html>

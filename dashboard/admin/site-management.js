@@ -217,29 +217,17 @@ async function renderHeaderAdmin(){
   const usernameText =
     document.getElementById("usernameText");
 
-  const rolePill =
-    document.getElementById("rolePill");
+  if(!usernameText) return;
 
 
-  if(usernameText){
-
-    usernameText.textContent =
-      admin.username || "Admin";
-
-  }
+  const superadmin =
+    await window.AdminCore.isSuperadmin();
 
 
-  if(rolePill){
-
-    const superadmin =
-      await window.AdminCore.isSuperadmin();
-
-    rolePill.textContent =
-      superadmin
-        ? "Superadmin"
-        : "Site Admin";
-
-  }
+  usernameText.textContent =
+    superadmin
+      ? "Superadmin"
+      : (admin.username || "Site Admin");
 
 }
 

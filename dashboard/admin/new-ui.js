@@ -417,52 +417,71 @@
        SET OPTIONS
        ======================================================== */
 
-    function setOptions(options) {
+function setOptions(options) {
 
-      siteOptions =
-        Array.isArray(options)
-          ? options.map(option => ({
-              value:
-                String(
-                  option.value ??
-                  option.id ??
-                  ""
-                ),
+  const nextOptions =
+    Array.isArray(options)
+      ? options
+          .map(option => ({
+            value:
+              String(
+                option.value ??
+                option.id ??
+                ""
+              ),
 
-              label:
-                String(
-                  option.label ??
-                  option.name ??
-                  option.value ??
-                  option.id ??
-                  ""
-                )
-            }))
-            .filter(
-              option =>
-                option.value
-            )
-          : [];
-
-      const allowed =
-        new Set(
-          siteOptions.map(
-            option => option.value
+            label:
+              String(
+                option.label ??
+                option.name ??
+                option.value ??
+                option.id ??
+                ""
+              )
+          }))
+          .filter(
+            option =>
+              option.value
           )
-        );
+      : [];
 
-      currentSites =
-        currentSites.filter(
-          value =>
-            allowed.has(value)
-        );
+  /*
+   * PENTING:
+   * Kalau site belum selesai load / hasil masih kosong,
+   * jangan buang selected site dari localStorage.
+   */
+  if (!nextOptions.length) {
 
-      saveSites(currentSites);
+    siteOptions = [];
 
-      renderValue();
-      renderOptions();
-    }
+    renderValue();
+    renderOptions();
 
+    return;
+  }
+
+  siteOptions = nextOptions;
+  const allowed =
+    new Set(
+      siteOptions.map(
+        option =>
+          String(option.value)
+      )
+    );
+
+  currentSites =
+    currentSites.filter(
+      value =>
+        allowed.has(
+          String(value)
+        )
+    );
+
+  saveSites(currentSites);
+
+  renderValue();
+  renderOptions();
+}
     /* ========================================================
        EVENTS
        ======================================================== */
@@ -535,11 +554,6 @@
   async function loadAdminSites() {
 
     let options = [];
-
-    /*
-     * Kalau project Farmmer sudah menyediakan
-     * window.getAdminSites(), kita gunakan data itu.
-     */
     if (
       typeof window.getAdminSites ===
       "function"
@@ -580,41 +594,98 @@
       }
     }
 
-    document
-      .querySelectorAll(
-        "[data-admin-site-selector]"
-      )
-      .forEach(target => {
+document
+  .querySelectorAll(
+    "[data-admin-site-selector]"
+  )
+  .forEach(target => {
 
-        const selector =
-          createAdminSiteSelector(
-            target
-          );
+    const selector =
+      createAdminSiteSelector(
+        target
+      );
 
-        selector?.setOptions(
-          options
-        );
-      });
+    if (options.length > 0) {
+
+      selector?.setOptions(
+        options
+      );
+
+    }
+
+  });
   }
 
   /* ==========================================================
      INIT
      ========================================================== */
 
-  function initAdminNewUI() {
+async function initAdminNewUI() {
 
-    document
-      .querySelectorAll(
-        "[data-admin-site-selector]"
-      )
-      .forEach(target => {
-        createAdminSiteSelector(
-          target
-        );
-      });
+  document
+    .querySelectorAll(
+      "[data-admin-site-selector]"
+    )
+    .forEach(target => {
 
-    loadAdminSites();
-  }
+      createAdminSiteSelector(
+        target
+      );
+
+    });
+
+
+  /*
+   * Cuba load terus.
+   */
+  await loadAdminSites();
+
+
+  /*
+   * Kalau getAdminSites datang lambat
+   * selepas Firebase/Auth ready,
+   * cuba semula beberapa kali.
+   */
+  let retryCount = 0;
+
+  const retryTimer =
+    setInterval(
+      async () => {
+
+        retryCount += 1;
+
+        if (
+          typeof window.getAdminSites ===
+          "function"
+        ) {
+
+          await loadAdminSites();
+
+          clearInterval(
+            retryTimer
+          );
+
+          return;
+        }
+
+        /*
+         * Stop selepas ±10 saat.
+         */
+        if (retryCount >= 20) {
+
+          clearInterval(
+            retryTimer
+          );
+
+          console.warn(
+            "[new-ui] getAdminSites was not available after retry."
+          );
+        }
+
+      },
+      500
+    );
+}
 
   window.createAdminSiteSelector =
     createAdminSiteSelector;

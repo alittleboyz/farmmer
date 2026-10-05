@@ -19,7 +19,7 @@
   <meta name="twitter:title" content="Powered By Minotcung">
   <meta name="twitter:description" content=""This site personally build farming link page.">
   <meta name="twitter:image" content="https://farmmer-dashboard.vercel.app/image.png">
-  <link rel="stylesheet" href="/admin/node.css">
+  <link rel="stylesheet" href="./node.css">
 </head>
 
 <body>
@@ -67,8 +67,29 @@
 </button>
 </div>
   
-  <div class="right">
-    <div id="indoClock" class="indoClock">--
+<div class="right">
+
+  <!-- ===== MULTI SITE CONTEXT ===== -->
+  <div class="adminContextBar" id="adminContextBar">
+
+    <!-- SITE SELECTOR -->
+    <div class="contextSelectWrap" id="siteSelectorWrap">
+      <select id="siteSelector" class="contextSelect">
+        <option value="">All Sites</option>
+      </select>
+    </div>
+
+    <!-- OWNER SELECTOR - SUPERADMIN ONLY -->
+    <div class="contextSelectWrap hide" id="ownerSelectorWrap">
+      <select id="ownerSelector" class="contextSelect">
+        <option value="">All Site Admins</option>
+      </select>
+    </div>
+
+  </div>
+  <!-- ===== END MULTI SITE CONTEXT ===== -->
+
+  <div id="indoClock" class="indoClock">--
   </div>
   <button class="btn-modal walletBtn" id="btnBalance" data-clickfx>
   <span class="walletIcon" aria-hidden="true">
@@ -831,6 +852,6 @@
 </div>
 <script src="../daterange/flatpick.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-<script type="module" src="/admin/node.js"></script>
+<script type="module" src="./node.js"></script>
 </body>
 </html>

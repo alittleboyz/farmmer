@@ -2375,9 +2375,6 @@ const ACTIVE_TAB_KEY = "farm_active_tab";
 
 function setView(v, save = true){
   activeView = v;
-
-  const isOpen = v === "open";
-
   const isOpen = v === "open";
 
   $("tabOpen")?.classList.toggle("active", isOpen);

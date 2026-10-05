@@ -663,13 +663,315 @@ async function loadAdminSites() {
 
   return true;
 }
+/* ==========================================================
+   SHARED ADMIN HEADER
+   ========================================================== */
 
+function createSharedAdminHeader(target) {
+
+  if (!target) {
+    return;
+  }
+
+  if (target.dataset.sharedHeaderReady === "1") {
+    return;
+  }
+
+  const activePage =
+    target.dataset.activePage || "";
+
+  const isActive = page =>
+    activePage === page
+      ? "active"
+      : "";
+
+
+  target.innerHTML = `
+
+    <!-- SITE SELECTOR -->
+    <div
+      class="headerSiteSelector"
+      data-admin-site-selector
+    ></div>
+
+
+    <!-- MAIN NAVIGATION -->
+    <div class="tabs headerTabs">
+
+      <a
+        class="tab ${isActive("vault")}"
+        href="./index.html"
+      >
+        <span class="sharedNavIcon">▦</span>
+        Vault
+      </a>
+
+      <a
+        class="tab ${isActive("transaction")}"
+        href="./index.html?tab=transaction"
+      >
+        <span class="sharedNavIcon">♜</span>
+        Transaction
+      </a>
+
+      <a
+        class="tab ${isActive("history")}"
+        href="./index.html?tab=history"
+      >
+        <span class="sharedNavIcon">▣</span>
+        History Vault
+      </a>
+
+      <a
+        class="tab ${isActive("notes")}"
+        href="./index.html?tab=notes"
+      >
+        <span class="sharedNavIcon">▤</span>
+        Notes
+      </a>
+
+      <a
+        class="tab ${isActive("site-management")}"
+        href="./site-management.html"
+      >
+        Site Management
+      </a>
+
+    </div>
+
+
+    <!-- RIGHT SIDE -->
+    <div class="right sharedAdminHeaderRight">
+
+      <span
+        class="sharedAdminClock"
+        id="sharedAdminClock"
+      >
+        Kuala Lumpur:--:--
+      </span>
+
+
+      <button
+        type="button"
+        class="pill sharedWalletButton"
+        id="sharedWalletButton"
+      >
+        <span class="sharedWalletIcon">▣</span>
+
+        <span id="sharedWalletText">
+          0.00
+        </span>
+      </button>
+
+
+      <div class="sharedUserWrap">
+
+        <button
+          type="button"
+          class="pill sharedUserButton"
+          id="sharedUserButton"
+        >
+          <span class="sharedUserIcon">♟</span>
+
+          <span id="usernameText">
+            ...
+          </span>
+        </button>
+
+        <div
+          class="sharedUserMenu"
+          id="sharedUserMenu"
+          hidden
+        >
+          <button
+            type="button"
+            data-shared-action="logout"
+          >
+            Logout
+          </button>
+        </div>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="sharedHeaderIconBtn"
+        id="sharedRefreshButton"
+        title="Refresh"
+        aria-label="Refresh"
+      >
+        ↻
+      </button>
+
+
+      <button
+        type="button"
+        class="sharedHeaderIconBtn rightDrawerBtn"
+        id="sharedDrawerButton"
+        title="Menu"
+        aria-label="Open menu"
+      >
+        ☷
+      </button>
+
+    </div>
+  `;
+
+
+  target.dataset.sharedHeaderReady = "1";
+
+
+  /* ========================================================
+     REFRESH
+     ======================================================== */
+
+  const refreshButton =
+    target.querySelector(
+      "#sharedRefreshButton"
+    );
+
+  refreshButton?.addEventListener(
+    "click",
+    () => {
+
+      refreshButton.classList.add(
+        "spinning"
+      );
+
+      setTimeout(
+        () => location.reload(),
+        250
+      );
+
+    }
+  );
+
+
+  /* ========================================================
+     USER DROPDOWN
+     ======================================================== */
+
+  const userButton =
+    target.querySelector(
+      "#sharedUserButton"
+    );
+
+  const userMenu =
+    target.querySelector(
+      "#sharedUserMenu"
+    );
+
+
+  userButton?.addEventListener(
+    "click",
+    event => {
+
+      event.stopPropagation();
+
+      if (!userMenu) {
+        return;
+      }
+
+      userMenu.hidden =
+        !userMenu.hidden;
+
+    }
+  );
+
+
+  document.addEventListener(
+    "click",
+    event => {
+
+      if (
+        userMenu &&
+        !userMenu.hidden &&
+        !target.contains(event.target)
+      ) {
+        userMenu.hidden = true;
+      }
+
+    }
+  );
+
+
+  /* ========================================================
+     LOGOUT
+     ======================================================== */
+
+  target
+    .querySelector(
+      '[data-shared-action="logout"]'
+    )
+    ?.addEventListener(
+      "click",
+      async () => {
+
+        if (
+          window.AdminCore &&
+          typeof window.AdminCore.logout ===
+            "function"
+        ) {
+
+          await window.AdminCore.logout();
+
+        }
+
+      }
+    );
+
+
+  /* ========================================================
+     SIDEBAR / DRAWER
+     Untuk sekarang dispatch event sahaja.
+     Lepas ini kita sambungkan drawer lama.
+     ======================================================== */
+
+  target
+    .querySelector(
+      "#sharedDrawerButton"
+    )
+    ?.addEventListener(
+      "click",
+      () => {
+
+        window.dispatchEvent(
+          new CustomEvent(
+            "admin-open-drawer"
+          )
+        );
+
+      }
+    );
+
+}
+
+
+/* ==========================================================
+   INIT SHARED ADMIN HEADERS
+   ========================================================== */
+
+function initSharedAdminHeaders() {
+
+  document
+    .querySelectorAll(
+      "[data-admin-header]"
+    )
+    .forEach(target => {
+
+      createSharedAdminHeader(target);
+
+    });
+
+}
   /* ==========================================================
      INIT
      ========================================================== */
 
 async function initAdminNewUI() {
-
+  initSharedAdminHeaders();
+   
   document
     .querySelectorAll(
       "[data-admin-site-selector]"
@@ -740,7 +1042,11 @@ async function initAdminNewUI() {
 
   window.loadAdminSites =
     loadAdminSites;
+window.createSharedAdminHeader =
+  createSharedAdminHeader;
 
+window.initSharedAdminHeaders =
+  initSharedAdminHeaders;
   window.initAdminNewUI =
     initAdminNewUI;
 

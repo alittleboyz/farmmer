@@ -476,10 +476,4 @@ header .headerSiteSelector.has-value{
   }
 
 }
-[data-admin-site-selector]{
-  visibility:hidden;
-}
 
-[data-admin-site-selector].site-selector-ready{
-  visibility:visible;
-}

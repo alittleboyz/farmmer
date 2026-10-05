@@ -56,9 +56,7 @@ const adminUIState = {
   role: "superadmin",
   permissions: {},
   sites: [],
-  owners: [],
-  currentSiteId: "",
-  selectedOwnerUid: ""
+  currentSiteId: ""
 };
 
 // ============================================================
@@ -326,16 +324,12 @@ function renderSharedSites(){
 
   select.innerHTML = "";
 
-  if(isSuperAdmin()){
+const all = document.createElement("option");
 
-    const all =
-      document.createElement("option");
+all.value = "";
+all.textContent = "All Sites";
 
-    all.value = "";
-    all.textContent = "All Sites";
-
-    select.appendChild(all);
-  }
+select.appendChild(all);
 
   adminUIState.sites.forEach(site=>{
 
@@ -379,85 +373,6 @@ function renderSharedSites(){
   };
 }
 
-
-// ============================================================
-// OWNER SELECTOR
-// ============================================================
-
-function renderSharedOwner(){
-
-  const wrap =
-    document.getElementById("sharedOwnerWrap");
-
-  const select =
-    document.getElementById("sharedOwnerSelector");
-
-  if(!wrap || !select){
-    return;
-  }
-
-  // Site Admin tak boleh pilih owner
-  if(!isSuperAdmin()){
-    wrap.classList.add("hide");
-    return;
-  }
-
-  wrap.classList.remove("hide");
-
-  select.innerHTML = "";
-
-  // Superadmin boleh lihat semua Site Admin
-  const all =
-    document.createElement("option");
-
-  all.value = "";
-  all.textContent = "All Site Admins";
-
-  select.appendChild(all);
-
-  adminUIState.owners.forEach(owner=>{
-
-    const option =
-      document.createElement("option");
-
-    if(typeof owner === "string"){
-
-      option.value = owner;
-      option.textContent = owner;
-
-    }else{
-
-      option.value = owner.uid || "";
-      option.textContent =
-        owner.username || owner.uid || "Site Admin";
-    }
-
-    select.appendChild(option);
-  });
-
-  select.value =
-    adminUIState.selectedOwnerUid || "";
-
-  select.onchange = ()=>{
-
-    adminUIState.selectedOwnerUid =
-      select.value || "";
-
-    window.dispatchEvent(
-      new CustomEvent(
-        "admin-owner-change",
-        {
-          detail: {
-            ownerUid:
-              adminUIState.selectedOwnerUid
-          }
-        }
-      )
-    );
-  };
-}
-
-
 // ============================================================
 // PUBLIC UPDATE FUNCTION
 // Nanti admin.js boleh panggil ini selepas Firebase load.
@@ -489,26 +404,15 @@ window.setAdminUIContext = function(data = {}){
         : [];
   }
   
-if(data.owners !== undefined){
-  adminUIState.owners =
-    Array.isArray(data.owners)
-      ? data.owners
-      : [];
-}
+
   if(data.currentSiteId !== undefined){
     adminUIState.currentSiteId =
       data.currentSiteId || "";
   }
 
-  if(data.selectedOwnerUid !== undefined){
-    adminUIState.selectedOwnerUid =
-      data.selectedOwnerUid || "";
-  }
-
-  buildAdminNavigation();
-  renderSharedUser();
-  renderSharedSites();
-  renderSharedOwner();
+buildAdminNavigation();
+renderSharedUser();
+renderSharedSites();
 };
 
 
@@ -517,15 +421,9 @@ if(data.owners !== undefined){
 // ============================================================
 
 function initSharedAdminUI(){
-
   buildAdminNavigation();
-
   renderSharedUser();
-
   renderSharedSites();
-
-  renderSharedOwner();
-
   bindMobileMenu();
 }
 

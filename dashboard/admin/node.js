@@ -1526,7 +1526,30 @@ let walletFilter = {
   range: presetRangeMs("today")
 };
   // UI state
-  let activeView = "open";
+// ===== PAGE VIEW DETECTION =====
+const currentAdminPage =
+  (location.pathname.split("/").pop() || "index.html").toLowerCase();
+
+function getPageDefaultView(){
+
+  if(currentAdminPage === "history.html"){
+    return "history";
+  }
+
+  if(currentAdminPage === "transaction.html"){
+    return "transaction";
+  }
+
+  if(currentAdminPage === "notices.html"){
+    return "notes";
+  }
+
+  // vault.html / index.html / fallback
+  return "open";
+}
+
+// UI state
+let activeView = getPageDefaultView();
 let activeMainTab = "vault";
 let finTxEditId = null;
   let ctxVaultId = null; 

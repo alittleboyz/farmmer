@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-   <link rel="icon" type="image/svg+xml" href="/image.png" />
+   <link rel="icon" type="image/svg+xml" href="../image.png" />
   <meta id="vpMeta" name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <title>Back Office PIG</title>
   <link rel="stylesheet" href="../daterange/flatpick.css">
@@ -754,49 +754,8 @@
     </div>
   </div>
 </div>
+
   
-<div class="modalBack" id="mStickyNote" style="display:none;">
-  <div class="modal" style="max-width:520px;">
-    <div class="modalHead">
-      <div>
-        <div class="title" id="stickyNoteModalTitle">Create Note</div>
-        <div class="sub">Sticky notes saved by your login UID.</div>
-      </div>
-      <button class="x" data-close="mStickyNote" type="button">✕</button>
-    </div>
-
-    <div class="modalBody">
-      <label><span class="label-required"></span>Title</label>
-      <input id="stickyNoteTitle" type="text" placeholder="Title">
-
-      <label><span class="label-required"></span>Note</label>
-      <textarea id="stickyNoteContent" placeholder="Write something..."></textarea>
-    </div>
-
-    <div class="modalFoot">
-      <button class="btn-cancel" data-close="mStickyNote" type="button">Cancel</button>
-      <button class="btn" id="stickyNoteSave" type="button" data-loading="Saving..." data-clickfx>Save</button>
-    </div>
-  </div>
-</div>
-<!-- VIEW NOTE MODAL -->
-<div class="modalBack" id="mViewNote" style="display:none;">
-  <div class="modal" style="max-width:520px;">
-    <div class="modalHead" style="display:flex;align-items:center;justify-content:space-between;">
-      <div style="font-weight:800;">Note</div>
-      <button class="x" data-close="mViewNote" type="button" aria-label="Close">✕</button>
-    </div>
-
-    <div class="modalBody">
-      <div id="viewNoteText" class="hint" style="white-space:pre-wrap;line-height:1.45;"></div>
-    </div>
-
-    <div class="modalFoot" style="display:flex;justify-content:flex-end;gap:10px;">
-      <button class="btn-cancel" data-close="mViewNote" type="button">Close</button>
-    </div>
-  </div>
-</div>
-
 <div id="cConfirm" class="cConfirm" style="display:none;">
   <div class="cConfirmBack" data-cc="close"></div>
 

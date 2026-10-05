@@ -4887,6 +4887,12 @@ bindLoadingClick("nvCreate", onNvCreate);
       openModal("mBuy");
     }
     if(act==="missing"){
+      try{
+    requireWriteSiteId();
+  }catch(err){
+    toast(err.message, "error");
+    return;
+  }
   ctxVaultId = vid;
   const vSnap = await get(ref(db, `vaults/open/${vid}`));
   $("missingVaultTitle").textContent = vSnap.exists()? `Vault: ${vSnap.val().title}` : "Vault";
@@ -4903,6 +4909,12 @@ bindLoadingClick("nvCreate", onNvCreate);
 }
 
 if(act==="sell"){
+    try{
+    requireWriteSiteId();
+  }catch(err){
+    toast(err.message, "error");
+    return;
+  }
   ctxVaultId = vid;
 
   const vSnap = await get(ref(db, `vaults/open/${vid}`));
@@ -4950,6 +4962,12 @@ if(act==="sell"){
 }
 
 if(act==="close"){
+  try{
+  requireWriteSiteId();
+}catch(err){
+  toast(err.message, "error");
+  return;
+}
   if(!(await assertCanOperateOpenVault(vid))){
     toast("No access: this vault is not yours.");
     return;

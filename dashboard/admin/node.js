@@ -1578,175 +1578,109 @@ async function loadAdminProfile(uid){
 }
 
 async function loadSitesForContext(){
-  const select = $("siteSelector");
-  if(!select) return;
-
-  select.innerHTML = "";
 
   try{
     const snap = await get(ref(db, "sites"));
     const allSites = snap.exists() ? snap.val() : {};
+
+    const sites = [];
 
     // ==============================
     // SUPERADMIN
     // ==============================
     if(isSuperAdmin()){
 
-      const allOpt = document.createElement("option");
-      allOpt.value = "";
-      allOpt.textContent = "All Sites";
-      select.appendChild(allOpt);
-
       Object.entries(allSites).forEach(([siteId, site])=>{
-        if(site?.enabled === false) return;
 
-        const opt = document.createElement("option");
-        opt.value = siteId;
-        opt.textContent = site?.name || siteId;
+        if(!site) return;
+        if(site.enabled === false) return;
 
-        select.appendChild(opt);
+        sites.push({
+          id: siteId,
+          name: site.name || siteId
+        });
+
       });
 
+      // kosong = All Sites
       me.currentSiteId = "";
-      select.value = "";
-      return;
     }
 
     // ==============================
     // SITE ADMIN
     // ==============================
-    const allowed = new Set(me.assignedSites);
+    else if(isSiteAdmin()){
 
-    Object.entries(allSites).forEach(([siteId, site])=>{
-      if(!allowed.has(siteId)) return;
-      if(site?.enabled === false) return;
+      const allowed = new Set(me.assignedSites);
 
-      const opt = document.createElement("option");
-      opt.value = siteId;
-      opt.textContent = site?.name || siteId;
+      Object.entries(allSites).forEach(([siteId, site])=>{
 
-      select.appendChild(opt);
-    });
+        if(!site) return;
+        if(!allowed.has(siteId)) return;
+        if(site.enabled === false) return;
 
-    const firstSite = select.options[0]?.value || "";
+        sites.push({
+          id: siteId,
+          name: site.name || siteId
+        });
 
-    me.currentSiteId = firstSite;
-    select.value = firstSite;
+      });
 
-  }catch(err){
-
-    console.warn("loadSitesForContext fallback:", err);
-
-    // legacy dashboard jangan rosak
-    if(isSuperAdmin()){
-      select.innerHTML = `<option value="">All Sites</option>`;
-      me.currentSiteId = "";
+      // Site Admin tak boleh All Sites
+      me.currentSiteId = sites[0]?.id || "";
     }
-  }
-}
 
-async function loadOwnersForContext(){
-  const wrap = $("ownerSelectorWrap");
-  const select = $("ownerSelector");
-
-  if(!wrap || !select) return;
-
-  // ==============================
-  // SITE ADMIN
-  // ==============================
-  if(!isSuperAdmin()){
-    wrap.classList.add("hide");
-    me.selectedOwnerUid = me.uid;
-    return;
-  }
-
-  // ==============================
-  // SUPERADMIN
-  // ==============================
-  wrap.classList.remove("hide");
-
-  select.innerHTML = `
-    <option value="">All Site Admins</option>
-  `;
-
-  try{
-    const snap = await get(ref(db, "adminUsers"));
-    const users = snap.exists() ? snap.val() : {};
-
-    Object.entries(users).forEach(([uid, user])=>{
-
-      if(!user) return;
-      if(user.role !== "site_admin") return;
-      if(user.enabled === false) return;
-
-      // Kalau pilih site tertentu,
-      // hanya Site Admin site tersebut
-      if(me.currentSiteId){
-
-        const userSites = normalizeSiteIds(user.sites);
-
-        if(!userSites.includes(me.currentSiteId)){
-          return;
-        }
-      }
-
-      const opt = document.createElement("option");
-      opt.value = uid;
-      opt.textContent = user.username || uid;
-
-      select.appendChild(opt);
+    // ==============================
+    // HANTAR KE new-ui.js
+    // ==============================
+    window.setAdminUIContext?.({
+      uid: me.uid,
+      username: me.username,
+      role: me.role,
+      permissions: me.permissions,
+      sites,
+      currentSiteId: me.currentSiteId,
+      selectedOwnerUid: me.selectedOwnerUid
     });
+
+    console.log("Sites loaded:", sites);
 
   }catch(err){
-    console.warn("loadOwnersForContext fallback:", err);
-  }
 
-  me.selectedOwnerUid = "";
-  select.value = "";
+    console.error("loadSitesForContext error:", err);
+
+  }
 }
-
 async function initAdminContext(){
-  const siteSelect = $("siteSelector");
-  const ownerSelect = $("ownerSelector");
 
+  // Load sites dari Firebase dan hantar ke new-ui.js
   await loadSitesForContext();
-  await loadOwnersForContext();
 
-  if(siteSelect && siteSelect.dataset.bound !== "1"){
+  // ==========================================
+  // DENGAR SITE SELECTOR MILIK new-ui.js
+  // ==========================================
+  if(!window.__adminSiteChangeBound){
 
-    siteSelect.dataset.bound = "1";
+    window.__adminSiteChangeBound = true;
 
-    siteSelect.addEventListener("change", async ()=>{
+    window.addEventListener(
+      "admin-site-change",
+      async (e)=>{
 
-      me.currentSiteId = siteSelect.value || "";
+        me.currentSiteId =
+          e.detail?.siteId || "";
 
-      // tukar site = reset owner
-      me.selectedOwnerUid = "";
+        // Bila tukar site, reset owner
+        me.selectedOwnerUid = "";
 
-      await loadOwnersForContext();
+        console.log("Admin scope changed:", {
+          role: me.role,
+          siteId: getCurrentSiteId(),
+          ownerUid: getCurrentOwnerUid()
+        });
 
-      console.log("Admin scope changed:", {
-        role: me.role,
-        siteId: getCurrentSiteId(),
-        ownerUid: getCurrentOwnerUid()
-      });
-    });
-  }
-
-  if(ownerSelect && ownerSelect.dataset.bound !== "1"){
-
-    ownerSelect.dataset.bound = "1";
-
-    ownerSelect.addEventListener("change", ()=>{
-
-      me.selectedOwnerUid = ownerSelect.value || "";
-
-      console.log("Owner scope changed:", {
-        role: me.role,
-        siteId: getCurrentSiteId(),
-        ownerUid: getCurrentOwnerUid()
-      });
-    });
+      }
+    );
   }
 }
   // ===== RIGHT DRAWER GLOBAL (ONE-TIME) =====

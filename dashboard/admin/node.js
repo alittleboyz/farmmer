@@ -1392,12 +1392,11 @@ let me = {
   isAdmin: false,
 
   // ===== MULTI SITE =====
-  role: "client",          
+  role: "client",
   enabled: true,
 
   assignedSites: [],
-  currentSiteId: "",      
-  selectedOwnerUid: "", 
+  currentSiteId: "",
 
   permissions: {}
 };
@@ -1416,17 +1415,6 @@ function isAdminUser(){
 
 function getCurrentSiteId(){
   return me.currentSiteId || "";
-}
-
-function getCurrentOwnerUid(){
-
-  // Site Admin hanya data sendiri
-  if(isSiteAdmin()){
-    return me.uid;
-  }
-
-  // Superadmin boleh All Site Admins
-  return me.selectedOwnerUid || "";
 }
 
 let currentBalance = 0;
@@ -1624,23 +1612,20 @@ async function loadSitesForContext(){
         });
 
       });
-
-      // Site Admin tak boleh All Sites
-      me.currentSiteId = sites[0]?.id || "";
+     me.currentSiteId = "";
     }
 
     // ==============================
     // HANTAR KE new-ui.js
     // ==============================
-    window.setAdminUIContext?.({
-      uid: me.uid,
-      username: me.username,
-      role: me.role,
-      permissions: me.permissions,
-      sites,
-      currentSiteId: me.currentSiteId,
-      selectedOwnerUid: me.selectedOwnerUid
-    });
+window.setAdminUIContext?.({
+  uid: me.uid,
+  username: me.username,
+  role: me.role,
+  permissions: me.permissions,
+  sites,
+  currentSiteId: me.currentSiteId
+});
 
     console.log("Sites loaded:", sites);
 
@@ -1650,86 +1635,12 @@ async function loadSitesForContext(){
 
   }
 }
-async function loadOwnersForContext(){
 
-  // Site Admin owner sentiasa diri sendiri
-  if(!isSuperAdmin()){
-
-    me.selectedOwnerUid = me.uid;
-
-    window.setAdminUIContext?.({
-      owners: [],
-      selectedOwnerUid: me.uid
-    });
-
-    return;
-  }
-
-  try{
-
-    const snap =
-      await get(ref(db, "adminUsers"));
-
-    const allUsers =
-      snap.exists() ? snap.val() : {};
-
-    const owners = [];
-
-    Object.entries(allUsers).forEach(
-      ([uid, user])=>{
-
-        if(!user) return;
-
-        // Owner selector hanya Site Admin
-        if(user.role !== "site_admin"){
-          return;
-        }
-
-        if(user.enabled === false){
-          return;
-        }
-
-        // Kalau Superadmin pilih site tertentu,
-        // hanya Site Admin site tersebut ditampilkan
-        if(me.currentSiteId){
-
-          const userSites =
-            normalizeSiteIds(user.sites);
-
-          if(!userSites.includes(me.currentSiteId)){
-            return;
-          }
-        }
-
-        owners.push({
-          uid,
-          username: user.username || uid
-        });
-
-      }
-    );
-
-    me.selectedOwnerUid = "";
-
-    window.setAdminUIContext?.({
-      owners,
-      selectedOwnerUid: ""
-    });
-
-    console.log("Owners loaded:", owners);
-
-  }catch(err){
-
-    console.error(
-      "loadOwnersForContext error:",
-      err
-    );
-
-  }
-}
 async function initAdminContext(){
+
+  // Load site yang user dibenarkan access
   await loadSitesForContext();
-  await loadOwnersForContext();
+
   // ==========================================
   // DENGAR SITE SELECTOR MILIK new-ui.js
   // ==========================================
@@ -1739,23 +1650,23 @@ async function initAdminContext(){
 
     window.addEventListener(
       "admin-site-change",
-      async (e)=>{
+      (e)=>{
 
         me.currentSiteId =
           e.detail?.siteId || "";
 
-        // Bila tukar site, reset owner
-        me.selectedOwnerUid = "";
-        await loadOwnersForContext();
-        console.log("Admin scope changed:", {
+        console.log("Admin site scope changed:", {
           role: me.role,
           siteId: getCurrentSiteId(),
-          ownerUid: getCurrentOwnerUid()
+          assignedSites: me.assignedSites
         });
 
+        // Nanti di sini kita reload data
+        // berdasarkan site yang dipilih.
       }
     );
   }
+}
   if(!window.__adminOwnerChangeBound){
 
   window.__adminOwnerChangeBound = true;

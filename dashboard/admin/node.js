@@ -1,4 +1,12 @@
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+// ============================================================
+// ADMIN DASHBOARD node.js - CLEANUP PASS 1
+// Vault / History / Transaction / Notices now own their page JS.
+// index.html remains unchanged and still loads this file.
+// Page-specific boot calls are gated so Dashboard does not initialize
+// separated-page modules. Shared Firebase/Auth/Admin/Wallet helpers remain.
+// ============================================================
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import {
   getAuth, onAuthStateChanged, signOut,
   EmailAuthProvider, reauthenticateWithCredential, updatePassword
@@ -1544,8 +1552,12 @@ function getPageDefaultView(){
     return "notes";
   }
 
-  // vault.html / index.html / fallback
-  return "open";
+  if(currentAdminPage === "vault.html"){
+    return "open";
+  }
+
+  // index.html is Admin Dashboard only.
+  return "dashboard";
 }
 
 // UI state
@@ -2430,10 +2442,10 @@ if(btnNewVault){
 }
 }
 // TAMPAAL DI SINI BRO
-renderTransactionTabShell();
+if(currentAdminPage === "transaction.html") renderTransactionTabShell();
 txTabFilter.range = presetRangeMs("thisMonth");
 initTableShadow(document.getElementById("viewTransaction"));
-wireTransactionTab();
+if(currentAdminPage === "transaction.html") wireTransactionTab();
 function vaultCardHTML(vaultId, v, bucket){
   const s = v.summary || { totalCost:0,totalKg:0,totalEkor:0,totalRevenue:0,profit:0 };
   const bp = (s.babyPig || { qty:0, avgPrice:0, total:0 });
@@ -6151,7 +6163,7 @@ wireVaultListeners();
   window.__stickyNotesBound = true;
   bindStickyNotesUI();
 }
-wireStickyNotes();
+if(currentAdminPage === "notices.html") wireStickyNotes();
 const searchInput = document.getElementById("vaultSearch");
 const clearBtn = document.getElementById("clearSearch");
 const searchIcon = document.getElementById("searchIcon");

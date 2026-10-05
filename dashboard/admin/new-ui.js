@@ -56,10 +56,10 @@ const adminUIState = {
   role: "superadmin",
   permissions: {},
   sites: [],
+  owners: [],
   currentSiteId: "",
   selectedOwnerUid: ""
 };
-
 
 // ============================================================
 // HELPERS
@@ -389,15 +389,72 @@ function renderSharedOwner(){
   const wrap =
     document.getElementById("sharedOwnerWrap");
 
-  if(!wrap){
+  const select =
+    document.getElementById("sharedOwnerSelector");
+
+  if(!wrap || !select){
     return;
   }
 
-  // Hanya Superadmin
-  wrap.classList.toggle(
-    "hide",
-    !isSuperAdmin()
-  );
+  // Site Admin tak boleh pilih owner
+  if(!isSuperAdmin()){
+    wrap.classList.add("hide");
+    return;
+  }
+
+  wrap.classList.remove("hide");
+
+  select.innerHTML = "";
+
+  // Superadmin boleh lihat semua Site Admin
+  const all =
+    document.createElement("option");
+
+  all.value = "";
+  all.textContent = "All Site Admins";
+
+  select.appendChild(all);
+
+  adminUIState.owners.forEach(owner=>{
+
+    const option =
+      document.createElement("option");
+
+    if(typeof owner === "string"){
+
+      option.value = owner;
+      option.textContent = owner;
+
+    }else{
+
+      option.value = owner.uid || "";
+      option.textContent =
+        owner.username || owner.uid || "Site Admin";
+    }
+
+    select.appendChild(option);
+  });
+
+  select.value =
+    adminUIState.selectedOwnerUid || "";
+
+  select.onchange = ()=>{
+
+    adminUIState.selectedOwnerUid =
+      select.value || "";
+
+    window.dispatchEvent(
+      new CustomEvent(
+        "admin-owner-change",
+        {
+          detail: {
+            ownerUid:
+              adminUIState.selectedOwnerUid
+          }
+        }
+      )
+    );
+  };
 }
 
 
@@ -431,7 +488,13 @@ window.setAdminUIContext = function(data = {}){
         ? data.sites
         : [];
   }
-
+  
+if(data.owners !== undefined){
+  adminUIState.owners =
+    Array.isArray(data.owners)
+      ? data.owners
+      : [];
+}
   if(data.currentSiteId !== undefined){
     adminUIState.currentSiteId =
       data.currentSiteId || "";

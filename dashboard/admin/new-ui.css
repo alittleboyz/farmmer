@@ -6,14 +6,19 @@
 
 /* ==========================================================
    SITE SELECTOR
+   Default : 150px
+   Grow    : ikut content
+   Maximum : 220px
    ========================================================== */
 
 .admin-site-selector{
   position:relative;
 
-  width:100%;
+  width:150px;
   min-width:150px;
   max-width:220px;
+
+  flex:0 0 auto;
 
   font-family:inherit;
   font-size:14px;
@@ -24,12 +29,24 @@
 }
 
 
+/* Bila ada selected value/chip,
+   JS boleh tambah class .has-value.
+   Selector dibenarkan grow sampai 220px. */
+
+.admin-site-selector.has-value{
+  width:max-content;
+}
+
+
 /* ==========================================================
    MAIN CONTROL
    ========================================================== */
 
 .site-select-control{
   width:100%;
+  min-width:150px;
+  max-width:220px;
+
   height:32px;
 
   display:flex;
@@ -44,6 +61,7 @@
   color:#fff;
 
   cursor:pointer;
+
   box-sizing:border-box;
 
   transition:
@@ -94,7 +112,7 @@
 
 .site-select-chip{
   min-width:0;
-  max-width:100%;
+  max-width:170px;
 
   display:inline-flex;
   align-items:center;
@@ -123,13 +141,14 @@
 
   flex:0 0 22px;
 
-  border:0;
-  outline:0;
-  padding:0;
-
   display:flex;
   align-items:center;
   justify-content:center;
+
+  padding:0;
+
+  border:0;
+  outline:0;
 
   background:transparent;
   color:#9da7b3;
@@ -148,7 +167,7 @@
 
 
 /* ==========================================================
-   +N
+   MULTIPLE SELECT +N
    ========================================================== */
 
 .site-select-more{
@@ -172,10 +191,10 @@
    ========================================================== */
 
 .site-select-arrow{
-  width:20px;
+  width:18px;
   height:100%;
 
-  flex:0 0 20px;
+  flex:0 0 18px;
 
   display:flex;
   align-items:center;
@@ -194,10 +213,10 @@
 }
 
 .site-select-arrow svg{
+  display:block;
+
   width:11px;
   height:11px;
-
-  display:block;
 
   transition:
     transform .18s ease,
@@ -225,8 +244,8 @@
   top:calc(100% + 5px);
   left:0;
 
-  width:100%;
-  min-width:150px;
+  width:max-content;
+  min-width:100%;
   max-width:220px;
 
   max-height:260px;
@@ -263,6 +282,7 @@
 
 .site-select-option{
   width:100%;
+  min-width:138px;
   min-height:32px;
 
   display:flex;
@@ -284,6 +304,7 @@
   font-size:13px;
 
   text-align:left;
+  white-space:nowrap;
 
   cursor:pointer;
 
@@ -349,37 +370,62 @@
    ========================================================== */
 
 .site-select-empty{
+  min-width:138px;
+
   padding:10px 8px;
 
   color:#8b949e;
 
   font-size:13px;
   text-align:center;
+
+  box-sizing:border-box;
 }
 
 
 /* ==========================================================
    HEADER INTEGRATION
+
+   PENTING:
+   Jangan pakai flex:1 sebab akan stretch ke 220px.
    ========================================================== */
 
 header .admin-site-selector{
-  flex:1 1 150px;
+  flex:0 0 auto;
 
+  width:150px;
   min-width:150px;
   max-width:220px;
 }
 
 
+/* Kalau ada selected chip */
+
+header .admin-site-selector.has-value{
+  width:max-content;
+}
+
+
 /* ==========================================================
-   HEADER SITE SELECTOR WRAPPER
+   HEADER SITE SELECTOR
    ========================================================== */
 
 header .headerSiteSelector{
+  flex:0 0 auto;
+
+  width:150px;
   min-width:150px;
   max-width:220px;
 
   margin-left:12px;
   margin-right:8px;
+}
+
+
+/* Bila sudah pilih site */
+
+header .headerSiteSelector.has-value{
+  width:max-content;
 }
 
 
@@ -389,20 +435,36 @@ header .headerSiteSelector{
 
 @media(max-width:700px){
 
-  .admin-site-selector{
+  .admin-site-selector,
+  .admin-site-selector.has-value{
+    width:150px;
+    min-width:150px;
+    max-width:150px;
+
+    flex:0 0 150px;
+  }
+
+  header .admin-site-selector,
+  header .admin-site-selector.has-value{
+    width:150px;
+    min-width:150px;
+    max-width:150px;
+
+    flex:0 0 150px;
+  }
+
+  header .headerSiteSelector,
+  header .headerSiteSelector.has-value{
     width:150px;
     min-width:150px;
     max-width:150px;
   }
 
-  header .admin-site-selector{
-    flex:0 0 150px;
-
+  .site-select-control{
+    width:150px;
     min-width:150px;
     max-width:150px;
-  }
 
-  .site-select-control{
     height:32px;
 
     padding-inline:12px;
@@ -410,7 +472,7 @@ header .headerSiteSelector{
 
   .site-select-panel{
     min-width:150px;
-    max-width:150px;
+    max-width:220px;
   }
 
 }

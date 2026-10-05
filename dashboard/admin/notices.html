@@ -5,8 +5,7 @@
    <link rel="icon" type="image/svg+xml" href="../image.png" />
   <meta id="vpMeta" name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <title>Back Office PIG</title>
-  <link rel="stylesheet" href="../daterange/flatpick.css">
-  <meta name="description" content="This site personally build farming link page.">
+<meta name="description" content="This site personally build farming link page.">
   <meta property="og:site_name" content="PIG">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Powered By Minotcung">
@@ -509,9 +508,717 @@
     </div>
   </div>
 </div>
-<script src="../daterange/flatpick.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <script type="module" src="./new-ui.js"></script>
-<script type="module" src="./node.js"></script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  updatePassword
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import {
+  getDatabase,
+  ref,
+  get,
+  set,
+  push,
+  update,
+  remove,
+  onValue,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBAUxwnpWvSfih5EHY9Uy_9ABrym0Hd9iI",
+  authDomain: "farmmer-888.firebaseapp.com",
+  databaseURL: "https://farmmer-888-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "farmmer-888",
+  storageBucket: "farmmer-888.firebasestorage.app",
+  messagingSenderId: "100054260667",
+  appId: "1:100054260667:web:f71a14baec71f89a8b829e"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const $ = (id) => document.getElementById(id);
+
+const SESSION_EXPIRE_KEY = "farm_session_expires_at";
+let sessionExpiryTimer = null;
+
+let me = {
+  uid: null,
+  username: "Admin",
+  role: "client",
+  enabled: true,
+  assignedSites: [],
+  currentSiteId: "",
+  permissions: {}
+};
+
+let stickyNotes = [];
+let stickyNotesEditId = null;
+let stickyNotesFilter = ["all"];
+let stickyNotesUnsub = null;
+let toastTimer = null;
+
+function isSuperAdmin(){ return me.role === "superadmin"; }
+function isSiteAdmin(){ return me.role === "site_admin"; }
+function isAdminUser(){ return isSuperAdmin() || isSiteAdmin(); }
+
+function normalizeSiteIds(sites){
+  if(!sites) return [];
+  if(Array.isArray(sites)) return sites.filter(Boolean);
+  if(typeof sites === "object"){
+    return Object.entries(sites)
+      .filter(([_, allowed]) => allowed === true)
+      .map(([siteId]) => siteId);
+  }
+  return [];
+}
+
+function escapeHtml(value){
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function fmtDT(ms){
+  if(!ms) return "-";
+  const d = new Date(ms);
+  const pad = n => String(n).padStart(2, "0");
+  return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
+function emptyDataHTML(text = "No data"){
+  return `
+    <div class="emptyState">
+      <div class="emptyIcon" aria-hidden="true">▱</div>
+      <div>${escapeHtml(text)}</div>
+    </div>
+  `;
+}
+
+function openModal(id){
+  const el = $(id);
+  if(!el) return;
+  el.style.display = "flex";
+  el.classList.add("show");
+}
+
+function closeModal(id){
+  const el = $(id);
+  if(!el) return;
+  el.classList.remove("show");
+  el.style.display = "none";
+}
+
+document.addEventListener("click", (e)=>{
+  const closeBtn = e.target.closest("[data-close]");
+  if(closeBtn){
+    closeModal(closeBtn.dataset.close);
+  }
+});
+
+function toast(message, type = "success", ms = 2600){
+  const el = $("toast");
+  if(!el) return;
+  if(toastTimer) clearTimeout(toastTimer);
+
+  el.className = `toast ${type}`;
+  el.innerHTML = `
+    <div class="toastCard">
+      <div class="toastIcon">${type === "error" ? "✕" : "✓"}</div>
+      <div class="toastMsg">${escapeHtml(message)}</div>
+      <button class="toastClose" type="button" aria-label="Close">✕</button>
+    </div>
+  `;
+  el.style.display = "block";
+  requestAnimationFrame(()=>el.classList.add("show"));
+
+  const hide = ()=>{
+    el.classList.remove("show");
+    setTimeout(()=>{
+      el.style.display = "none";
+      el.innerHTML = "";
+      el.className = "toast";
+    }, 230);
+  };
+
+  el.querySelector(".toastClose")?.addEventListener("click", hide, {once:true});
+  toastTimer = setTimeout(hide, ms);
+}
+
+function confirmBox(message, opts = {}){
+  const root = $("cConfirm");
+  const titleEl = $("ccTitle");
+  const msgEl = $("ccMsg");
+  const ok = $("ccOk");
+  const cancel = $("ccCancel");
+
+  if(!root || !titleEl || !msgEl || !ok || !cancel){
+    return Promise.resolve(window.confirm(message));
+  }
+
+  titleEl.textContent = opts.title || "Confirm";
+  msgEl.textContent = message || "Are you sure?";
+  ok.textContent = opts.okText || "OK";
+  cancel.textContent = opts.cancelText || "Cancel";
+  ok.className = "btn " + (opts.okClass || "danger");
+  root.style.display = "block";
+
+  return new Promise(resolve=>{
+    const cleanup = ()=>{
+      root.style.display = "none";
+      ok.onclick = null;
+      cancel.onclick = null;
+      root.querySelectorAll('[data-cc="close"]').forEach(x=>x.onclick = null);
+      document.removeEventListener("keydown", onKey);
+    };
+    const done = value => { cleanup(); resolve(value); };
+    const onKey = e => {
+      if(e.key === "Escape") done(false);
+      if(e.key === "Enter") done(true);
+    };
+    document.addEventListener("keydown", onKey);
+    root.querySelectorAll('[data-cc="close"]').forEach(x=>x.onclick = ()=>done(false));
+    cancel.onclick = ()=>done(false);
+    ok.onclick = ()=>done(true);
+  });
+}
+
+function setBtnLoading(btn, on){
+  if(!btn) return;
+  if(on){
+    if(btn.dataset.busy === "1") return;
+    btn.dataset.busy = "1";
+    btn.dataset.oldHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<span>${escapeHtml(btn.dataset.loading || "Loading...")}</span>`;
+  }else{
+    btn.dataset.busy = "0";
+    btn.disabled = false;
+    if(btn.dataset.oldHtml){
+      btn.innerHTML = btn.dataset.oldHtml;
+      delete btn.dataset.oldHtml;
+    }
+  }
+}
+
+function bindLoadingClick(btnId, handler){
+  const btn = $(btnId);
+  if(!btn) return;
+
+  btn.addEventListener("click", async ()=>{
+    if(btn.disabled) return;
+    setBtnLoading(btn, true);
+    try{
+      const msg = await handler();
+      setBtnLoading(btn, false);
+      if(typeof msg === "string" && msg.trim()) toast(msg, "success");
+    }catch(err){
+      console.error(err);
+      setBtnLoading(btn, false);
+      toast(err?.message || "Failed", "error");
+    }
+  });
+}
+
+function hidePageLoader(){
+  const loader = $("pageLoader");
+  if(!loader) return;
+  loader.classList.add("hide");
+  loader.style.pointerEvents = "none";
+  setTimeout(()=>{ loader.style.display = "none"; }, 220);
+}
+
+async function loadAdminProfile(uid){
+  try{
+    const snap = await get(ref(db, `adminUsers/${uid}`));
+    if(!snap.exists()) return false;
+
+    const data = snap.val() || {};
+    me.role = data.role || "client";
+    me.enabled = data.enabled !== false;
+    me.permissions = data.permissions || {};
+    me.assignedSites = normalizeSiteIds(data.sites);
+    if(data.username) me.username = data.username;
+    return true;
+  }catch(err){
+    console.warn("loadAdminProfile fallback:", err);
+    return false;
+  }
+}
+
+async function loadRole(uid){
+  const hasAdminProfile = await loadAdminProfile(uid);
+
+  if(hasAdminProfile){
+    if(!me.enabled) throw new Error("This admin account is inactive.");
+  }else{
+    const r = await get(ref(db, `roles/${uid}`));
+    const role = r.exists() ? r.val() : {};
+    me.username = role?.username || me.username || "user";
+    me.role = role?.isAdmin === true ? "superadmin" : "client";
+    me.enabled = true;
+    me.assignedSites = [];
+    me.permissions = {};
+  }
+}
+
+async function loadSitesForContext(){
+  const snap = await get(ref(db, "sites"));
+  const allSites = snap.exists() ? snap.val() : {};
+  const sites = [];
+
+  if(isSuperAdmin()){
+    Object.entries(allSites).forEach(([siteId, site])=>{
+      if(!site || site.enabled === false) return;
+      sites.push({id: siteId, name: site.name || siteId});
+    });
+  }else if(isSiteAdmin()){
+    const allowed = new Set(me.assignedSites);
+    Object.entries(allSites).forEach(([siteId, site])=>{
+      if(!site || site.enabled === false || !allowed.has(siteId)) return;
+      sites.push({id: siteId, name: site.name || siteId});
+    });
+  }
+
+  me.currentSiteId = "";
+
+  window.setAdminUIContext?.({
+    uid: me.uid,
+    username: me.username,
+    role: me.role,
+    permissions: me.permissions,
+    sites,
+    currentSiteId: me.currentSiteId
+  });
+
+  window.addEventListener("admin-site-change", (e)=>{
+    me.currentSiteId = e.detail?.siteId || "";
+  });
+
+  console.log("Sites loaded:", sites);
+}
+
+function stickyNotesRef(){
+  return ref(db, `sticky_notes/${me.uid}`);
+}
+
+function noteIcon(type){
+  const icons = {
+    pinned: "M12 2l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4-4.5 2.4.9-5L4.8 7.2l5-.7z",
+    unpin: "M6 3h12v2l-2 3v4l2 2v2h-5v5h-2v-5H6v-2l2-2V8L6 5z",
+    archived: "M3 4h18v4H3V4zm2 6h14v10H5V10zm4 2v2h6v-2H9z",
+    unarchived: "M3 4h18v4H3V4zm2 6h14v10H5V10zm6 2v3H8l4 4 4-4h-3v-3h-2z"
+  };
+  return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${icons[type] || ""}"></path></svg>`;
+}
+
+function renderStickyNotes(){
+  const grid = $("notesGrid");
+  if(!grid) return;
+
+  const search = String($("notesSearch")?.value || "").trim().toLowerCase();
+  let rows = [...stickyNotes];
+
+  if(search){
+    rows = rows.filter(n =>
+      `${n.title||""} ${n.content||""} ${n.byUser||""}`.toLowerCase().includes(search)
+    );
+  }
+
+  const f = stickyNotesFilter || ["all"];
+  if(f.length === 0){
+    rows = [];
+  }else{
+    rows = rows.filter(n => f.some(x=>{
+      if(x === "all") return !n.archived;
+      if(x === "pinned") return n.pinned && !n.archived;
+      if(x === "recent") return !n.archived;
+      if(x === "archived") return n.archived;
+      return false;
+    }));
+  }
+
+  rows.sort((a,b)=>{
+    if((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)){
+      return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+    }
+    return Number(b.updatedAtMs || 0) - Number(a.updatedAtMs || 0);
+  });
+
+  if(!rows.length){
+    grid.classList.add("isEmpty");
+    grid.innerHTML = `
+      <div class="card notesEmptyCard">
+        <div class="cardBody">${emptyDataHTML("No data")}</div>
+      </div>`;
+    return;
+  }
+
+  grid.classList.remove("isEmpty");
+  grid.innerHTML = rows.map(n=>`
+    <div class="noteCard ${n.archived ? "archived" : ""}">
+      <div class="noteTop">
+        <div class="noteTitle">${escapeHtml(n.title || "Untitled")}</div>
+        <div class="noteActions">
+          <button class="noteMiniBtn" data-note-pin="${n.id}" type="button">
+            ${n.pinned ? noteIcon("pinned") : noteIcon("unpin")}
+          </button>
+          <button class="noteMiniBtn" data-note-archive="${n.id}" type="button">
+            ${n.archived ? noteIcon("unarchived") : noteIcon("archived")}
+          </button>
+        </div>
+      </div>
+      <div class="noteText">${escapeHtml(n.content || "")}</div>
+      <div class="noteMeta">
+        <span>👤 ${escapeHtml(n.byUser || "-")}</span>
+        <span>${fmtDT(n.updatedAtMs)}</span>
+      </div>
+      <div class="noteBottom">
+        <button class="btn-edit" data-note-edit="${n.id}" type="button">Edit</button>
+        <button class="btn-delete" data-note-delete="${n.id}" type="button">Delete</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function openStickyNoteModal(note = null){
+  stickyNotesEditId = note?.id || null;
+  $("stickyNoteModalTitle").textContent = stickyNotesEditId ? "Edit Note" : "Create Note";
+  $("stickyNoteTitle").value = note?.title || "";
+  $("stickyNoteContent").value = note?.content || "";
+  openModal("mStickyNote");
+}
+
+function closeStickyNoteModal(){
+  stickyNotesEditId = null;
+  if($("stickyNoteTitle")) $("stickyNoteTitle").value = "";
+  if($("stickyNoteContent")) $("stickyNoteContent").value = "";
+  closeModal("mStickyNote");
+}
+
+async function saveStickyNote(){
+  if(!me.uid) throw new Error("Please login first.");
+
+  const title = String($("stickyNoteTitle")?.value || "").trim();
+  const content = String($("stickyNoteContent")?.value || "").trim();
+  if(!title && !content) throw new Error("Please write something.");
+
+  const now = Date.now();
+  const payload = {
+    title,
+    content,
+    updatedAt: serverTimestamp(),
+    updatedAtMs: now,
+    byUid: me.uid,
+    byUser: me.username || "user"
+  };
+
+  if(stickyNotesEditId){
+    await update(ref(db, `sticky_notes/${me.uid}/${stickyNotesEditId}`), payload);
+  }else{
+    const nr = push(stickyNotesRef());
+    await set(nr, {
+      ...payload,
+      pinned: false,
+      archived: false,
+      createdAt: serverTimestamp(),
+      createdAtMs: now
+    });
+  }
+
+  closeStickyNoteModal();
+  return "Note saved.";
+}
+
+function initStickyNotesFilter(){
+  const root = $("notesFilter");
+  if(!root || root.dataset.bound === "1") return;
+  root.dataset.bound = "1";
+
+  const box = root.querySelector(".msBox");
+  const menu = root.querySelector(".msMenu");
+  if(!box || !menu) return;
+
+  function render(){
+    box.innerHTML = "";
+    const selected = stickyNotesFilter || [];
+    box.classList.toggle("isEmpty", selected.length === 0);
+    box.classList.toggle("hasChip", selected.length > 0);
+
+    selected.forEach(val=>{
+      const label = menu.querySelector(`[data-value="${val}"]`)?.textContent || val;
+      const chip = document.createElement("span");
+      chip.className = "msChip";
+      chip.innerHTML = `${escapeHtml(label)} <b aria-label="Remove">×</b>`;
+      chip.querySelector("b")?.addEventListener("pointerdown", (e)=>{
+        e.preventDefault();
+        e.stopPropagation();
+        stickyNotesFilter = stickyNotesFilter.filter(x=>x !== val);
+        render();
+        renderStickyNotes();
+      });
+      box.appendChild(chip);
+    });
+
+    if(selected.length){
+      const clearBtn = document.createElement("button");
+      clearBtn.className = "msClearBtn";
+      clearBtn.type = "button";
+      clearBtn.textContent = "×";
+      clearBtn.onpointerdown = (e)=>{
+        e.preventDefault();
+        e.stopPropagation();
+        stickyNotesFilter = [];
+        root.classList.remove("open");
+        render();
+        renderStickyNotes();
+      };
+      box.appendChild(clearBtn);
+    }
+
+    menu.querySelectorAll("[data-value]").forEach(opt=>{
+      opt.classList.toggle("active", selected.includes(opt.dataset.value));
+    });
+  }
+
+  box.onclick = (e)=>{
+    if(e.target.closest(".msClearBtn") || e.target.closest(".msChip b")) return;
+    e.stopPropagation();
+    document.querySelectorAll(".msType.open").forEach(x=>{
+      if(x !== root) x.classList.remove("open");
+    });
+    root.classList.toggle("open");
+  };
+
+  menu.onclick = (e)=>{
+    const opt = e.target.closest("[data-value]");
+    if(!opt) return;
+    const val = opt.dataset.value;
+    let arr = stickyNotesFilter || [];
+
+    if(val === "all"){
+      arr = arr.includes("all") ? arr.filter(x=>x !== "all") : ["all", ...arr];
+    }else{
+      arr = arr.includes(val) ? arr.filter(x=>x !== val) : [...arr, val];
+    }
+
+    stickyNotesFilter = arr;
+    render();
+    renderStickyNotes();
+  };
+
+  document.addEventListener("click", ()=>root.classList.remove("open"));
+  render();
+}
+
+function bindStickyNotesUI(){
+  $("btnCreateNote")?.addEventListener("click", ()=>openStickyNoteModal());
+  $("notesSearch")?.addEventListener("input", renderStickyNotes);
+  bindLoadingClick("stickyNoteSave", saveStickyNote);
+
+  $("notesGrid")?.addEventListener("click", async (e)=>{
+    try{
+      const editId = e.target.closest("[data-note-edit]")?.dataset.noteEdit;
+      const delId = e.target.closest("[data-note-delete]")?.dataset.noteDelete;
+      const pinId = e.target.closest("[data-note-pin]")?.dataset.notePin;
+      const archiveId = e.target.closest("[data-note-archive]")?.dataset.noteArchive;
+
+      if(editId){
+        const note = stickyNotes.find(x=>x.id === editId);
+        openStickyNoteModal(note);
+        return;
+      }
+
+      if(delId){
+        const ok = await confirmBox("Delete this note?", {
+          title: "Delete Note",
+          okText: "Delete",
+          okClass: "danger"
+        });
+        if(ok){
+          await remove(ref(db, `sticky_notes/${me.uid}/${delId}`));
+          toast("Note deleted.", "success");
+        }
+        return;
+      }
+
+      if(pinId){
+        const note = stickyNotes.find(x=>x.id === pinId);
+        await update(ref(db, `sticky_notes/${me.uid}/${pinId}`), {
+          pinned: !note?.pinned,
+          updatedAt: serverTimestamp(),
+          updatedAtMs: Date.now()
+        });
+        return;
+      }
+
+      if(archiveId){
+        const note = stickyNotes.find(x=>x.id === archiveId);
+        await update(ref(db, `sticky_notes/${me.uid}/${archiveId}`), {
+          archived: !note?.archived,
+          updatedAt: serverTimestamp(),
+          updatedAtMs: Date.now()
+        });
+      }
+    }catch(err){
+      console.error(err);
+      toast(err?.message || "Failed", "error");
+    }
+  });
+
+  initStickyNotesFilter();
+}
+
+function wireStickyNotes(){
+  if(stickyNotesUnsub) stickyNotesUnsub();
+  stickyNotesUnsub = onValue(stickyNotesRef(), (snap)=>{
+    const data = snap.exists() ? snap.val() : {};
+    stickyNotes = Object.entries(data).map(([id, note])=>({id, ...(note || {})}));
+    renderStickyNotes();
+  }, (err)=>{
+    console.error("sticky notes listener:", err);
+    toast(err?.message || "Failed to load notes.", "error");
+  });
+}
+
+async function doChangePassword(){
+  const user = auth.currentUser;
+  if(!user?.email) throw new Error("Please login again.");
+
+  const oldPass = $("cpOld")?.value || "";
+  const newPass = $("cpNew")?.value || "";
+  const newPass2 = $("cpNew2")?.value || "";
+
+  if(!oldPass) throw new Error("Old password required.");
+  if(newPass.length < 6) throw new Error("New password minimum 6 characters.");
+  if(newPass !== newPass2) throw new Error("New password confirmation does not match.");
+
+  const cred = EmailAuthProvider.credential(user.email, oldPass);
+  await reauthenticateWithCredential(user, cred);
+  await updatePassword(user, newPass);
+
+  $("cpOld").value = "";
+  $("cpNew").value = "";
+  $("cpNew2").value = "";
+  closeModal("mChangePass");
+  return "Password changed.";
+}
+
+async function doChange2ndPassword(){
+  const user = auth.currentUser;
+  if(!user) throw new Error("Please login again.");
+
+  const oldPin = String($("cp2Old")?.value || "").trim();
+  const newPin = String($("cp2New")?.value || "").trim();
+  const newPin2 = String($("cp2New2")?.value || "").trim();
+
+  if(!/^\d{6}$/.test(oldPin)) throw new Error("Old 2nd password must be 6 digits.");
+  if(!/^\d{6}$/.test(newPin)) throw new Error("New 2nd password must be 6 digits.");
+  if(newPin !== newPin2) throw new Error("2nd password confirmation does not match.");
+
+  const passRef = ref(db, `profiles/${user.uid}/secondPassword`);
+  const snap = await get(passRef);
+  const savedPin = snap.exists() ? String(snap.val()) : "";
+
+  if(!savedPin) throw new Error("2nd password belum setup.");
+  if(oldPin !== savedPin) throw new Error("Old 2nd password salah.");
+
+  await set(passRef, newPin);
+  $("cp2Old").value = "";
+  $("cp2New").value = "";
+  $("cp2New2").value = "";
+  closeModal("mChange2ndPass");
+  return "2nd password success change.";
+}
+
+bindLoadingClick("cpSave", doChangePassword);
+bindLoadingClick("cp2Save", doChange2ndPassword);
+
+async function checkSessionExpiry(){
+  const expiresAt = Number(localStorage.getItem(SESSION_EXPIRE_KEY) || 0);
+  if(!expiresAt || Date.now() < expiresAt) return;
+
+  localStorage.removeItem(SESSION_EXPIRE_KEY);
+  if(sessionExpiryTimer) clearInterval(sessionExpiryTimer);
+
+  try{ await signOut(auth); }catch(err){ console.error(err); }
+  location.replace("../login/");
+}
+
+function startSessionExpiryWatcher(){
+  if(sessionExpiryTimer) clearInterval(sessionExpiryTimer);
+  checkSessionExpiry();
+  sessionExpiryTimer = setInterval(checkSessionExpiry, 5000);
+}
+
+$("btnLogout")?.addEventListener("click", async ()=>{
+  localStorage.removeItem(SESSION_EXPIRE_KEY);
+  if(sessionExpiryTimer) clearInterval(sessionExpiryTimer);
+  await signOut(auth);
+  location.replace("../login/");
+});
+
+$("drawerLogoutBtn")?.addEventListener("click", async ()=>{
+  localStorage.removeItem(SESSION_EXPIRE_KEY);
+  if(sessionExpiryTimer) clearInterval(sessionExpiryTimer);
+  await signOut(auth);
+  location.replace("../login/");
+});
+
+$("btnChangePass")?.addEventListener("click", ()=>openModal("mChangePass"));
+$("btnChange2ndPass")?.addEventListener("click", ()=>openModal("mChange2ndPass"));
+$("drawerChangePassBtn")?.addEventListener("click", ()=>openModal("mChangePass"));
+$("drawerChange2ndPassBtn")?.addEventListener("click", ()=>openModal("mChange2ndPass"));
+
+onAuthStateChanged(auth, async (user)=>{
+  if(!user){
+    location.replace("../login/");
+    return;
+  }
+
+  try{
+    me.uid = user.uid;
+
+    const p = await get(ref(db, `profiles/${me.uid}`));
+    me.username = p.exists()
+      ? (p.val().username || (user.email || "user").split("@")[0])
+      : (user.email || "user").split("@")[0];
+
+    if($("usernameText")) $("usernameText").textContent = me.username;
+    if($("drawerUsername")) $("drawerUsername").textContent = me.username;
+
+    await loadRole(me.uid);
+
+    if(!isAdminUser()){
+      throw new Error("No admin access.");
+    }
+
+    await loadSitesForContext();
+    bindStickyNotesUI();
+    wireStickyNotes();
+    startSessionExpiryWatcher();
+  }catch(err){
+    console.error("Notices boot error:", err);
+    toast(err?.message || "Failed to initialize Notices.", "error");
+  }finally{
+    hidePageLoader();
+  }
+});
+
+window.addEventListener("load", ()=>{
+  setTimeout(hidePageLoader, 1200);
+});
+</script>
 </body>
 </html>

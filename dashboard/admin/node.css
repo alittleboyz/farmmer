@@ -1232,8 +1232,11 @@ input[type="number"]{
   padding-right:38px !important;
 }
 
-/* Button drawer (guna iconBtn style kau) */
-.rightDrawerBtn{ display:none; }
+.rightDrawerBtn{
+  display:inline-flex !important;
+  align-items:center;
+  justify-content:center;
+}
 
 /*  Overlay start bawah header */
 .drawerOverlay{

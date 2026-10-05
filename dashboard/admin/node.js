@@ -1704,8 +1704,15 @@ function closeModal(id){
 async function loadRole(uid){
   const r = await get(ref(db, `roles/${uid}`));
   const role = r.exists() ? r.val() : {};
-  me.isAdmin = role?.isAdmin === true;
-  me.username = role?.username || me.username || "user";
+// ===== ROLE V2 + BACKWARD COMPATIBLE =====
+const roleName = String(
+  role?.role ||
+  (role?.isAdmin === true ? "superadmin" : "site_admin")
+).toLowerCase();
+
+me.role = roleName;
+me.isAdmin = roleName === "superadmin";
+me.username = role?.username || me.username || "user";
   
   // ===== SYNC SHARED ADMIN ACCESS =====
 if(typeof window.setAdminAccess === "function"){
@@ -1715,9 +1722,7 @@ if(typeof window.setAdminAccess === "function"){
 
     isAdmin: me.isAdmin,
 
-    role: me.isAdmin
-      ? "superadmin"
-      : "site_admin",
+role: me.role,
 
     siteIds: [],
 

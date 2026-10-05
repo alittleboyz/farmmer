@@ -1667,27 +1667,7 @@ async function initAdminContext(){
     );
   }
 }
-  if(!window.__adminOwnerChangeBound){
 
-  window.__adminOwnerChangeBound = true;
-
-  window.addEventListener(
-    "admin-owner-change",
-    (e)=>{
-
-      me.selectedOwnerUid =
-        e.detail?.ownerUid || "";
-
-      console.log("Owner scope changed:", {
-        role: me.role,
-        siteId: getCurrentSiteId(),
-        ownerUid: getCurrentOwnerUid()
-      });
-
-    }
-  );
-}
-}
   // ===== RIGHT DRAWER GLOBAL (ONE-TIME) =====
 let btnDrawer = null;
 let drawer = null;

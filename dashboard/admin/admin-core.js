@@ -197,19 +197,38 @@ async function isSuperadmin(){
     return false;
   }
 
-  /*
-    Support structure lama dahulu.
+  const role =
+    admin.role;
 
-    Nanti bila kita migrate:
-    role = "superadmin"
-  */
 
-  return (
-    admin.role === "superadmin" ||
-    admin.role === "admin" ||
-    admin.role?.role === "superadmin" ||
-    admin.role?.role === "admin"
-  );
+  // ========================================================
+  // FORMAT BARU
+  // roles/{uid}/role = "superadmin"
+  // ========================================================
+
+  if(
+    role === "superadmin" ||
+    role?.role === "superadmin"
+  ){
+    return true;
+  }
+
+
+  // ========================================================
+  // FORMAT LAMA
+  // roles/{uid}/isAdmin = true
+  // ========================================================
+
+  if(
+    role === "admin" ||
+    role?.role === "admin" ||
+    role?.isAdmin === true
+  ){
+    return true;
+  }
+
+
+  return false;
 }
 
 

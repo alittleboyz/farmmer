@@ -2579,7 +2579,10 @@ function openWalletLatestNote(){
   openViewNote(note);
 }
 function initTableShadow(root = document){
+  if(!root) return;
+
   root.querySelectorAll(".tblShell").forEach(shell=>{
+    
     if(shell.dataset.shadowBound === "1"){
       updateTablePing(shell);
       return;

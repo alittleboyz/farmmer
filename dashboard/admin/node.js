@@ -2376,9 +2376,7 @@ const ACTIVE_TAB_KEY = "farm_active_tab";
 function setView(v, save = true){
   activeView = v;
 
-  if(save){
-    localStorage.setItem(ACTIVE_TAB_KEY, v);
-  }
+  const isOpen = v === "open";
 
   const isOpen = v === "open";
 
@@ -6145,12 +6143,9 @@ startSessionExpiryWatcher();
   initTxTimeControl({ kind:"sell",    inputId:"txTime_sell",    toggleId:"txTimeToggle_sell" });
 
 wireBalanceListener();
-//wireLastLedgerListener();
 
-const savedTab = localStorage.getItem(ACTIVE_TAB_KEY);
-activeView = ["open","history","transaction","notes"].includes(savedTab)
-  ? savedTab
-  : "open";
+  
+activeView = getPageDefaultView();
 
 setView(activeView, false);
 

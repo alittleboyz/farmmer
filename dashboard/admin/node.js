@@ -2210,6 +2210,7 @@ async function rollbackBalanceOnly(delta){
 
   // ===== VAULTS =====
 async function createVault(title, note, createdAtMs){
+  const siteId = requireWriteSiteId();
   const now = Number(createdAtMs || Date.now());
   const vRef = push(vaultRefOpen());
   await set(vRef, {

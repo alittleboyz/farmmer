@@ -1,1 +1,109 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Login</title><link rel="stylesheet" href="./admin.css"></head><body><main class="wrap" style="max-width:420px;padding-top:15vh"><div class="card"><h2>Back Office PIG</h2><input id="email" class="input" style="width:100%" placeholder="Email"><input id="pass" type="password" class="input" style="width:100%;margin-top:8px" placeholder="Password"><button id="go" class="btn primary" style="width:100%;margin-top:10px">Login</button><p id="err"></p></div></main><script type="module">import{auth,signInWithEmailAndPassword,$}from"./admin.js";$("go").onclick=async()=>{try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("pass").value);localStorage.setItem("farm_session_expires_at",String(Date.now()+86400000));location.replace("./vault.html")}catch(e){$("err").textContent="Login failed: "+(e.code||e.message)}}</script></body></html>
+<!doctype html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>Login</title>
+
+  <link
+    rel="stylesheet"
+    href="./admin.css"
+  >
+</head>
+
+
+<body>
+
+  <main
+    class="wrap"
+    style="max-width:420px; padding-top:15vh;"
+  >
+
+    <div class="card">
+
+      <h2>
+        Back Office PIG
+      </h2>
+
+
+      <input
+        id="email"
+        class="input"
+        style="width:100%;"
+        placeholder="Email"
+      >
+
+
+      <input
+        id="pass"
+        type="password"
+        class="input"
+        style="width:100%; margin-top:8px;"
+        placeholder="Password"
+      >
+
+
+      <button
+        id="go"
+        class="btn primary"
+        style="width:100%; margin-top:10px;"
+      >
+        Login
+      </button>
+
+
+      <p id="err"></p>
+
+    </div>
+
+  </main>
+
+
+  <script type="module">
+
+    import {
+      auth,
+      signInWithEmailAndPassword,
+      $
+    } from "./admin.js";
+
+
+    $("go").onclick = async () => {
+
+      try {
+
+        await signInWithEmailAndPassword(
+          auth,
+          $("email").value.trim(),
+          $("pass").value
+        );
+
+
+        localStorage.setItem(
+          "farm_session_expires_at",
+          String(
+            Date.now() + 86400000
+          )
+        );
+
+
+        location.replace("./vault.html");
+
+      } catch (e) {
+
+        $("err").textContent =
+          "Login failed: " +
+          (e.code || e.message);
+      }
+    };
+
+  </script>
+
+</body>
+</html>

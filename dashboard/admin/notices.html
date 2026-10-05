@@ -393,100 +393,10 @@
       >
         Save
       </button>
-
-    </div>
-
-  </div>
-</div>
-
-<!-- MODALS -->
-<div class="modalBack" id="mBalance">
-  <div class="modal">
-    <div class="modalHead">
-      <div>
-        <div class="title">My Wallet</div>
-        <div class="sub">History Update Balance.</div>
-      </div>
-      <button class="x" data-close="mBalance">✕</button>
-    </div>
-    <!-- ✅ DATE RANGE DI LUAR MODAL BODY -->
-    <div class="walletRangeTop">
-      <div class="txToolbar">
-        <div class="txRangeRow">
-          <input id="walletRangeInput" class="dateRangeInput" type="text" readonly>
-
-          <button id="walletPresetToggle" class="txPresetToggle" type="button">
-            <svg viewBox="0 0 1024 1024">
-              <path fill="currentColor" d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"/>
-            </svg>
-          </button>
-        </div>
-
-        <div id="walletPresetPanel" class="txPresetPanel">
-          <button class="pbtn" type="button" data-wallet-preset="today">Today</button>
-          <button class="pbtn" type="button" data-wallet-preset="yesterday">Yesterday</button>
-          <button class="pbtn" type="button" data-wallet-preset="thisWeek">This Week</button>
-          <button class="pbtn" type="button" data-wallet-preset="lastWeek">Last Week</button>
-          <button class="pbtn" type="button" data-wallet-preset="thisMonth">This Month</button>
-          <button class="pbtn" type="button" data-wallet-preset="lastMonth">Last Month</button>
-        </div>
-      </div>
-    </div>
-    
-    <div class="modalBody walletScrollBody">
-      <div class="walletTableWrap">
-        <table class="walletTable">
-          <tbody>
-            <tr>
-              <td>Available Balance</td>
-              <td class="num" id="balanceBig">0.00</td>
-            </tr>
-            <tr>
-              <td>Current Balance</td>
-              <td class="num" id="balanceBefore">0.00</td>
-            </tr>
-            <tr>
-  <td>Opening Balance</td>
-  <td class="num" id="walletOpeningBalance">0.00</td>
-</tr>
-
-<tr>
-  <td>Closing Balance</td>
-  <td class="num" id="walletClosingBalance">0.00</td>
-</tr>
-
-<tr>
-  <td>Total In/Out</td>
-  <td class="num" id="walletTotalInOut">0.00</td>
-</tr>
-
-<tr>
-  <td>Balance Available</td>
-  <td class="num" id="walletAvailableBalance2">0.00</td>
-</tr>
-            <tr>
-              <td>Total In</td>
-              <td class="num" id="walletAddPointTotal">0.00</td>
-            </tr>
-            <tr>
-              <td>Total Out</td>
-              <td class="num" id="walletOutPointTotal">0.00</td>
-            </tr>
-            <tr>
-              <td>Total Result</td>
-              <td class="num" id="walletPointResultTotal">0.00</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="modalFoot">
-      <button class="btn-cancel" data-close="mBalance">Close</button>
     </div>
   </div>
 </div>
-  
+
 <!-- ✅ CHANGE PASSWORD MODAL -->
 <div class="modalBack" id="mChangePass" style="display:none;">
   <div class="modal" style="max-width:520px;">

@@ -1,12 +1,4 @@
-// ============================================================
-// ADMIN DASHBOARD node.js - CLEANUP PASS 1
-// Vault / History / Transaction / Notices now own their page JS.
-// index.html remains unchanged and still loads this file.
-// Page-specific boot calls are gated so Dashboard does not initialize
-// separated-page modules. Shared Firebase/Auth/Admin/Wallet helpers remain.
-// ============================================================
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import {
   getAuth, onAuthStateChanged, signOut,
   EmailAuthProvider, reauthenticateWithCredential, updatePassword
@@ -1394,85 +1386,9 @@ function attachKg(el){
     el.value = formatKgTyping(el.value);
   });
 }
-let me = {
-  uid: null,
-  username: null,
-  isAdmin: false,
-
-  // ===== MULTI SITE =====
-  role: "client",
-  enabled: true,
-
-  assignedSites: [],
-  currentSiteId: "",
-
-  permissions: {}
-};
-
-function isSuperAdmin(){
-  return me.role === "superadmin";
-}
-
-function isSiteAdmin(){
-  return me.role === "site_admin";
-}
-
-function isAdminUser(){
-  return isSuperAdmin() || isSiteAdmin();
-}
-
-function getCurrentSiteId(){
-  return me.currentSiteId || "";
-}
-// =====================================================
-// MULTI-SITE SCOPE HELPERS
-// =====================================================
-function getAllowedSiteIds(){
-  if(isSuperAdmin()){
-    return null;
-  }
-
-  return [...me.assignedSites];
-}
-
-function getReadSiteIds(){
-
-  const siteId = getCurrentSiteId();
-
-  if(siteId){
-    return [siteId];
-  }
-  
-  if(isSiteAdmin()){
-    return [...me.assignedSites];
-  }
-  return null;
-}
-
-function requireWriteSiteId(){
-
-  const siteId = getCurrentSiteId();
-
-  if(!siteId){
-    throw new Error(
-      "Please select a site first. You cannot create or update data while All Sites is selected."
-    );
-  }
-
-  // Extra protection untuk Site Admin
-  if(
-    isSiteAdmin() &&
-    !me.assignedSites.includes(siteId)
-  ){
-    throw new Error(
-      "You do not have permission to access this site."
-    );
-  }
-
-  return siteId;
-}
-let currentBalance = 0;
-const WALLET_ID = "main";
+  let me = { uid:null, username:null, isAdmin:false };
+  let currentBalance = 0;
+  const WALLET_ID = "main";
 // ===== AUTO LOGOUT AFTER 24 HOURS =====
 const SESSION_EXPIRE_KEY = "farm_session_expires_at";
 
@@ -1534,34 +1450,7 @@ let walletFilter = {
   range: presetRangeMs("today")
 };
   // UI state
-// ===== PAGE VIEW DETECTION =====
-const currentAdminPage =
-  (location.pathname.split("/").pop() || "index.html").toLowerCase();
-
-function getPageDefaultView(){
-
-  if(currentAdminPage === "history.html"){
-    return "history";
-  }
-
-  if(currentAdminPage === "transaction.html"){
-    return "transaction";
-  }
-
-  if(currentAdminPage === "notices.html"){
-    return "notes";
-  }
-
-  if(currentAdminPage === "vault.html"){
-    return "open";
-  }
-
-  // index.html is Admin Dashboard only.
-  return "dashboard";
-}
-
-// UI state
-let activeView = getPageDefaultView();
+  let activeView = "open";
 let activeMainTab = "vault";
 let finTxEditId = null;
   let ctxVaultId = null; 
@@ -1595,160 +1484,6 @@ let stickyNotesUnsub = null;
 function stickyNotesRef(){
   return ref(db, `sticky_notes/${me.uid}`);
 }
-// =====================================================
-// MULTI SITE ADMIN CONTEXT
-// =====================================================
-
-function normalizeSiteIds(sites){
-  if(!sites) return [];
-
-  if(Array.isArray(sites)){
-    return sites.filter(Boolean);
-  }
-
-  if(typeof sites === "object"){
-    return Object.entries(sites)
-      .filter(([_, allowed]) => allowed === true)
-      .map(([siteId]) => siteId);
-  }
-
-  return [];
-}
-
-async function loadAdminProfile(uid){
-  try{
-    const snap = await get(ref(db, `adminUsers/${uid}`));
-
-    // belum ada adminUsers = guna role lama
-    if(!snap.exists()){
-      return false;
-    }
-
-    const data = snap.val() || {};
-
-    me.role = data.role || "client";
-    me.enabled = data.enabled !== false;
-    me.permissions = data.permissions || {};
-    me.assignedSites = normalizeSiteIds(data.sites);
-
-    if(data.username){
-      me.username = data.username;
-    }
-
-    // compatibility code lama
-    me.isAdmin = isAdminUser();
-
-    return true;
-
-  }catch(err){
-    console.warn("loadAdminProfile fallback:", err);
-    return false;
-  }
-}
-
-async function loadSitesForContext(){
-
-  try{
-    const snap = await get(ref(db, "sites"));
-    const allSites = snap.exists() ? snap.val() : {};
-    const sites = [];
-
-    // ==============================
-    // SUPERADMIN
-    // ==============================
-    if(isSuperAdmin()){
-
-      Object.entries(allSites).forEach(([siteId, site])=>{
-
-        if(!site) return;
-        if(site.enabled === false) return;
-
-        sites.push({
-          id: siteId,
-          name: site.name || siteId
-        });
-
-      });
-
-      // kosong = All Sites
-      me.currentSiteId = "";
-    }
-
-    // ==============================
-    // SITE ADMIN
-    // ==============================
-    else if(isSiteAdmin()){
-
-      const allowed = new Set(me.assignedSites);
-
-      Object.entries(allSites).forEach(([siteId, site])=>{
-
-        if(!site) return;
-        if(!allowed.has(siteId)) return;
-        if(site.enabled === false) return;
-
-        sites.push({
-          id: siteId,
-          name: site.name || siteId
-        });
-
-      });
-     me.currentSiteId = "";
-    }
-
-    // ==============================
-    // HANTAR KE new-ui.js
-    // ==============================
-window.setAdminUIContext?.({
-  uid: me.uid,
-  username: me.username,
-  role: me.role,
-  permissions: me.permissions,
-  sites,
-  currentSiteId: me.currentSiteId
-});
-
-    console.log("Sites loaded:", sites);
-
-  }catch(err){
-
-    console.error("loadSitesForContext error:", err);
-
-  }
-}
-
-async function initAdminContext(){
-
-  // Load site yang user dibenarkan access
-  await loadSitesForContext();
-
-  // ==========================================
-  // DENGAR SITE SELECTOR MILIK new-ui.js
-  // ==========================================
-  if(!window.__adminSiteChangeBound){
-
-    window.__adminSiteChangeBound = true;
-
-    window.addEventListener(
-      "admin-site-change",
-      (e)=>{
-
-        me.currentSiteId =
-          e.detail?.siteId || "";
-
-        console.log("Admin site scope changed:", {
-          role: me.role,
-          siteId: getCurrentSiteId(),
-          assignedSites: me.assignedSites
-        });
-
-        // Nanti di sini kita reload data
-        // berdasarkan site yang dipilih.
-      }
-    );
-  }
-}
-
   // ===== RIGHT DRAWER GLOBAL (ONE-TIME) =====
 let btnDrawer = null;
 let drawer = null;
@@ -1966,72 +1701,26 @@ function closeModal(id){
   });
 })();
 // ===== ROLE =====
-// ===== ROLE =====
 async function loadRole(uid){
-
-  // ==========================================
-  // NEW MULTI-SITE ADMIN PROFILE
-  // ==========================================
-  const hasAdminProfile = await loadAdminProfile(uid);
-
-  if(hasAdminProfile){
-
-    if(!me.enabled){
-      throw new Error("This admin account is inactive.");
-    }
-
-    me.isAdmin = isAdminUser();
-
-  }else{
-
-    // ==========================================
-    // LEGACY FALLBACK
-    // ==========================================
-    const r = await get(ref(db, `roles/${uid}`));
-    const role = r.exists() ? r.val() : {};
-
-    me.isAdmin = role?.isAdmin === true;
-    me.username = role?.username || me.username || "user";
-
-    // admin lama dianggap Superadmin sementara
-    if(me.isAdmin){
-      me.role = "superadmin";
-    }else{
-      me.role = "client";
-    }
-
-    me.enabled = true;
-    me.assignedSites = [];
-    me.permissions = {};
-  }
-
-  // ==========================================
-  // ROLE UI
-  // ==========================================
+  const r = await get(ref(db, `roles/${uid}`));
+  const role = r.exists() ? r.val() : {};
+  me.isAdmin = role?.isAdmin === true;
+  me.username = role?.username || me.username || "user";
   const rolePill = $("rolePill");
-
   if(rolePill){
-    if(isSuperAdmin()){
-      rolePill.textContent = "Super Admin";
-    }else if(isSiteAdmin()){
-      rolePill.textContent = "Site Admin";
-    }else{
-      rolePill.textContent = "Client";
-    }
+    rolePill.textContent = me.isAdmin ? "Admin" : "Client";
   }
-
   const usernameText = $("usernameText");
-
   if(usernameText){
     usernameText.textContent = me.username;
   }
-  const btnAddPoint = $("btnAddPoint");
+const btnAddPoint = $("btnAddPoint");
 
-  if(btnAddPoint){
-    btnAddPoint.classList.toggle("hide", !isAdminUser());
-  }
-
-  renderTransactionRows();
+if(btnAddPoint){
+  btnAddPoint.classList.toggle("hide", !me.isAdmin);
+}
+// ✅ render semula transaction selepas role selesai load
+renderTransactionRows();
 }
 
 function wireBalanceListener(){
@@ -2245,7 +1934,6 @@ async function rollbackBalanceOnly(delta){
 
   // ===== VAULTS =====
 async function createVault(title, note, createdAtMs){
-  const siteId = requireWriteSiteId();
   const now = Number(createdAtMs || Date.now());
   const vRef = push(vaultRefOpen());
   await set(vRef, {
@@ -2387,6 +2075,11 @@ const ACTIVE_TAB_KEY = "farm_active_tab";
 
 function setView(v, save = true){
   activeView = v;
+
+  if(save){
+    localStorage.setItem(ACTIVE_TAB_KEY, v);
+  }
+
   const isOpen = v === "open";
 
   $("tabOpen")?.classList.toggle("active", isOpen);
@@ -2442,10 +2135,10 @@ if(btnNewVault){
 }
 }
 // TAMPAAL DI SINI BRO
-if(currentAdminPage === "transaction.html") renderTransactionTabShell();
+renderTransactionTabShell();
 txTabFilter.range = presetRangeMs("thisMonth");
 initTableShadow(document.getElementById("viewTransaction"));
-if(currentAdminPage === "transaction.html") wireTransactionTab();
+wireTransactionTab();
 function vaultCardHTML(vaultId, v, bucket){
   const s = v.summary || { totalCost:0,totalKg:0,totalEkor:0,totalRevenue:0,profit:0 };
   const bp = (s.babyPig || { qty:0, avgPrice:0, total:0 });
@@ -2886,10 +2579,7 @@ function openWalletLatestNote(){
   openViewNote(note);
 }
 function initTableShadow(root = document){
-  if(!root) return;
-
   root.querySelectorAll(".tblShell").forEach(shell=>{
-    
     if(shell.dataset.shadowBound === "1"){
       updateTablePing(shell);
       return;
@@ -2925,8 +2615,6 @@ function updateTablePing(shell){
 
 function renderVaultList(targetId, data, bucket){
   const el = $(targetId);
-  if(!el) return;
-
   let entries = Object.entries(data || {});
 
   window.__vaultOwner = window.__vaultOwner || {};
@@ -4717,8 +4405,7 @@ $("btnLogout").addEventListener("click", async ()=>{
   location.replace("../login/");
 });
 
-// ===== LEGACY TAB BINDING =====
-$("tabOpen")?.addEventListener("click", () => {
+$("tabOpen").addEventListener("click", () => {
   flashPageLoader("Please wait while fetching...", 350);
   setView("open");
 });
@@ -4728,7 +4415,7 @@ $("tabTransaction")?.addEventListener("click", () => {
   setView("transaction");
 });
 
-$("tabHistory")?.addEventListener("click", () => {
+$("tabHistory").addEventListener("click", () => {
   flashPageLoader("Please wait while fetching...", 350);
   setView("history");
 });
@@ -4739,7 +4426,7 @@ $("tabNotes")?.addEventListener("click", () => {
   renderStickyNotes();
 });
 
-$("btnAddPoint")?.addEventListener("click", ()=>{
+$("btnAddPoint").addEventListener("click", ()=>{
   if(!me.isAdmin){ toast("Limited user: tiada akses Add Point."); return; }
 
   finTxEditId = null;
@@ -4754,7 +4441,7 @@ $("btnAddPoint")?.addEventListener("click", ()=>{
   openModal("mAddPoint");
 });
 
-$("btnNewVault")?.addEventListener("click", ()=>{
+  $("btnNewVault").addEventListener("click", ()=>{
     $("nvTitle").value=""; $("nvNote").value="";
     resetTxTimeInput("txTime_newVault");
     openModal("mNewVault");
@@ -4762,7 +4449,7 @@ $("btnNewVault")?.addEventListener("click", ()=>{
 
 async function onApSave(){
   if(!me.isAdmin) throw new Error("No access.");
-  const siteId = requireWriteSiteId();
+
   const type = ($("apType")?.value || "in");
   const amount = moneyVal("apAmount");
   const note = ($("apNote")?.value || "").trim();
@@ -4876,12 +4563,6 @@ bindLoadingClick("nvCreate", onNvCreate);
     const vid = btn.dataset.id;
 
     if(act==="cash"){
-            try{
-        requireWriteSiteId();
-      }catch(err){
-        toast(err.message, "error");
-        return;
-      }
       ctxVaultId = vid;
       const vSnap = await get(ref(db, `vaults/open/${vid}`));
       $("cashVaultTitle").textContent = vSnap.exists()? `Vault: ${vSnap.val().title}` : "Vault";
@@ -4895,12 +4576,6 @@ bindLoadingClick("nvCreate", onNvCreate);
     }
 
     if(act==="buy"){
-        try{
-    requireWriteSiteId();
-  }catch(err){
-    toast(err.message, "error");
-    return;
-  }
       ctxVaultId = vid;
       const vSnap = await get(ref(db, `vaults/open/${vid}`));
       $("buyVaultTitle").textContent = vSnap.exists()? `Vault: ${vSnap.val().title}` : "Vault";
@@ -4917,12 +4592,6 @@ bindLoadingClick("nvCreate", onNvCreate);
       openModal("mBuy");
     }
     if(act==="missing"){
-      try{
-    requireWriteSiteId();
-  }catch(err){
-    toast(err.message, "error");
-    return;
-  }
   ctxVaultId = vid;
   const vSnap = await get(ref(db, `vaults/open/${vid}`));
   $("missingVaultTitle").textContent = vSnap.exists()? `Vault: ${vSnap.val().title}` : "Vault";
@@ -4939,12 +4608,6 @@ bindLoadingClick("nvCreate", onNvCreate);
 }
 
 if(act==="sell"){
-    try{
-    requireWriteSiteId();
-  }catch(err){
-    toast(err.message, "error");
-    return;
-  }
   ctxVaultId = vid;
 
   const vSnap = await get(ref(db, `vaults/open/${vid}`));
@@ -4992,12 +4655,6 @@ if(act==="sell"){
 }
 
 if(act==="close"){
-  try{
-  requireWriteSiteId();
-}catch(err){
-  toast(err.message, "error");
-  return;
-}
   if(!(await assertCanOperateOpenVault(vid))){
     toast("No access: this vault is not yours.");
     return;
@@ -5385,12 +5042,6 @@ if(!yes) return;
   }
 }
 if(act==="vaultUnclose"){
-    try{
-    requireWriteSiteId();
-  }catch(err){
-    toast(err.message, "error");
-    return;
-  }
   // ambil data history untuk check owner
   const hs = await get(ref(db, `vaults/history/${vid}`));
   if(!hs.exists()){
@@ -6139,12 +5790,8 @@ onAuthStateChanged(auth, async (user)=>{
   me.username = p.exists() ? (p.val().username || "user") : "user";
   $("usernameText").textContent = me.username;
 
-await loadRole(me.uid);
-if(isAdminUser()){
-  await initAdminContext();
-}
-
-startSessionExpiryWatcher();
+  await loadRole(me.uid);
+  startSessionExpiryWatcher();
   initTxTimeControl({ kind:"newVault", inputId:"txTime_newVault", toggleId:"txTimeToggle_newVault" });
   initTxTimeControl({ kind:"cash",    inputId:"txTime_cash",    toggleId:"txTimeToggle_cash" });
   initTxTimeControl({ kind:"buy",     inputId:"txTime_buy",     toggleId:"txTimeToggle_buy" });
@@ -6152,9 +5799,12 @@ startSessionExpiryWatcher();
   initTxTimeControl({ kind:"sell",    inputId:"txTime_sell",    toggleId:"txTimeToggle_sell" });
 
 wireBalanceListener();
+//wireLastLedgerListener();
 
-  
-activeView = getPageDefaultView();
+const savedTab = localStorage.getItem(ACTIVE_TAB_KEY);
+activeView = ["open","history","transaction","notes"].includes(savedTab)
+  ? savedTab
+  : "open";
 
 setView(activeView, false);
 
@@ -6163,7 +5813,7 @@ wireVaultListeners();
   window.__stickyNotesBound = true;
   bindStickyNotesUI();
 }
-if(currentAdminPage === "notices.html") wireStickyNotes();
+wireStickyNotes();
 const searchInput = document.getElementById("vaultSearch");
 const clearBtn = document.getElementById("clearSearch");
 const searchIcon = document.getElementById("searchIcon");

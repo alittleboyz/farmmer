@@ -4,21 +4,7 @@
    ========================================================== */
 
 
-:root{
-  --headerH:64px;
-  --headerBg:#001529;
-  --inputBg:#141414;
-  --borderColor:#424242;
-  --colorInput:rgba(255,255,255,.85);
-  --menuDropdown:#303030;
-}
 
-html.theme-light{
-  --inputBg:#fff;
-  --borderColor:#d9d9d9;
-  --colorInput:rgba(0,0,0,.88);
-  --menuDropdown:#fff;
-}
 
 html.drawerOpen,
 body.drawerOpen{

@@ -1310,10 +1310,7 @@ function initSharedAdminHeaders() {
      ========================================================== */
 
 async function initAdminNewUI() {
-
   initSharedAdminHeaders();
-
-  initSharedRightDrawer();
    
   document
     .querySelectorAll(
@@ -1333,12 +1330,6 @@ async function initAdminNewUI() {
    */
   await loadAdminSites();
 
-
-  /*
-   * Kalau getAdminSites datang lambat
-   * selepas Firebase/Auth ready,
-   * cuba semula beberapa kali.
-   */
   let retryCount = 0;
 
   const retryTimer =

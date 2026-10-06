@@ -947,7 +947,224 @@ function createSharedAdminHeader(target) {
 
 }
 
+/* ==========================================================
+   SHARED RIGHT DRAWER
+   ========================================================== */
 
+function initSharedRightDrawer() {
+
+  const drawer =
+    document.getElementById("rightDrawer");
+
+  const overlay =
+    document.getElementById("rightDrawerOverlay");
+
+  if (!drawer || !overlay) {
+    return;
+  }
+
+  if (drawer.dataset.sharedDrawerReady === "1") {
+    return;
+  }
+
+  drawer.dataset.sharedDrawerReady = "1";
+
+
+  /* ========================================================
+     SYNC WALLET + USER
+     ======================================================== */
+
+  function syncDrawer() {
+
+    const drawerWallet =
+      document.getElementById("drawerWallet");
+
+    const drawerUsername =
+      document.getElementById("drawerUsername");
+
+
+    /* WALLET */
+
+    const walletSource =
+      document.getElementById("sharedWalletText") ||
+      document.getElementById("balanceText");
+
+    if (drawerWallet && walletSource) {
+
+      drawerWallet.textContent =
+        walletSource.textContent.trim();
+
+    }
+
+
+    /* USERNAME */
+
+    const usernameSource =
+      document.getElementById("usernameText");
+
+    if (drawerUsername && usernameSource) {
+
+      drawerUsername.textContent =
+        usernameSource.textContent.trim();
+
+    }
+
+  }
+
+
+  /* ========================================================
+     OPEN
+     ======================================================== */
+
+  function openDrawer() {
+
+    syncDrawer();
+
+    drawer.classList.add("open");
+    overlay.classList.add("open");
+
+    drawer.setAttribute(
+      "aria-hidden",
+      "false"
+    );
+
+    document.documentElement
+      .classList.add("drawerOpen");
+
+    document.body
+      .classList.add("drawerOpen");
+
+  }
+
+
+  /* ========================================================
+     CLOSE
+     ======================================================== */
+
+  function closeDrawer() {
+
+    drawer.classList.remove("open");
+    overlay.classList.remove("open");
+
+    drawer.setAttribute(
+      "aria-hidden",
+      "true"
+    );
+
+    document.documentElement
+      .classList.remove("drawerOpen");
+
+    document.body
+      .classList.remove("drawerOpen");
+
+  }
+
+
+  /* ========================================================
+     OPEN EVENT FROM SHARED HEADER
+     ======================================================== */
+
+  window.addEventListener(
+    "admin-open-drawer",
+    openDrawer
+  );
+
+
+  /* ========================================================
+     OPTIONAL CLOSE EVENT
+     ======================================================== */
+
+  window.addEventListener(
+    "admin-close-drawer",
+    closeDrawer
+  );
+
+
+  /* ========================================================
+     CLICK OVERLAY = CLOSE
+     ======================================================== */
+
+  overlay.addEventListener(
+    "click",
+    closeDrawer
+  );
+
+
+  /* ========================================================
+     ESC = CLOSE
+     ======================================================== */
+
+  document.addEventListener(
+    "keydown",
+    event => {
+
+      if (event.key === "Escape") {
+        closeDrawer();
+      }
+
+    }
+  );
+
+
+  /* ========================================================
+     DRAWER LOGOUT
+     ======================================================== */
+
+  const logoutButton =
+    document.getElementById("drawerLogoutBtn");
+
+  logoutButton?.addEventListener(
+    "click",
+    async () => {
+
+      if (
+        window.AdminCore &&
+        typeof window.AdminCore.logout ===
+          "function"
+      ) {
+
+        await window.AdminCore.logout();
+
+      }
+
+    }
+  );
+
+
+  /* ========================================================
+     WALLET CLICK
+     ======================================================== */
+
+  const walletRow =
+    document.getElementById("drawerWalletRow");
+
+  walletRow?.addEventListener(
+    "click",
+    () => {
+
+      closeDrawer();
+
+      window.dispatchEvent(
+        new CustomEvent(
+          "admin-open-wallet"
+        )
+      );
+
+    }
+  );
+
+
+  /* ========================================================
+     PUBLIC HELPERS
+     ======================================================== */
+
+  window.openSharedAdminDrawer =
+    openDrawer;
+
+  window.closeSharedAdminDrawer =
+    closeDrawer;
+
+}
 /* ==========================================================
    INIT SHARED ADMIN HEADERS
    ========================================================== */
@@ -970,7 +1187,10 @@ function initSharedAdminHeaders() {
      ========================================================== */
 
 async function initAdminNewUI() {
+
   initSharedAdminHeaders();
+
+  initSharedRightDrawer();
    
   document
     .querySelectorAll(

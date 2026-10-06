@@ -1202,35 +1202,514 @@ function initSharedHeaderFunctions() {
   $("drawerWalletRow")?.addEventListener("click", openWallet);
 
 
-  /* PASSWORD ACTIONS */
-  function passwordAction(type) {
-    closeUserMenu();
-    closeDrawer();
+/* ==========================================================
+   SHARED PASSWORD MODALS
+   ========================================================== */
 
-    window.dispatchEvent(
-      new CustomEvent(type)
+function ensureSharedPasswordModals(){
+
+  if(!document.getElementById("mChangePass")){
+    document.body.insertAdjacentHTML("beforeend", `
+      <div class="modalBack sharedPasswordModal" id="mChangePass" style="display:none;">
+        <div class="modal sharedPasswordModalBox">
+
+          <div class="modalHead">
+            <div>
+              <div class="title">Change Password</div>
+              <div class="sub">Masukkan password lama & password baru.</div>
+            </div>
+
+            <button class="x"
+                    type="button"
+                    data-shared-close="mChangePass">✕</button>
+          </div>
+
+          <div class="modalBody">
+
+            <div id="cpHint"
+                 class="hint"
+                 style="margin-bottom:10px;"></div>
+
+            <label>
+              <span class="label-required"></span>
+              Old Password
+            </label>
+
+            <input
+              id="cpOld"
+              type="password"
+              autocomplete="current-password"
+            />
+
+            <div class="row">
+
+              <div>
+                <label>
+                  <span class="label-required"></span>
+                  New Password
+                </label>
+
+                <input
+                  id="cpNew"
+                  type="password"
+                  autocomplete="new-password"
+                />
+              </div>
+
+              <div>
+                <label>
+                  <span class="label-required"></span>
+                  Confirm New Password
+                </label>
+
+                <input
+                  id="cpNew2"
+                  type="password"
+                  autocomplete="new-password"
+                />
+              </div>
+
+            </div>
+
+            <div class="hint">
+              Minimum 6 characters.
+            </div>
+
+          </div>
+
+          <div class="modalFoot">
+
+            <button
+              class="btn-cancel"
+              type="button"
+              data-shared-close="mChangePass">
+              Cancel
+            </button>
+
+            <button
+              class="btn"
+              id="cpSave"
+              type="button">
+              Save
+            </button>
+
+          </div>
+
+        </div>
+      </div>
+    `);
+  }
+
+
+  if(!document.getElementById("mChange2ndPass")){
+    document.body.insertAdjacentHTML("beforeend", `
+      <div class="modalBack sharedPasswordModal"
+           id="mChange2ndPass"
+           style="display:none;">
+
+        <div class="modal sharedPasswordModalBox">
+
+          <div class="modalHead">
+
+            <div>
+              <div class="title">
+                Change 2nd Password
+              </div>
+
+              <div class="sub">
+                Masukkan 2nd password lama & 6 digit baru.
+              </div>
+            </div>
+
+            <button
+              class="x"
+              type="button"
+              data-shared-close="mChange2ndPass">
+              ✕
+            </button>
+
+          </div>
+
+          <div class="modalBody">
+
+            <label>
+              <span class="label-required"></span>
+              Old 2nd Password
+            </label>
+
+            <input
+              id="cp2Old"
+              type="password"
+              inputmode="numeric"
+              maxlength="6"
+              autocomplete="off"
+            />
+
+            <div class="row">
+
+              <div>
+                <label>
+                  <span class="label-required"></span>
+                  New 2nd Password
+                </label>
+
+                <input
+                  id="cp2New"
+                  type="password"
+                  inputmode="numeric"
+                  maxlength="6"
+                  autocomplete="off"
+                />
+              </div>
+
+              <div>
+                <label>
+                  <span class="label-required"></span>
+                  Confirm 2nd Password
+                </label>
+
+                <input
+                  id="cp2New2"
+                  type="password"
+                  inputmode="numeric"
+                  maxlength="6"
+                  autocomplete="off"
+                />
+              </div>
+
+            </div>
+
+            <div class="hint">
+              Must be exactly 6 digits.
+            </div>
+
+          </div>
+
+          <div class="modalFoot">
+
+            <button
+              class="btn-cancel"
+              type="button"
+              data-shared-close="mChange2ndPass">
+              Cancel
+            </button>
+
+            <button
+              class="btn"
+              id="cp2Save"
+              type="button">
+              Save
+            </button>
+
+          </div>
+
+        </div>
+      </div>
+    `);
+  }
+}
+
+
+function openSharedModal(id){
+  const modal = document.getElementById(id);
+  if(!modal) return;
+
+  modal.style.display = "flex";
+}
+
+
+function closeSharedModal(id){
+  const modal = document.getElementById(id);
+  if(!modal) return;
+
+  modal.style.display = "none";
+}
+
+
+ensureSharedPasswordModals();
+
+
+document.addEventListener("click", (e)=>{
+
+  const closeBtn =
+    e.target.closest("[data-shared-close]");
+
+  if(closeBtn){
+    closeSharedModal(
+      closeBtn.dataset.sharedClose
     );
   }
 
-  $("btnChangePass")?.addEventListener(
-    "click",
-    () => passwordAction("admin-change-password")
-  );
+});
 
-  $("drawerChangePassBtn")?.addEventListener(
-    "click",
-    () => passwordAction("admin-change-password")
-  );
 
-  $("btnChange2ndPass")?.addEventListener(
-    "click",
-    () => passwordAction("admin-change-second-password")
-  );
+function openSharedChangePassword(){
 
-  $("drawerChange2ndPassBtn")?.addEventListener(
-    "click",
-    () => passwordAction("admin-change-second-password")
-  );
+  closeUserMenu();
+  closeDrawer();
+
+  if($("cpOld"))  $("cpOld").value = "";
+  if($("cpNew"))  $("cpNew").value = "";
+  if($("cpNew2")) $("cpNew2").value = "";
+
+  if($("cpHint"))
+    $("cpHint").textContent = "";
+
+  openSharedModal("mChangePass");
+}
+
+
+function openSharedChange2ndPassword(){
+
+  closeUserMenu();
+  closeDrawer();
+
+  if($("cp2Old"))
+    $("cp2Old").value = "";
+
+  if($("cp2New"))
+    $("cp2New").value = "";
+
+  if($("cp2New2"))
+    $("cp2New2").value = "";
+
+  openSharedModal("mChange2ndPass");
+}
+
+
+$("btnChangePass")?.addEventListener(
+  "click",
+  openSharedChangePassword
+);
+
+$("drawerChangePassBtn")?.addEventListener(
+  "click",
+  openSharedChangePassword
+);
+
+$("btnChange2ndPass")?.addEventListener(
+  "click",
+  openSharedChange2ndPassword
+);
+
+$("drawerChange2ndPassBtn")?.addEventListener(
+  "click",
+  openSharedChange2ndPassword
+);
+
+
+/* 2ND PASSWORD - NUMERIC ONLY */
+
+function onlySixDigit(value){
+  return String(value || "")
+    .replace(/\D/g, "")
+    .slice(0, 6);
+}
+
+["cp2Old", "cp2New", "cp2New2"].forEach(id=>{
+
+  const input = $(id);
+
+  if(!input) return;
+
+  input.addEventListener("input", ()=>{
+    input.value =
+      onlySixDigit(input.value);
+  });
+
+});
+
+
+/* SAVE NORMAL PASSWORD */
+
+$("cpSave")?.addEventListener("click", async ()=>{
+
+  const oldPassword =
+    $("cpOld")?.value || "";
+
+  const newPassword =
+    $("cpNew")?.value || "";
+
+  const confirmPassword =
+    $("cpNew2")?.value || "";
+
+  if(
+    !oldPassword ||
+    !newPassword ||
+    !confirmPassword
+  ){
+    alert("Sila isi semua field.");
+    return;
+  }
+
+  if(newPassword.length < 6){
+    alert(
+      "Password baru minimum 6 characters."
+    );
+    return;
+  }
+
+  if(newPassword !== confirmPassword){
+    alert(
+      "Confirm password tak sama."
+    );
+    return;
+  }
+
+  /*
+    Firebase operation sekarang dimiliki AdminCore.
+    new-ui.js hanya UI owner.
+  */
+
+  if(
+    !window.AdminCore ||
+    typeof window.AdminCore.changePassword !== "function"
+  ){
+    console.error(
+      "[SharedUI] AdminCore.changePassword() belum tersedia."
+    );
+
+    alert(
+      "Password service belum tersedia."
+    );
+
+    return;
+  }
+
+  const btn = $("cpSave");
+
+  try{
+
+    btn.disabled = true;
+    btn.textContent = "Saving...";
+
+    await window.AdminCore.changePassword(
+      oldPassword,
+      newPassword
+    );
+
+    closeSharedModal("mChangePass");
+
+    alert("Password success change.");
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      error?.message ||
+      "Failed update password."
+    );
+
+  }finally{
+
+    btn.disabled = false;
+    btn.textContent = "Save";
+
+  }
+
+});
+
+
+/* SAVE 2ND PASSWORD */
+
+$("cp2Save")?.addEventListener("click", async ()=>{
+
+  const oldPin =
+    onlySixDigit(
+      $("cp2Old")?.value
+    );
+
+  const newPin =
+    onlySixDigit(
+      $("cp2New")?.value
+    );
+
+  const confirmPin =
+    onlySixDigit(
+      $("cp2New2")?.value
+    );
+
+  if(oldPin.length !== 6){
+    alert(
+      "Old 2nd password mesti 6 digit."
+    );
+    return;
+  }
+
+  if(newPin.length !== 6){
+    alert(
+      "New 2nd password mesti 6 digit."
+    );
+    return;
+  }
+
+  if(newPin !== confirmPin){
+    alert(
+      "Confirm 2nd password tak sama."
+    );
+    return;
+  }
+
+  if(newPin === oldPin){
+    alert(
+      "New 2nd password tidak boleh sama."
+    );
+    return;
+  }
+
+  if(
+    !window.AdminCore ||
+    typeof window.AdminCore.changeSecondPassword !== "function"
+  ){
+    console.error(
+      "[SharedUI] AdminCore.changeSecondPassword() belum tersedia."
+    );
+
+    alert(
+      "2nd password service belum tersedia."
+    );
+
+    return;
+  }
+
+  const btn = $("cp2Save");
+
+  try{
+
+    btn.disabled = true;
+    btn.textContent = "Saving...";
+
+    await window.AdminCore.changeSecondPassword(
+      oldPin,
+      newPin
+    );
+
+    closeSharedModal(
+      "mChange2ndPass"
+    );
+
+    alert(
+      "2nd password success change."
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      error?.message ||
+      "Failed update 2nd password."
+    );
+
+  }finally{
+
+    btn.disabled = false;
+    btn.textContent = "Save";
+
+  }
+
+});
 
 
   /* LOGOUT */

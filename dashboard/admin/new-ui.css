@@ -1078,3 +1078,151 @@ html.forceDesktop header[data-admin-header]{
 html.forceDesktop body{
   min-width:1200px;
 }
+/* ==========================================================
+   SHARED PASSWORD MODAL
+   ========================================================== */
+
+.sharedPasswordModal{
+  position:fixed;
+  inset:0;
+
+  z-index:12000;
+
+  display:none;
+  align-items:center;
+  justify-content:center;
+
+  padding:20px;
+
+  background:rgba(0,0,0,.55);
+}
+
+.sharedPasswordModalBox{
+  width:100%;
+  max-width:520px;
+
+  border:1px solid var(--borderColor);
+  border-radius:10px;
+
+  background:var(--panelBg, #1f1f1f);
+  color:var(--txt, #eaf1ff);
+
+  box-shadow:
+    0 12px 40px rgba(0,0,0,.45);
+
+  overflow:hidden;
+}
+
+.sharedPasswordModal .modalHead{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+
+  gap:15px;
+
+  padding:16px;
+
+  border-bottom:
+    1px solid var(--borderBottom, #303030);
+}
+
+.sharedPasswordModal .title{
+  font-size:16px;
+  font-weight:600;
+}
+
+.sharedPasswordModal .sub{
+  margin-top:4px;
+
+  color:var(--muted, rgba(255,255,255,.65));
+
+  font-size:12px;
+}
+
+.sharedPasswordModal .modalBody{
+  padding:16px;
+}
+
+.sharedPasswordModal label{
+  display:block;
+
+  margin-bottom:6px;
+
+  font-size:13px;
+}
+
+.sharedPasswordModal input{
+  width:100%;
+  height:34px;
+
+  padding:0 10px;
+
+  border:
+    1px solid var(--borderColor);
+
+  border-radius:6px;
+
+  outline:none;
+
+  background:var(--inputBg);
+  color:var(--colorInput);
+
+  font:inherit;
+}
+
+.sharedPasswordModal input:focus{
+  border-color:#1677ff;
+}
+
+.sharedPasswordModal .row{
+  display:grid;
+
+  grid-template-columns:
+    minmax(0,1fr)
+    minmax(0,1fr);
+
+  gap:12px;
+
+  margin-top:12px;
+}
+
+.sharedPasswordModal .hint{
+  margin-top:8px;
+
+  color:var(--muted, rgba(255,255,255,.65));
+
+  font-size:12px;
+}
+
+.sharedPasswordModal .modalFoot{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+
+  gap:8px;
+
+  padding:12px 16px;
+
+  border-top:
+    1px solid var(--borderBottom, #303030);
+}
+
+.sharedPasswordModal .x{
+  width:32px;
+  height:32px;
+
+  border:0;
+
+  background:transparent;
+  color:inherit;
+
+  cursor:pointer;
+}
+
+@media(max-width:600px){
+
+  .sharedPasswordModal .row{
+    grid-template-columns:1fr;
+  }
+
+}

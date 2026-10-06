@@ -1704,31 +1704,8 @@ function closeModal(id){
 async function loadRole(uid){
   const r = await get(ref(db, `roles/${uid}`));
   const role = r.exists() ? r.val() : {};
-// ===== ROLE V2 + BACKWARD COMPATIBLE =====
-const roleName = String(
-  role?.role ||
-  (role?.isAdmin === true ? "superadmin" : "site_admin")
-).toLowerCase();
-
-me.role = roleName;
-me.isAdmin = roleName === "superadmin";
-me.username = role?.username || me.username || "user";
-  
-  // ===== SYNC SHARED ADMIN ACCESS =====
-if(typeof window.setAdminAccess === "function"){
-  window.setAdminAccess({
-    uid,
-    username: me.username,
-
-    isAdmin: me.isAdmin,
-
-role: me.role,
-
-    siteIds: [],
-
-    permissions: {}
-  });
-}
+  me.isAdmin = role?.isAdmin === true;
+  me.username = role?.username || me.username || "user";
   const rolePill = $("rolePill");
   if(rolePill){
     rolePill.textContent = me.isAdmin ? "Admin" : "Client";

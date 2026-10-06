@@ -1232,11 +1232,8 @@ input[type="number"]{
   padding-right:38px !important;
 }
 
-.rightDrawerBtn{
-  display:inline-flex !important;
-  align-items:center;
-  justify-content:center;
-}
+/* Button drawer (guna iconBtn style kau) */
+.rightDrawerBtn{ display:none; }
 
 /*  Overlay start bawah header */
 .drawerOverlay{
@@ -3625,4 +3622,3 @@ th:not(:last-child)::after{
   background:var(--borderTable);
   opacity:.9;
 }
-
